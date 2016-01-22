@@ -27,3 +27,4 @@
 
 #Questions:
 - Sous quel forme stocker les numéros EC par la suite?
+- Participation aux réunions INRA?
