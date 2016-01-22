@@ -1,0 +1,82 @@
+LOCUS       NZ_AZSI01000000      2801031 bp    DNA     linear   BCT 16-AUG-2015
+DEFINITION  Lactococcus lactis subsp. cremoris GE214, whole genome shotgun
+            sequencing project.
+ACCESSION   NZ_AZSI00000000
+VERSION     NZ_AZSI00000000.1  GI:757470730
+DBLINK      BioProject: PRJNA224116
+            BioSample: SAMN02899667
+            Assembly: GCF_000731635.1
+KEYWORDS    WGS; RefSeq.
+SOURCE      Lactococcus lactis subsp. cremoris GE214
+  ORGANISM  Lactococcus lactis subsp. cremoris GE214
+            Bacteria; Firmicutes; Bacilli; Lactobacillales; Streptococcaceae;
+            Lactococcus.
+REFERENCE   1  (bases 1 to 2801031)
+  AUTHORS   Ladero,V., Del Rio,B., Linares,D.M., Fernandez,M., Mayo,B.,
+            Martin,M.C. and Alvarez,M.A.
+  TITLE     Genome Sequence Analysis of the Biogenic Amine-Producing Strain
+            Lactococcus lactis subsp. cremoris CECT 8666 (Formerly GE2-14)
+  JOURNAL   Genome Announc 2 (5) (2014)
+   PUBMED   25342694
+  REMARK    Publication Status: Online-Only
+REFERENCE   2  (bases 1 to 2801031)
+  AUTHORS   Ladero,V., Linares,D.M., del Rio,B., Mayo,B., Martin,M.C.,
+            Fernandez,M. and Alvarez,M.A.
+  TITLE     Direct Submission
+  JOURNAL   Submitted (27-JUN-2014) Technology and Biotechnology of Dairy
+            Products, Instituto de Productos Lacteos de Asturias (IPLA-CSIC),
+            Paseo Rio Linares S/N, Villaviciosa, Asturias 33300, Spain
+COMMENT     REFSEQ INFORMATION: The reference sequence was derived from
+            AZSI00000000.
+            The Lactococcus lactis subsp. cremoris GE214 whole genome shotgun
+            (WGS) project has the project accession NZ_AZSI00000000.  This
+            version of the project (01) has the accession number
+            NZ_AZSI01000000, and consists of sequences
+            AZSI01000001-AZSI01000243.
+            Bacteria available from Dr. Miguel A Alvarez. IPLA-CSI. Source DNA
+            available from Dr. Miguel A Alvarez. IPLA-CSI.
+            
+            ##Genome-Assembly-Data-START##
+            Assembly Method       :: Velvet v. 01/02/2012
+            Assembly Name         :: LlactisGE214
+            Genome Coverage       :: 25.0x
+            Sequencing Technology :: Illumina
+            ##Genome-Assembly-Data-END##
+            
+            ##Genome-Annotation-Data-START##
+            Annotation Provider                    :: NCBI
+            Annotation Date                        :: 08/16/2015 12:25:31
+            Annotation Pipeline                    :: NCBI Prokaryotic Genome
+                                                      Annotation Pipeline
+            Annotation Method                      :: Best-placed reference
+                                                      protein set; GeneMarkS+
+            Annotation Software revision           :: 3.0
+            Features Annotated                     :: Gene; CDS; rRNA; tRNA;
+                                                      ncRNA; repeat_region
+            Genes                                  :: 2,929
+            CDS                                    :: 2,603
+            Pseudo Genes                           :: 266
+            rRNAs                                  :: 3, 2, 2 (5S, 16S, 23S)
+            complete rRNAs                         :: 3, 2, 2 (5S, 16S, 23S)
+            tRNAs                                  :: 53
+            ncRNA                                  :: 0
+            Frameshifted Genes                     :: 75
+            Frameshifted Genes On Monomer Runs     :: 5
+            Frameshifted Genes Not On Monomer Runs :: 5
+            ##Genome-Annotation-Data-END##
+FEATURES             Location/Qualifiers
+     source          1..2801031
+                     /organism="Lactococcus lactis subsp. cremoris GE214"
+                     /mol_type="genomic DNA"
+                     /strain="GE214"
+                     /isolation_source="Cheese"
+                     /sub_species="cremoris"
+                     /culture_collection="IPLA:GE214"
+                     /db_xref="taxon:1415168"
+                     /country="Spain"
+                     /collection_date="2009"
+                     /identified_by="Baltasar Mayo"
+WGS         AZSI01000001-AZSI01000243
+WGS_SCAFLD  NZ_AZSI01000001-NZ_AZSI01000243
+//
+
