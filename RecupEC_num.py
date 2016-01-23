@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from Bio import Entrez, SeqIO
 from Bio.SeqRecord import SeqRecord
+import sqlalchemy
 
 """
 Installation des modules(en -user si pas root):
@@ -22,10 +23,10 @@ fichier = open("exemple/gbwithparts_Refseq_Master", 'w')  # ok ca marche faut ju
 
 fichier.write(textt)
 """
+######################################################################
+"Partie recup numeroEC à partir d'un genbank complet (NZ_CP009472.1)"
+######################################################################
 
-"""###########
-Partie recup numeroEC à partir d'un genbank complet (NZ_CP009472.1)
-###########"""
 
 """
 fichierGBKcomplet = open("exemple/gbwithparts_refseqComplet", 'r')
@@ -44,6 +45,7 @@ with open("exemple/gbwithparts_Refseq_Master", 'r') as fichierMaster:
     fichierParseMaster = SeqIO.parse(fichierMaster, 'genbank')  # bug là dedans...
 
     for donne in fichierParseMaster:
+        help(donne)
         rangeaccess = donne.annotations["wgs"]
 
 def generAccess(rangeaccess):  # essayer de faire un foutu générateur...
