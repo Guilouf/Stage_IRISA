@@ -1,7 +1,7 @@
 #©2015-3015 Guillaume LEBRETON (all rights belong to me)
 
 #Avantages:
-- Portable (java), ne necessite pas d'installation ni de droit, même si on peut utiliser un installeur
+- Portable (java), ne necessite pas d'installation ni de droits, même si on peut utiliser un installeur
 - On peut exporter facilement ses settings, et ainsi les transporter à travers toutes les plateformes
 - Intuitif et entièrement configurable
 - Propriétaire, donc propre, documenté et marche quelque soit les conditions, et non gràce à une succession d'éléments 
@@ -33,3 +33,4 @@ de mon unitée centrale)
 - Les numéros de lignes
 - La touche F5 pour la synchronisation des fichiers avec le système
 - La documentation au survol de la souris
+- le highlight des variables
