@@ -1,5 +1,5 @@
 # Stage_IRISA
-Scripts et tableurs sur la reconstruction des metagénomes
+Scripts et BDD sur la reconstruction des metagénomes
 
 Commandes utiles:
 - git status
