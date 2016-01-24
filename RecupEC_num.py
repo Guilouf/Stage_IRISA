@@ -7,15 +7,22 @@ import copy
 """
 Installation des modules(en -user si pas root):
 """
+"""
+Questions:
+- comment appeler des méthodes dans d'autres méthodes? (sans refaire d'instances..)
+- comment créer une persistance des données en dehors du statement with?
+"""
 class Recup_EC :
     ##################################################################
     "Partie recuperation"
     ##################################################################
 
     def __init__(self):
+        """
+
+        :return:
+        """
         Entrez.email = "ouiouioui@wanadoo.fr"
-
-
 
     def telecharge(self, accession):
 
@@ -28,18 +35,36 @@ class Recup_EC :
             fichier.write(textt)
         """
 
+    def detection(self, gbk=None):
+        """
+        Le gbk master à une partie wgs, que n'a pas le complet. sauf que c'est à la fin du fichier, donc pour opti
+        vaut mieux detecter l'absence de cds dans les features.
+
+        :param gbk: Le fichier genbank parsé
+        :return: true si c'est le complet, false si master
+        """
+        bol = True
+
+        for donne in gbk:
+            # print(donne.annotations)  # d'ou vient ce bout de sequence??
+            if "wgs" in donne.annotations: bol = False  # idéalement c la qu'il faut appeler master_access
+
+        return print(bol)
+
     ######################################################################
     "Partie recup numeroEC à partir d'un genbank complet (NZ_CP009472.1)"
     ######################################################################
 
-    def recup_ec(self):
+    def recup_ec(self, gbk=None):
+        """
 
-        with open("exemple/gbwithparts_refseqComplet", 'r') as fichierGBKcomplet:  # il est automatiquement fermé..
-            fichierParseComplet = SeqIO.parse(fichierGBKcomplet, 'genbank')  # comment affecter par copie?
+        :param gbk: Le fichier genbank dejà parsé
+        :return:
+        """
 
-        for donne in next(fichierParseComplet).features:  # bug ici...
+        for donne in next(gbk).features:  # bug ici...
             if donne.type == "CDS":
-                print(donne.qualifiers.get("EC_number", "erreurClef"+str(donne.qualifiers["locus_tag"])))
+                print(donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"])))
                 # le get fait une sorte d'exeption
 
 
@@ -47,17 +72,16 @@ class Recup_EC :
     "Partie recup des accessions à partir d'un master record (NZ_AZSI00000000)"
     ##################################################################
 
-    def recup_master_access(self):
+    def recup_master_access(self, gbk=None):
         """
         with open("exemple/gbwithparts_Refseq_Master", 'r') as fichierMaster:
-            fichierParseMaster = copy.copy(SeqIO.parse(fichierMaster, 'genbank'))
+            fichierParseMaster = copy.copy(SeqIO.parse(fichierMaster, 'genbank'))  # comment affecter par copie?
         """
         fichierMaster = open("exemple/gbwithparts_Refseq_Master", 'r')
-        fichierParseMaster = SeqIO.parse(fichierMaster, 'genbank')
-        for donne in fichierParseMaster:
+        gbk = SeqIO.parse(fichierMaster, 'genbank')
+        for donne in gbk:
             # help(donne)
             rangeaccess = donne.annotations["wgs"]
-
 
         def gener_access(paramrangeaccess):  # essayer de faire un foutu générateur...
             start = paramrangeaccess[0]
@@ -79,9 +103,22 @@ class Recup_EC :
     ##################################################################
     "Partie SQLalchemy"
     ##################################################################
+
 if __name__ == "__main__":
-    Recup_EC()
-    Recup_EC().recup_master_access()
-    BaseDDCl()
-    BaseDDCl().test()
-    BaseDDCl().construction()
+    recu = Recup_EC()
+    with open("exemple/gbwithparts_refseqComplet", 'r') as fichierGBKcomplet:
+        fichierParseComplet = SeqIO.parse(fichierGBKcomplet, 'genbank')
+        #recu.recup_ec(fichierParseComplet)
+
+    #recu.recup_master_access()
+
+    #gbwithparts_Refseq_Master
+    #gbwithparts_refseqComplet
+    with open("exemple/gbwithparts_refseqComplet", 'r') as test:
+        test_parse = SeqIO.parse(test, 'genbank')
+        recu.detection(test_parse)
+"""
+    bdd = BaseDDCl()
+    bdd.test()
+    bdd.construction()
+"""

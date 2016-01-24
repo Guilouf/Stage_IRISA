@@ -15,6 +15,7 @@
 de mon unité centrale)
 - De base, le fichier du projet n'est pas en source root pour les modules
 (clic droit marquer as root sur la direct, puis dans pythoncompil addroot path)
+- Pas de control f dans la console
 
 #Prérequis pour une utilisation optimale:
 - Windows
