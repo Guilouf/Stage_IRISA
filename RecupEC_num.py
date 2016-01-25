@@ -3,6 +3,7 @@ from Bio import Entrez, SeqIO
 from Bio.SeqRecord import SeqRecord
 from BaseDeDonnees import BaseDDCl
 import copy
+from itertools import tee
 
 """
 Installation des modules(en -user si pas root):
@@ -11,6 +12,7 @@ Installation des modules(en -user si pas root):
 Questions:
 - comment appeler des méthodes dans d'autres méthodes? (sans refaire d'instances..)
 - comment créer une persistance des données en dehors du statement with?
+- try exepect stop iteration pour le generateur
 """
 class Recup_EC :
     ##################################################################
@@ -30,6 +32,8 @@ class Recup_EC :
 
         gbk = handle.read()
 
+        #self.detection()
+
         """
         with open("exemple/gbwithparts_Refseq_Master", 'w') as fichier:  # ok ca marche faut juste créer la directory
             fichier.write(textt)
@@ -43,19 +47,21 @@ class Recup_EC :
         :param gbk: Le fichier genbank parsé
         :return: true si c'est le complet, false si master
         """
-        bol = True
 
         for donne in gbk:
             # print(donne.annotations)  # d'ou vient ce bout de sequence??
-            if "wgs" in donne.annotations: bol = False  # idéalement c la qu'il faut appeler master_access
+            if "wgs" in donne.annotations:
+                return False
 
-        return print(bol)
+        return True
+
+
 
     ######################################################################
     "Partie recup numeroEC à partir d'un genbank complet (NZ_CP009472.1)"
     ######################################################################
 
-    def recup_ec(self, gbk=None):
+    def recup_ec(self, gbk):
         """
 
         :param gbk: Le fichier genbank dejà parsé
@@ -74,13 +80,8 @@ class Recup_EC :
 
     def recup_master_access(self, gbk=None):
         """
-        with open("exemple/gbwithparts_Refseq_Master", 'r') as fichierMaster:
-            fichierParseMaster = copy.copy(SeqIO.parse(fichierMaster, 'genbank'))  # comment affecter par copie?
         """
-        fichierMaster = open("exemple/gbwithparts_Refseq_Master", 'r')
-        gbk = SeqIO.parse(fichierMaster, 'genbank')
-        for donne in gbk:
-            # help(donne)
+        for donne in gbk:  # pb de gbk vide, car déjà epuisé.
             rangeaccess = donne.annotations["wgs"]
 
         def gener_access(paramrangeaccess):  # essayer de faire un foutu générateur...
@@ -97,8 +98,9 @@ class Recup_EC :
             for nombre in range(nombre_sta, nombre_sto + 1, 1):
                 print(locus + str(nombre))
 
+        return gener_access(rangeaccess)
 
-        gener_access(rangeaccess)
+
 
     ##################################################################
     "Partie SQLalchemy"
@@ -106,17 +108,29 @@ class Recup_EC :
 
 if __name__ == "__main__":
     recu = Recup_EC()
-    with open("exemple/gbwithparts_refseqComplet", 'r') as fichierGBKcomplet:
+    with open("exemple/gbwithparts_Refseq_Complet", 'r') as fichierGBKcomplet:
         fichierParseComplet = SeqIO.parse(fichierGBKcomplet, 'genbank')
         #recu.recup_ec(fichierParseComplet)
 
-    #recu.recup_master_access()
+    with open("exemple/gbwithparts_Refseq_Master", 'r') as fichierGBKmaster:
+        fichierParseMaster = SeqIO.parse(fichierGBKmaster, 'genbank')
+        #recu.recup_master_access(fichierParseMaster)
 
     #gbwithparts_Refseq_Master
-    #gbwithparts_refseqComplet
-    with open("exemple/gbwithparts_refseqComplet", 'r') as test:
-        test_parse = SeqIO.parse(test, 'genbank')
-        recu.detection(test_parse)
+    #gbwithparts_Refseq_Complet
+    with open("exemple/gbwithparts_Refseq_Master", 'r') as test:
+        test_parse, gbk_gener = tee( SeqIO.parse(test, 'genbank') ) # ok, tee de itertools permet de creer plusieur gener
+        #gbk_gener = SeqIO.parse(test, 'genbank')
+        # print(recu.detection(test_parse))
+        if recu.detection(test_parse) == True:
+            print("complet")  # c'est faux...
+            recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
+
+        else :
+            print("master")
+            recu.recup_master_access(gbk_gener)  # faire une boucle de telechargement ici
+            # puis pour chaque telechargement un recu.recup_ec()
+
 """
     bdd = BaseDDCl()
     bdd.test()
