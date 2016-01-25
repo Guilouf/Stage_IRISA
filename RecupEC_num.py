@@ -10,7 +10,7 @@ Installation des modules(en -user si pas root):
 """
 """
 Questions:
-- comment appeler des méthodes dans d'autres méthodes? (sans refaire d'instances..)
+- comment appeler des méthodes dans d'autres méthodes? (sans refaire d'instances..) self.methode crétin
 - comment créer une persistance des données en dehors du statement with?
 - try exepect stop iteration pour le generateur
 """
@@ -96,7 +96,9 @@ class Recup_EC :
             print(nombre_sto)
 
             for nombre in range(nombre_sta, nombre_sto + 1, 1):
+                sortie = locus + str(nombre)
                 print(locus + str(nombre))
+                yield sortie
 
         return gener_access(rangeaccess)
 
@@ -126,9 +128,10 @@ if __name__ == "__main__":
             print("complet")  # c'est faux...
             recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
 
-        else :
+        else:
             print("master")
-            recu.recup_master_access(gbk_gener)  # faire une boucle de telechargement ici
+            for access in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
+                pass # mm en pass ca active le generateur
             # puis pour chaque telechargement un recu.recup_ec()
 
 """
