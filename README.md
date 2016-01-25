@@ -9,4 +9,4 @@ Commandes utiles:
 - si problemes: git fetch origin, puis git reset --hard origin/master
 
 Les us et coutumes:
-- Les .balec sont dans le gitignore
+- Les .balec sont dans le gitignore 
