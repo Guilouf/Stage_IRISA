@@ -72,7 +72,6 @@ class Recup_EC :
                 print(donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"])))
                 # le get fait une sorte d'exeption
 
-
     ##################################################################
     "Partie recup des accessions à partir d'un master record (NZ_AZSI00000000)"
     ##################################################################
@@ -107,7 +106,7 @@ class Recup_EC :
 
 if __name__ == "__main__":
     recu = Recup_EC()
-
+    """
     with open("exemple/gbwithparts_Refseq_Complet", 'r') as fichierGBKcomplet:
         fichierParseComplet = SeqIO.parse(fichierGBKcomplet, 'genbank')
         #recu.recup_ec(fichierParseComplet)
@@ -115,20 +114,33 @@ if __name__ == "__main__":
     with open("exemple/gbwithparts_Refseq_Master", 'r') as fichierGBKmaster:
         fichierParseMaster = SeqIO.parse(fichierGBKmaster, 'genbank')
         #recu.recup_master_access(fichierParseMaster)
+    """
+    """
+    NZ_AZSI00000000 (master)
+    NZ_CP009472.1
+    """
+    def traitement(access):
+        gbk = recu.telecharge(access)
 
-    gbk = recu.telecharge("NZ_CP009472.1")
+        test_parse, gbk_gener = tee( SeqIO.parse(gbk, 'genbank') ) # ok, tee de itertools permet de creer plusieur gener
 
-    test_parse, gbk_gener = tee( SeqIO.parse(gbk, 'genbank') ) # ok, tee de itertools permet de creer plusieur gener
+        if recu.detection(test_parse):
+            print("complet")  # c'est faux...
+            recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
 
-    if recu.detection(test_parse) == True:
-        print("complet")  # c'est faux...
-        recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
+        else:
+            print("master")
+            for accessBis in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
+                gbkprot = recu.telecharge(accessBis)
+                gbkprotparse = SeqIO.parse(gbkprot, 'genbank')
+                recu.recup_ec(gbkprotparse) # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
 
-    else:
-        print("master")
-        for access in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
-            pass # mm en pass ca active le generateur
-        # puis pour chaque telechargement un recu.recup_ec()
+        gbk.close()  # pas oublier de le fermer..
+
+    with open('exemple/ListeAccess', mode='r') as listaccess:
+        for numacc in listaccess:  # itère la liste des accessions à regarder
+            traitement(numacc)  # gaffe aux espaces à la fin du doc..
+
 
 """
     bdd = BaseDDCl()
