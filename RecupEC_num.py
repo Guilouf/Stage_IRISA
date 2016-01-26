@@ -2,6 +2,7 @@
 from Bio import Entrez, SeqIO
 from Bio.SeqRecord import SeqRecord
 from BaseDeDonnees import BaseDDCl
+from io import StringIO
 import copy
 from itertools import tee
 
@@ -31,13 +32,11 @@ class Recup_EC :
         handle = Entrez.efetch(db="nucleotide", id=accession, rettype="gbwithparts", retmode="txt")
 
         gbk = handle.read()
+        gbk = StringIO(gbk)  # sauvegarde dans un fichier virtuel
+        handle.close()
+        return gbk
 
         #self.detection()
-
-        """
-        with open("exemple/gbwithparts_Refseq_Master", 'w') as fichier:  # ok ca marche faut juste créer la directory
-            fichier.write(textt)
-        """
 
     def detection(self, gbk=None):
         """
@@ -102,14 +101,13 @@ class Recup_EC :
 
         return gener_access(rangeaccess)
 
-
-
     ##################################################################
     "Partie SQLalchemy"
     ##################################################################
 
 if __name__ == "__main__":
     recu = Recup_EC()
+
     with open("exemple/gbwithparts_Refseq_Complet", 'r') as fichierGBKcomplet:
         fichierParseComplet = SeqIO.parse(fichierGBKcomplet, 'genbank')
         #recu.recup_ec(fichierParseComplet)
@@ -118,21 +116,19 @@ if __name__ == "__main__":
         fichierParseMaster = SeqIO.parse(fichierGBKmaster, 'genbank')
         #recu.recup_master_access(fichierParseMaster)
 
-    #gbwithparts_Refseq_Master
-    #gbwithparts_Refseq_Complet
-    with open("exemple/gbwithparts_Refseq_Master", 'r') as test:
-        test_parse, gbk_gener = tee( SeqIO.parse(test, 'genbank') ) # ok, tee de itertools permet de creer plusieur gener
-        #gbk_gener = SeqIO.parse(test, 'genbank')
-        # print(recu.detection(test_parse))
-        if recu.detection(test_parse) == True:
-            print("complet")  # c'est faux...
-            recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
+    gbk = recu.telecharge("NZ_CP009472.1")
 
-        else:
-            print("master")
-            for access in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
-                pass # mm en pass ca active le generateur
-            # puis pour chaque telechargement un recu.recup_ec()
+    test_parse, gbk_gener = tee( SeqIO.parse(gbk, 'genbank') ) # ok, tee de itertools permet de creer plusieur gener
+
+    if recu.detection(test_parse) == True:
+        print("complet")  # c'est faux...
+        recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
+
+    else:
+        print("master")
+        for access in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
+            pass # mm en pass ca active le generateur
+        # puis pour chaque telechargement un recu.recup_ec()
 
 """
     bdd = BaseDDCl()
