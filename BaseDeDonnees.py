@@ -6,6 +6,10 @@ class BaseDDCl:
     bon alors ya deux trucs apparement, core et orm. Je ne sais pas trop lequel utiliser..
     tables.c.num_EC = tables.columns.get("num_EC")
     bon le truc est bien persistant, il se trouve à dans la racine! en.balec pr pas le commit
+
+    bon alors ya moyen de se passer de sql,
+
+
     """
     def __init__(self):
         """
@@ -35,7 +39,6 @@ class BaseDDCl:
         self.bdd.execute(i)
 
     def test(self):
-        # @staticmethod ??
         """
         permet de tester si ca marche..
         """

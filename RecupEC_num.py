@@ -31,9 +31,11 @@ class Recup_EC :
 
         handle = Entrez.efetch(db="nucleotide", id=accession, rettype="gbwithparts", retmode="txt")
 
-        gbk = handle.read()
-        gbk = StringIO(gbk)  # sauvegarde dans un fichier virtuel
+        gbk_handle = handle.read()
+        gbkIO = StringIO(gbk_handle)  # sauvegarde dans un fichier virtuel
         handle.close()
+        gbk = SeqIO.parse(gbkIO, 'genbank')
+        # fermer gbkIO? ben on peut pas sinon c op sur closed file..
         return gbk
 
         #self.detection()
@@ -122,7 +124,7 @@ if __name__ == "__main__":
     def traitement(access):
         gbk = recu.telecharge(access)
 
-        test_parse, gbk_gener = tee( SeqIO.parse(gbk, 'genbank') ) # ok, tee de itertools permet de creer plusieur gener
+        test_parse, gbk_gener = tee(gbk)  # ok, tee de itertools permet de creer plusieur gener
 
         if recu.detection(test_parse):
             print("complet")  # c'est faux...
@@ -132,10 +134,9 @@ if __name__ == "__main__":
             print("master")
             for accessBis in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
                 gbkprot = recu.telecharge(accessBis)
-                gbkprotparse = SeqIO.parse(gbkprot, 'genbank')
-                recu.recup_ec(gbkprotparse) # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
+                recu.recup_ec(gbkprot) # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
 
-        gbk.close()  # pas oublier de le fermer..
+        gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
 
     with open('exemple/ListeAccess', mode='r') as listaccess:
         for numacc in listaccess:  # itère la liste des accessions à regarder
