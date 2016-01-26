@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 from Bio import Entrez, SeqIO
-from io import StringIO
 from Bio.SeqRecord import SeqRecord
 from BaseDeDonnees import BaseDDCl
+from io import StringIO
 import copy
 from itertools import tee
 
@@ -28,20 +28,17 @@ class Recup_EC :
         Entrez.email = "ouiouioui@wanadoo.fr"
 
     def telecharge(self, accession):
-        """
-        bon apparement le read serait pour le xml..
-        :param accession:
-        :return:
-        """
+
         handle = Entrez.efetch(db="nucleotide", id=accession, rettype="gbwithparts", retmode="txt")
 
-        gbk =  handle.read() #readline marche aussi, mais renvoit juste une ligne
-        gbk = StringIO(gbk)
-        #print(gbk.read()) # bon ca marche parfaitement bien, sauf si on fait le read en dehors de la fct..
-        #GenBankScanner.parse(handle)
+        gbk_handle = handle.read()
+        gbkIO = StringIO(gbk_handle)  # sauvegarde dans un fichier virtuel
         handle.close()
-        return gbk   # je l'ai passé en handle tout court
+        gbk = SeqIO.parse(gbkIO, 'genbank')
+        # fermer gbkIO? ben on peut pas sinon c op sur closed file..
+        return gbk
 
+        #self.detection()
 
     def detection(self, gbk=None):
         """
@@ -77,7 +74,6 @@ class Recup_EC :
                 print(donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"])))
                 # le get fait une sorte d'exeption
 
-
     ##################################################################
     "Partie recup des accessions à partir d'un master record (NZ_AZSI00000000)"
     ##################################################################
@@ -106,8 +102,6 @@ class Recup_EC :
 
         return gener_access(rangeaccess)
 
-
-
     ##################################################################
     "Partie SQLalchemy"
     ##################################################################
@@ -118,50 +112,37 @@ if __name__ == "__main__":
     with open("exemple/gbwithparts_Refseq_Complet", 'r') as fichierGBKcomplet:
         fichierParseComplet = SeqIO.parse(fichierGBKcomplet, 'genbank')
         #recu.recup_ec(fichierParseComplet)
-    """
-    #test à partir du handle..
-    handleRead = recu.telecharge("NZ_AZSI00000000")
-    fichierParseMaster = SeqIO.parse(handleRead, 'genbank')
-    #print(handleRead.read())
-    print("putain que ca m'enerve..")
-
-    putainhandle = handleRead
-    print(putainhandle)
-    #print(fichierParseMaster)
-
-    for i in putainhandle: # le generateur bug avec le handle...
-        print(i)
-
-
-    for machin in SeqIO.parse(handleRead, 'genbank'):
-        print(machin)
-
-
-
 
     with open("exemple/gbwithparts_Refseq_Master", 'r') as fichierGBKmaster:
         fichierParseMaster = SeqIO.parse(fichierGBKmaster, 'genbank')
-        #fichierParseMaster = recu.telecharge("NZ_AZSI00000000")
-        #fichierParseMaster = SeqIO.parse(recu.telecharge("NZ_AZSI00000000"), 'genbank')
         #recu.recup_master_access(fichierParseMaster)
-
-    #gbwithparts_Refseq_Master
-    #gbwithparts_Refseq_Complet
     """
-    with open("exemple/gbwithparts_Refseq_Master", 'r') as test:
-        test_parse, gbk_gener = tee( SeqIO.parse(test, 'genbank') ) # ok, tee de itertools permet de creer plusieur gener
-        #gbk_gener = SeqIO.parse(test, 'genbank')
-        # print(recu.detection(test_parse))
-        if recu.detection(test_parse) == True:
+    """
+    NZ_AZSI00000000 (master)
+    NZ_CP009472.1
+    """
+    def traitement(access):
+        gbk = recu.telecharge(access)
+
+        test_parse, gbk_gener = tee(gbk)  # ok, tee de itertools permet de creer plusieur gener
+
+        if recu.detection(test_parse):
             print("complet")  # c'est faux...
             recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
 
         else:
             print("master")
-            for access in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
-                pass # mm en pass ca active le generateur
-            # puis pour chaque telechargement un recu.recup_ec()
-    """
+            for accessBis in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
+                gbkprot = recu.telecharge(accessBis)
+                recu.recup_ec(gbkprot) # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
+
+        gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
+
+    with open('exemple/ListeAccess', mode='r') as listaccess:
+        for numacc in listaccess:  # itère la liste des accessions à regarder
+            traitement(numacc)  # gaffe aux espaces à la fin du doc..
+
+
 """
     bdd = BaseDDCl()
     bdd.test()
