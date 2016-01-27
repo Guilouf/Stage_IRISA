@@ -2,11 +2,16 @@
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import sessionmaker, relationships
+from sqlalchemy.orm import sessionmaker, relationship
 
 eng = create_engine('sqlite:///testBis.balec')
 
 Base = declarative_base()
+
+association_table = Table('association', Base.metadata,
+    Column('Accessions_tab_id', Integer, ForeignKey('Accessions_tab.Id')),
+    Column('EC_numbers_tab_id', Integer, ForeignKey('EC_numbers_tab.Id_ec'))
+)
 
 class Accessions(Base):  # le truc (Base) c'est l'héritage
 
@@ -16,7 +21,8 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     Access = Column(String)
 
     #hasRefSeq = relationships('Friends', primaryjoin=lambda: id == EC_numbers.Id_ec)
-    hasRefSeq = relationships()
+    hasRefSeq = children = relationship("EC_numbers", secondary=association_table)
+    hasPrimaire = children = relationship("EC_numbers", secondary=association_table)
 
 
 class EC_numbers(Base):
@@ -49,7 +55,7 @@ Session = sessionmaker(bind=eng)
 ses = Session()
 
 """
-ses.add(Accessions(Id=2, Access="grande bzacterie"))
+ses.add(Accessions(Id=1, Access="grande bzacterie1"))
 ses.commit()
 """
 
