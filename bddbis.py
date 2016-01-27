@@ -8,6 +8,7 @@ eng = create_engine('sqlite:///testBis.balec')
 
 Base = declarative_base()
 
+# Table d'association
 association_table = Table('association', Base.metadata,
     Column('Accessions_tab_id', Integer, ForeignKey('Accessions_tab.Id')),
     Column('EC_numbers_tab_id', Integer, ForeignKey('EC_numbers_tab.Id_ec'))
@@ -20,7 +21,7 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     Id = Column(Integer, primary_key=True)
     Access = Column(String)
 
-    #hasRefSeq = relationships('Friends', primaryjoin=lambda: id == EC_numbers.Id_ec)
+    #les relations
     hasRefSeq = relationship("EC_numbers", secondary=association_table)
     hasPrimaire = relationship("EC_numbers", secondary=association_table)
 
@@ -54,13 +55,21 @@ Base.metadata.create_all()
 Session = sessionmaker(bind=eng)
 ses = Session()
 
+####################################################################
+"Remplissages des tables"
+####################################################################
 # ses.add(Accessions(Id=3, Access="grande bzacterie3"))
 # ses.commit()
 
 # ses.add(EC_numbers(Id_ec=3, num_ec="mechant num_ec3"))
 # ses.commit()
 
+# Relations:
+# Accessions.hasRefSeq(EC_numbers(Id_ec=3))
 
+####################################################################
+"Requete sur les Tables "
+####################################################################
 resulAcc = ses.query(Accessions).all()
 resulEc = ses.query(EC_numbers).all()
 
@@ -71,3 +80,9 @@ for laccessin in resulAcc:
 for laccessinBis in resulEc:
     print(laccessinBis.Id_ec)
     print(laccessinBis.num_ec)
+
+####################################################################
+"Requete sur les relations "
+####################################################################
+
+
