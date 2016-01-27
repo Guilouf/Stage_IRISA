@@ -21,8 +21,8 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     Access = Column(String)
 
     #hasRefSeq = relationships('Friends', primaryjoin=lambda: id == EC_numbers.Id_ec)
-    hasRefSeq = children = relationship("EC_numbers", secondary=association_table)
-    hasPrimaire = children = relationship("EC_numbers", secondary=association_table)
+    hasRefSeq = relationship("EC_numbers", secondary=association_table)
+    hasPrimaire = relationship("EC_numbers", secondary=association_table)
 
 
 class EC_numbers(Base):
@@ -30,7 +30,7 @@ class EC_numbers(Base):
     __tablename__ = "EC_numbers_tab"
 
     Id_ec = Column(Integer, primary_key=True)
-    num_ec = column(String)
+    num_ec = Column(String)
 
 """
 class RefSeq(Base):  # bug avec le base ici
@@ -54,12 +54,20 @@ Base.metadata.create_all()
 Session = sessionmaker(bind=eng)
 ses = Session()
 
-"""
-ses.add(Accessions(Id=1, Access="grande bzacterie1"))
-ses.commit()
-"""
+# ses.add(Accessions(Id=3, Access="grande bzacterie3"))
+# ses.commit()
 
-resul = ses.query(Accessions).all()
+# ses.add(EC_numbers(Id_ec=3, num_ec="mechant num_ec3"))
+# ses.commit()
 
-for laccessin in resul:
+
+resulAcc = ses.query(Accessions).all()
+resulEc = ses.query(EC_numbers).all()
+
+for laccessin in resulAcc:
+    print(laccessin.Id)
     print(laccessin.Access)
+
+for laccessinBis in resulEc:
+    print(laccessinBis.Id_ec)
+    print(laccessinBis.num_ec)
