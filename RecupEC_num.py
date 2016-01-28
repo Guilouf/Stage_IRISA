@@ -5,6 +5,7 @@ from BaseDeDonnees import BaseDDCl
 from io import StringIO
 import copy
 from itertools import tee
+import bddbis  #execute le truc à l'import
 
 """
 Installation des modules(en -user si pas root):
