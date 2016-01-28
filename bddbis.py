@@ -81,7 +81,7 @@ inst_remplissage = Remplissage()
 # inst_remplissage.ajout_access("grande bzacterie2")
 # inst_remplissage.ajout_ec("mechantNum1")
 # inst_remplissage.ajout_ec("mechantNum2")
-inst_remplissage.access_has_refeseq("grande bzacterie3", listAccessTruc)
+# inst_remplissage.access_has_refeseq("grande bzacterie3", listAccessTruc)
 
 ####################################################################
 "Requete sur les Tables "
@@ -95,22 +95,25 @@ class Requetes:
     def print_table_access(self):
         resulAcc = ses.query(Accessions).all()
         for laccessin in resulAcc:
-            print(laccessin.Id_access)
-            print(laccessin.hasRefSeq)
+            print("ID de l'accession: ", laccessin.Id_access, sep=" ")
+            for obj in laccessin.hasRefSeq:
+                print(" Id du num EC: ", obj.Id_ec, end="", sep=" ")
+            print("\n")
             pass
 
     def print_table_ecnum(self):
         resulEc = ses.query(EC_numbers).all()
         for laccessinBis in resulEc:
-            print(laccessinBis.Id_ec)
+            print("ID du num EC: ", laccessinBis.Id_ec, sep=" ")
             listobjet = laccessinBis.hasAcces
-            print(listobjet)
+            # print(listobjet)
             for obj in listobjet:
-                print(obj.Id_access)
+                print(" Id de l'access: ", obj.Id_access, end="")
+            print("\n")
             pass
 
     def print_has_refseq(self, param_accession):
-        resuRela = ses.query()
+        resuRela = ses.query()  # boh en fait c'est a moitié déjà fait
 
     # print(association_table.c.Accessions_tab_id)
 
