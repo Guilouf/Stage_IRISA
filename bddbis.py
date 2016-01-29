@@ -12,8 +12,12 @@ eng = create_engine('sqlite:///testBis.balec')
 
 Base = declarative_base()
 
-# Table d'association
-association_table = Table('association', Base.metadata,
+# Tables d'association:
+association_table_refeseq = Table('association', Base.metadata,  # renomer association+tard (mais déplace l'acces mem
+    Column('Accessions_tab_id', String, ForeignKey('Accessions_tab.Id_access')),
+    Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
+)
+association_table_primaire = Table('association_primaire', Base.metadata,
     Column('Accessions_tab_id', String, ForeignKey('Accessions_tab.Id_access')),
     Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
 )
@@ -27,8 +31,8 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     Id_access = Column(String, primary_key=True)
 
     #Les relations
-    hasRefSeq = relationship("EC_numbers", secondary=association_table, back_populates="hasAcces")
-    # hasPrimaire = relationship("EC_numbers", secondary=association_table)
+    hasRefSeq = relationship("EC_numbers", secondary=association_table_refeseq, back_populates="hasAccesByRefSeq")
+    hasPrimaire = relationship("EC_numbers", secondary=association_table_primaire, back_populates="hasAccesByPrimaire")
 
 
 class EC_numbers(Base):
@@ -36,8 +40,8 @@ class EC_numbers(Base):
     __tablename__ = "EC_numbers_tab"
 
     Id_ec = Column(String, primary_key=True)
-    hasAcces = relationship("Accessions", secondary=association_table, back_populates="hasRefSeq") # mouais, mais hasprimaire alors?
-
+    hasAccesByRefSeq = relationship("Accessions", secondary=association_table_refeseq, back_populates="hasRefSeq") # mouais, mais hasprimaire alors?
+    hasAccesByPrimaire = relationship("Accessions", secondary=association_table_primaire, back_populates="hasPrimaire")
 
 # Ne pas mettre au dessus...
 Base.metadata.bind = eng
@@ -73,15 +77,25 @@ class Remplissage:
         ses.commit()
         pass
 
+    def access_has_primaire(self, param_id_access, param_list_ec):  #bon maintenant faut essayer d'update..
+        # ses.add(Accessions(Id_access=param_id_access, hasRefSeq=param_list_ec))
+        # ses.query("grande bzacterie1").update({Accessions.hasRefSeq: param_list_ec})
+        selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).one()
+        selec.hasPrimaire += param_list_ec
+        ses.add(selec)
+        ses.commit()
+        pass
+
 
 # listAccessTruc = [EC_numbers(Id_ec="mechant num_ec10"), EC_numbers(Id_ec="mechant num_ec06")] #bon on peut pas dupliquer les nums ec ici..
-listAccessTruc = [EC_numbers(Id_ec="mechant num_ec1111"), ses.query(EC_numbers).filter(EC_numbers.Id_ec == "mechantNum2").one()]
+listAccessTruc = [EC_numbers(Id_ec="mechant num_ec11111"), ses.query(EC_numbers).filter(EC_numbers.Id_ec == "mechantNum2").one()]
 inst_remplissage = Remplissage()
 # inst_remplissage.ajout_access("grande bzacterie1")
 # inst_remplissage.ajout_access("grande bzacterie2")
 # inst_remplissage.ajout_ec("mechantNum1")
 # inst_remplissage.ajout_ec("mechantNum2")
 # inst_remplissage.access_has_refeseq("grande bzacterie3", listAccessTruc)
+# inst_remplissage.access_has_primaire("grande bzacterie3", listAccessTruc)
 
 ####################################################################
 "Requete sur les Tables "
@@ -97,7 +111,7 @@ class Requetes:
         for laccessin in resulAcc:
             print("ID de l'accession: ", laccessin.Id_access, sep=" ")
             for obj in laccessin.hasRefSeq:
-                print(" Id du num EC: ", obj.Id_ec, end="", sep=" ")
+                print(" Id du num EC de RefSeq:", obj.Id_ec, "/", end="", sep=" ")
             print("\n")
             pass
 
@@ -105,10 +119,10 @@ class Requetes:
         resulEc = ses.query(EC_numbers).all()
         for laccessinBis in resulEc:
             print("ID du num EC: ", laccessinBis.Id_ec, sep=" ")
-            listobjet = laccessinBis.hasAcces
-            # print(listobjet)
+            listobjet = set(laccessinBis.hasAccesByRefSeq + laccessinBis.hasAccesByPrimaire)
+            # ben ya plus qu'a les rendre unique...
             for obj in listobjet:
-                print(" Id de l'access: ", obj.Id_access, end="")
+                print(" Id de l'access: ", obj.Id_access, "/", end="")
             print("\n")
             pass
 

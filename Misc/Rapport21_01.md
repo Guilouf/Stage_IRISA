@@ -1,7 +1,6 @@
 #Avancement
 - Création de la base de données ORM(sqlite) avec le module python sqlalchemy
-    - Deux types de relations(voir plus pour la suite, chaque accession peut avoir un numéro ec via RefSeq ou 
-    l'annotation primaire, et bien sur chaque accesion ou numero ec est unique
+    - Un type de relation pour l'instant, pour les annotations refseq. Bien sur chaque accesion ou numero ec est unique
 - Testé la récupération des numéros ec directement via le ncbi, du créer des fichiers virtuels pour utiliser les
 données téléchargées
     
