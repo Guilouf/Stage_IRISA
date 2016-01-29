@@ -10,3 +10,10 @@ Commandes utiles:
 
 Les us et coutumes:
 - Les .balec sont dans le gitignore 
+
+
+TODO:
+- Récuprérer les réactions des vitamines
+- Faire un schéma de la bdd (analyse si)
+- Compter les numéros EC
+- Ajouter des données de qualité?
