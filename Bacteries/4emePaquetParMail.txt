@@ -1,0 +1,16 @@
+Lactococcus lactis cremoris GE214; 	WGS refseq;	NZ_AZSI00000000.1
+Lactococcus lactis lactis 511; 	WGS refseq;	NZ_JNLP00000000.1
+Lactococcus lactis lactis NCDO 2118; 	refseq_complet;	NZ_CP009054.1
+Lactobacillus plantarum 90sk; 	WGSrefseq;	NZ_JXAX01000006.1
+Lactobacillus plantarum LP91; 	WGS refseq;	NZ_AXDQ00000000.1
+Lactobacillus plantarum AG30; 	WGS refseq;	NZ_JHWA00000000.1
+
+Lactococcus lactis lactis NCDO 2118; 	refseq_complet;	NZ_CP009054.1
+Lactococcus lactis lactis JCM 7638; 	WGS;	BBAP00000000.1
+Lactobacillus plantarum NL42; 	WGS;	JZSB00000000.1
+Lactobacillus plantarum TIFN101; 	WGS;	JSUX00000000.1
+
+
+
+
+
