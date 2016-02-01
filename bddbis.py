@@ -81,7 +81,7 @@ class Remplissage:
         :return:
         """
         list_objet_ec = []
-        for ec in param_list_ec:  # parcourt la liste des strings du param
+        for ec in param_list_ec:  # parcourt la liste des strings du param, par contre parcourt les lettres si juste srt
             selec_ec = ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()
             if selec_ec is None:  # si il trouve pas l'ec
                 ses.add(EC_numbers(Id_ec=ec))
@@ -129,7 +129,7 @@ inst_remplissage = Remplissage()
 # inst_remplissage.ajout_ec("mechantNum2")
 # inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
 
-# inst_remplissage.access_has_refeseq("putainn", ["demvgbvgcdfsfdfhdghjerde","zuuuuu3uuut"])
+# inst_remplissage.access_has_refeseq("putaiDemerde", [])
 ####################################################################
 "Requete sur les Tables et les relations "
 ####################################################################
@@ -168,8 +168,8 @@ class Requetes:
 
     # print(association_table.c.Accessions_tab_id)
 
-# requetes = Requetes()  # instance de la classe requetes
-# requetes.print_table_access()
+requetes = Requetes()  # instance de la classe requetes
+requetes.print_table_access()
 # requetes.print_table_ecnum()
 """
 ok ca marche parfaitement, les [] montrent les objets qui n'ont pas de relations, pour les autres

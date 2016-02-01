@@ -74,11 +74,11 @@ class Recup_EC :
         for donne in next(gbk).features:
             if donne.type == "CDS":
                 # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
-                num_ec_from_web = donne.qualifiers.get("EC_number", None)
-                print(num_ec_from_web)
-                if num_ec_from_web is not None:
+                num_ec_from_web = donne.qualifiers.get("EC_number", None)  # bon ca doit etre une liste jimagine vu que ca marche
+                # print(num_ec_from_web)
+                if num_ec_from_web is not None:  # du coup ca ajoute jamais l'accession si ya pas de num ec associé
                     self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
-                    print("accesplacée")
+                    # print("accesplacée")
                 # le get fait une sorte d'exeption
 
     ##################################################################
@@ -89,22 +89,22 @@ class Recup_EC :
         """
         """
         for donne in gbk:  # pb de gbk vide, car déjà epuisé.
-            rangeaccess = donne.annotations["wgs"]
+            rangeaccess = donne.annotations["wgs"]  # ou wgs scaffold? il ont l'air de plus faire dériver vers des refseq
 
         def gener_access(paramrangeaccess):  # essayer de faire un foutu générateur...
             start = paramrangeaccess[0]
             stop = paramrangeaccess[1]
-            print(stop)
             locus = start[0:5]  # on rajoute le 0 qui se trouve devant le 1
             nombre_sta = int(start[5:12])  # on garde le 1 du début pour que ca affiche les 0 tout en étant un int
             nombre_sto = int(stop[5:12])
+            print(stop)
             print(locus)
             print(nombre_sta)
             print(nombre_sto)
 
             for nombre in range(nombre_sta, nombre_sto + 1, 1):
                 sortie = locus + str(nombre)
-                print(locus + str(nombre))
+                # print(locus + str(nombre))
                 yield sortie
 
         return gener_access(rangeaccess)
@@ -142,13 +142,14 @@ if __name__ == "__main__":
             print("master")
             for accessBis in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
                 gbkprot = recu.telecharge(accessBis)
-                recu.recup_ec(gbkprot, access) # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
+                recu.recup_ec(gbkprot, access)  # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
 
         gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
 
 
     with open('exemple/ListeAccess', mode='r') as listaccess:
         for numacc in listaccess:  # itère la liste des accessions à regarder
+            # print("le num d'acc qui ne s'affiche aps", numacc)
             traitement(numacc)  # gaffe aux espaces à la fin du doc..
 
 
