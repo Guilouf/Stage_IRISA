@@ -17,7 +17,7 @@ Memmo:
 
 TODO:
 - Faire un nouveau delivery sur micro => OK!
-- Regarder l'API de uniprot
+- Regarder l'API de uniprot (ou metacyc?)
 - Récuprérer les réactions des vitamines
 - Faire un schéma de la bdd (analyse & ci)
 - Compter les numéros EC
