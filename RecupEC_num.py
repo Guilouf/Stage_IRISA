@@ -25,7 +25,7 @@ class Recup_EC :
 
         :return:
         """
-        Entrez.email = "ouiouioui@wanadoo.fr"  # necessaire pour se connecte à Entrez..
+        Entrez.email = "ouiou@wanadoo.fr"  # necessaire pour se connecte à Entrez..
 
         self.inst_rempl = bddbis.Remplissage()
 

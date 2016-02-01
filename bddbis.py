@@ -74,21 +74,31 @@ class Remplissage:
         ses.commit()
 
     def access_has_refeseq(self, param_id_access, param_list_ec):  #faudra test les exeptions aussi qd mm  §§§§CORRIGER LE TYPO!!!!
+        """
+
+        :param param_id_access:
+        :param param_list_ec: c'est quand on change les numéros de la liste que ca bug, ca les ajoute mais trop tard..
+        :return:
+        """
         list_objet_ec = []
         for ec in param_list_ec:  # parcourt la liste des strings du param
             selec_ec = ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()
             if selec_ec is None:  # si il trouve pas l'ec
                 ses.add(EC_numbers(Id_ec=ec))
-                ses.flush()
-            ses.commit()
-            list_objet_ec.append(selec_ec)
+                ses.commit
+                list_objet_ec.append(ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()) # je reapelle la rech
+            else:
+                list_objet_ec.append(selec_ec)
+
 
 
         selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()  # pour l'accession
         if selec is None:  # dans ce cas on crée l'accession
             ses.add(Accessions(Id_access=param_id_access))
+            ses.commit()
             selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()
 
+        ses.flush()
         selec.hasRefSeq += list_objet_ec
         ses.add(selec)
         ses.flush()
@@ -119,7 +129,7 @@ inst_remplissage = Remplissage()
 # inst_remplissage.ajout_ec("mechantNum2")
 # inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
 
-# inst_remplissage.access_has_refeseq("putain", ["demerde","zut"])
+# inst_remplissage.access_has_refeseq("putainn", ["demvgbvgcdfsfdfhdghjerde","zuuuuu3uuut"])
 ####################################################################
 "Requete sur les Tables et les relations "
 ####################################################################

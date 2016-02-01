@@ -12,11 +12,13 @@ Commandes utiles:
 Les us et coutumes:
 - Les .balec sont dans le gitignore 
 
+Memmo:
+- http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ =>le site de merde qui bug...
 
 TODO:
 - Faire un nouveau delivery sur micro => OK!
 - Regarder l'API de uniprot
 - Récuprérer les réactions des vitamines
-- Faire un schéma de la bdd (analyse si)
+- Faire un schéma de la bdd (analyse & ci)
 - Compter les numéros EC
 - Ajouter des données de qualité?
