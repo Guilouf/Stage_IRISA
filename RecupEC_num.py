@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from Bio import Entrez, SeqIO
 from Bio.SeqRecord import SeqRecord
-from BaseDeDonnees import BaseDDCl
 from io import StringIO
 import copy
 from itertools import tee
@@ -26,7 +25,9 @@ class Recup_EC :
 
         :return:
         """
-        Entrez.email = "ouiouioui@wanadoo.fr"
+        Entrez.email = "ouiouioui@wanadoo.fr"  # necessaire pour se connecte à Entrez..
+
+        self.inst_rempl = bddbis.Remplissage()
 
     def telecharge(self, accession):
 
@@ -47,11 +48,10 @@ class Recup_EC :
         vaut mieux detecter l'absence de cds dans les features.
 
         :param gbk: Le fichier genbank parsé
-        :return: true si c'est le complet, false si master
+        :return: true si c'est le complet, false si master, puis le numéro d'accession , meme si il est déjà dans le fichier..
         """
 
         for donne in gbk:
-            # print(donne.annotations)  # d'ou vient ce bout de sequence??
             if "wgs" in donne.annotations:
                 return False
 
@@ -63,16 +63,22 @@ class Recup_EC :
     "Partie recup numeroEC à partir d'un genbank complet (NZ_CP009472.1)"
     ######################################################################
 
-    def recup_ec(self, gbk):
+    def recup_ec(self, gbk, num_access):
         """
 
         :param gbk: Le fichier genbank dejà parsé
+        :param num_access: le numero d'accession, qui vient de la liste d'accessions fournie
         :return:
         """
 
-        for donne in next(gbk).features:  # bug ici...
+        for donne in next(gbk).features:
             if donne.type == "CDS":
-                print(donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"])))
+                # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
+                num_ec_from_web = donne.qualifiers.get("EC_number", None)
+                print(num_ec_from_web)
+                if num_ec_from_web is not None:
+                    self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
+                    print("accesplacée")
                 # le get fait une sorte d'exeption
 
     ##################################################################
@@ -127,25 +133,29 @@ if __name__ == "__main__":
 
         test_parse, gbk_gener = tee(gbk)  # ok, tee de itertools permet de creer plusieur gener
 
-        if recu.detection(test_parse):
-            print("complet")  # c'est faux...
-            recu.recup_ec(gbk_gener)  # ici itérer avec le second generateur cree par tee
+        if recu.detection(test_parse):  # faut que testparse renvoi aussi l'accession
+            print("complet")
+            print(access)  # c'est bien un str
+            recu.recup_ec(gbk_gener, access)  # ici itérer avec le second generateur cree par tee
 
         else:
             print("master")
             for accessBis in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
                 gbkprot = recu.telecharge(accessBis)
-                recu.recup_ec(gbkprot) # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
+                recu.recup_ec(gbkprot, access) # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
 
         gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
+
 
     with open('exemple/ListeAccess', mode='r') as listaccess:
         for numacc in listaccess:  # itère la liste des accessions à regarder
             traitement(numacc)  # gaffe aux espaces à la fin du doc..
 
 
+# instantiation des classes de bbdbis pr test
 """
-    bdd = BaseDDCl()
-    bdd.test()
-    bdd.construction()
+inst_req = bddbis.Requetes()
+inst_req.print_table_access()
+
+inst_remp = bddbis.Remplissage()
 """

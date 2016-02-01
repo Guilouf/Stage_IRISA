@@ -59,28 +59,47 @@ class Remplissage:
     def __init__(self):
         pass
 
-    def ajout_access(self, param_access):
-        ses.add(Accessions(Id_access=param_access))
-        ses.commit()
-        print("ajout_access fait!")
-
-    def ajout_ec(self, param_num_ec):
-        ses.add(EC_numbers(Id_ec=param_num_ec))
+    def ajout_access(self, param_access): #gérer les doublons: plutot utiliser first car ne renvoit pas d''exeptions mais None
+        if ses.query(Accessions).filter(Accessions.Id_access == param_access).first() is None :
+            ses.add(Accessions(Id_access=param_access))
+        else:
+            print("t'as essayé de faire un doublon!")
         ses.commit()
 
-    def access_has_refeseq(self, param_id_access, param_list_ec):  #bon maintenant faut essayer d'update..
-        # ses.add(Accessions(Id_access=param_id_access, hasRefSeq=param_list_ec))
-        # ses.query("grande bzacterie1").update({Accessions.hasRefSeq: param_list_ec})
-        selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).one()
-        selec.hasRefSeq += param_list_ec
+    def ajout_ec(self, param_num_ec): # bon théoriquement ca devrait jamais arriver si c'est bien fait
+        if ses.query(EC_numbers).filter(EC_numbers.Id_ec == param_num_ec).first() is None :
+            ses.add(EC_numbers(Id_ec=param_num_ec))
+        else:
+            print("t'as essayé de faire un doublon!")
+        ses.commit()
+
+    def access_has_refeseq(self, param_id_access, param_list_ec):  #faudra test les exeptions aussi qd mm  §§§§CORRIGER LE TYPO!!!!
+        list_objet_ec = []
+        for ec in param_list_ec:  # parcourt la liste des strings du param
+            selec_ec = ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()
+            if selec_ec is None:  # si il trouve pas l'ec
+                ses.add(EC_numbers(Id_ec=ec))
+                ses.flush()
+            ses.commit()
+            list_objet_ec.append(selec_ec)
+
+
+        selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()  # pour l'accession
+        if selec is None:  # dans ce cas on crée l'accession
+            ses.add(Accessions(Id_access=param_id_access))
+            selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()
+
+        selec.hasRefSeq += list_objet_ec
         ses.add(selec)
+        ses.flush()
         ses.commit()
         pass
 
     def access_has_primaire(self, param_id_access, param_list_ec):  #bon maintenant faut essayer d'update..
-        # ses.add(Accessions(Id_access=param_id_access, hasRefSeq=param_list_ec))
-        # ses.query("grande bzacterie1").update({Accessions.hasRefSeq: param_list_ec})
-        selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).one()
+        selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()
+        if selec is None:
+            ses.add(Accessions(Id_access=param_id_access))
+            selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()
         selec.hasPrimaire += param_list_ec
         ses.add(selec)
         ses.commit()
@@ -88,25 +107,31 @@ class Remplissage:
 
 
 # listAccessTruc = [EC_numbers(Id_ec="mechant num_ec10"), EC_numbers(Id_ec="mechant num_ec06")] #bon on peut pas dupliquer les nums ec ici..
-listAccessTruc = [EC_numbers(Id_ec="mechant num_ec11111"), ses.query(EC_numbers).filter(EC_numbers.Id_ec == "mechantNum2").one()]
+
+# listAccessTruc = [EC_numbers(Id_ec="mechant num_ec11111111"), ses.query(EC_numbers).filter(EC_numbers.Id_ec == "mechantNum2").one()]
+
+listAccessTruc = ["stringEC3", "stringEC4"]
+
 inst_remplissage = Remplissage()
 # inst_remplissage.ajout_access("grande bzacterie1")
 # inst_remplissage.ajout_access("grande bzacterie2")
 # inst_remplissage.ajout_ec("mechantNum1")
 # inst_remplissage.ajout_ec("mechantNum2")
-# inst_remplissage.access_has_refeseq("grande bzacterie3", listAccessTruc)
-# inst_remplissage.access_has_primaire("grande bzacterie3", listAccessTruc)
+# inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
 
+# inst_remplissage.access_has_refeseq("putain", ["demerde","zut"])
 ####################################################################
-"Requete sur les Tables "
+"Requete sur les Tables et les relations "
 ####################################################################
+
 
 class Requetes:
 
     def __init__(self):
         pass
 
-    def print_table_access(self):
+    @staticmethod
+    def print_table_access():
         resulAcc = ses.query(Accessions).all()
         for laccessin in resulAcc:
             print("ID de l'accession: ", laccessin.Id_access, sep=" ")
@@ -115,7 +140,8 @@ class Requetes:
             print("\n")
             pass
 
-    def print_table_ecnum(self):
+    @staticmethod
+    def print_table_ecnum():
         resulEc = ses.query(EC_numbers).all()
         for laccessinBis in resulEc:
             print("ID du num EC: ", laccessinBis.Id_ec, sep=" ")
@@ -126,22 +152,19 @@ class Requetes:
             print("\n")
             pass
 
+    @staticmethod
     def print_has_refseq(self, param_accession):
         resuRela = ses.query()  # boh en fait c'est a moitié déjà fait
 
     # print(association_table.c.Accessions_tab_id)
 
-requetes = Requetes()  # instance de la classe requetes
-requetes.print_table_access()
-requetes.print_table_ecnum()
+# requetes = Requetes()  # instance de la classe requetes
+# requetes.print_table_access()
+# requetes.print_table_ecnum()
 """
 ok ca marche parfaitement, les [] montrent les objets qui n'ont pas de relations, pour les autres
 ca imprime entre [] les reférences des objets qu'il y a dans les relations. En plus c'est bien asymétrique
-Plus qu'a trouver le moyen de faire des updates..
 """
 
-####################################################################
-"Requete sur les relations "
-####################################################################
 
 
