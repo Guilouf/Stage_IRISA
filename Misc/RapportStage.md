@@ -13,6 +13,16 @@ réaction
 - Les identifiants uniprot: Ils sont uniques pour chaque protéines, et vont de à 10 caractères alphanumériques. 
 Cependant, une entrée de Uniprot peut avoir plusieurs numéros d'accession, notament à cause de fusions ou de séparation, 
 les anciens numéros d'accession sont conservés.
+
+###Les bases de données et leur relations avec ces informations:
+- Metacyc: On peut effectuer une recherche à partir:
+    - Des numéros ec
+    - Les noms des composants, gènes, protéine ou pathway
+    - Un identifiant PGDB (PAS human protate database..), mais pathway genome database, interne aux site biocyc
+        - disonible en SBML
+    - Des identifiants d'autres bdd(uniprot, ncbi), mais ce n'est pas toujours complet
+    - Le locus id de biocyc
+- Bdd sql pour interoger plusieurs bdd bio: http://biowarehouse.ai.sri.com/PublicHouseOverview.html
     
 
 ##Base de données

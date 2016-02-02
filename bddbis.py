@@ -22,6 +22,10 @@ association_table_primaire = Table('association_primaire', Base.metadata,
     Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
 )
 
+####################################################################
+"Objets de la BDD"
+####################################################################
+
 
 class Accessions(Base):  # le truc (Base) c'est l'héritage
 
@@ -59,19 +63,17 @@ class Remplissage:
     def __init__(self):
         pass
 
-    def ajout_access(self, param_access): #gérer les doublons: plutot utiliser first car ne renvoit pas d''exeptions mais None
-        if ses.query(Accessions).filter(Accessions.Id_access == param_access).first() is None :
+    @staticmethod
+    def ajout_access(param_access): #gérer les doublons: plutot utiliser first car ne renvoit pas d''exeptions mais None
+        if ses.query(Accessions).filter(Accessions.Id_access == param_access).first() is None:
             ses.add(Accessions(Id_access=param_access))
-        else:
-            print("t'as essayé de faire un doublon!")
-        ses.commit()
+            ses.commit()
 
-    def ajout_ec(self, param_num_ec): # bon théoriquement ca devrait jamais arriver si c'est bien fait
-        if ses.query(EC_numbers).filter(EC_numbers.Id_ec == param_num_ec).first() is None :
+    @staticmethod
+    def ajout_ec(param_num_ec): # bon théoriquement ca devrait jamais arriver si c'est bien fait
+        if ses.query(EC_numbers).filter(EC_numbers.Id_ec == param_num_ec).first() is None:
             ses.add(EC_numbers(Id_ec=param_num_ec))
-        else:
-            print("t'as essayé de faire un doublon!")
-        ses.commit()
+            ses.commit()
 
     def access_has_refeseq(self, param_id_access, param_list_ec):  #faudra test les exeptions aussi qd mm  §§§§CORRIGER LE TYPO!!!!
         """
@@ -82,55 +84,53 @@ class Remplissage:
         """
         list_objet_ec = []
         for ec in param_list_ec:  # parcourt la liste des strings du param, par contre parcourt les lettres si juste srt
+            Remplissage.ajout_ec(ec)  #guette si le truc est déjà la ou non
             selec_ec = ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()
-            if selec_ec is None:  # si il trouve pas l'ec
-                ses.add(EC_numbers(Id_ec=ec))
-                ses.commit
-                list_objet_ec.append(ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()) # je reapelle la rech
-            else:
-                list_objet_ec.append(selec_ec)
+            list_objet_ec.append(selec_ec)
 
-
-
+        Remplissage.ajout_access(param_id_access)  #test et ajoute si c pas déjà là
         selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()  # pour l'accession
-        if selec is None:  # dans ce cas on crée l'accession
-            ses.add(Accessions(Id_access=param_id_access))
-            ses.commit()
-            selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()
 
-        ses.flush()
         selec.hasRefSeq += list_objet_ec
         ses.add(selec)
-        ses.flush()
+        ses.flush()  #pas forcement utile..
         ses.commit()
-        pass
 
-    def access_has_primaire(self, param_id_access, param_list_ec):  #bon maintenant faut essayer d'update..
-        selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()
-        if selec is None:
-            ses.add(Accessions(Id_access=param_id_access))
-            selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()
-        selec.hasPrimaire += param_list_ec
+    def access_has_primaire(self, param_id_access, param_list_ec):
+        """
+
+        :param param_id_access:
+        :param param_list_ec:
+        :return:
+        """
+        list_objet_ec = []
+        for ec in param_list_ec:  # parcourt la liste des strings du param, par contre parcourt les lettres si juste srt
+            Remplissage.ajout_ec(ec)  #guette si le truc est déjà la ou non
+            selec_ec = ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()
+            list_objet_ec.append(selec_ec)
+
+        Remplissage.ajout_access(param_id_access)  #test et ajoute si c pas déjà là
+        selec = ses.query(Accessions).filter(Accessions.Id_access == param_id_access).first()  # pour l'accession
+
+        selec.hasPrimaire += list_objet_ec  # la seule ligne qui change entre les fct
         ses.add(selec)
         ses.commit()
-        pass
 
 
-# listAccessTruc = [EC_numbers(Id_ec="mechant num_ec10"), EC_numbers(Id_ec="mechant num_ec06")] #bon on peut pas dupliquer les nums ec ici..
-
-# listAccessTruc = [EC_numbers(Id_ec="mechant num_ec11111111"), ses.query(EC_numbers).filter(EC_numbers.Id_ec == "mechantNum2").one()]
+####################################################################
+"Test de remplissage"
+####################################################################
 
 listAccessTruc = ["stringEC3", "stringEC4"]
 
 inst_remplissage = Remplissage()
 # inst_remplissage.ajout_access("grande bzacterie1")
-# inst_remplissage.ajout_access("grande bzacterie2")
-# inst_remplissage.ajout_ec("mechantNum1")
 # inst_remplissage.ajout_ec("mechantNum2")
-# inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
+inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
 
-# inst_remplissage.access_has_refeseq("putaiDemerde", [])
-####################################################################
+inst_remplissage.access_has_refeseq("acc1", ["2"])
+inst_remplissage.access_has_primaire("acc2", ["3"])
+###################################################################
 "Requete sur les Tables et les relations "
 ####################################################################
 
@@ -147,6 +147,9 @@ class Requetes:
             print("ID de l'accession: ", laccessin.Id_access, sep=" ")
             for obj in laccessin.hasRefSeq:
                 print(" Id du num EC de RefSeq:", obj.Id_ec, "/", end="", sep=" ")
+            print("\n")
+            for obj in laccessin.hasPrimaire:
+                print(" Id du num EC de Primaire:", obj.Id_ec, "/", end="", sep=" ")
             print("\n")
             pass
 
@@ -168,13 +171,9 @@ class Requetes:
 
     # print(association_table.c.Accessions_tab_id)
 
-requetes = Requetes()  # instance de la classe requetes
-requetes.print_table_access()
+# requetes = Requetes()  # instance de la classe requetes
+# requetes.print_table_access()
 # requetes.print_table_ecnum()
-"""
-ok ca marche parfaitement, les [] montrent les objets qui n'ont pas de relations, pour les autres
-ca imprime entre [] les reférences des objets qu'il y a dans les relations. En plus c'est bien asymétrique
-"""
 
 
 
