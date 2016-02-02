@@ -22,6 +22,7 @@ Scripts et BDD sur la reconstruction des metagénomes
 - Faire un schéma de la bdd (analyse si)
 - Compter les numéros EC
 - Ajouter des données de qualité?
+- Ajouter une relation pour dire qu'une protéine appartient au voies de synthèse des vitamines
 
 #Cheat markdown:
 - _italic_

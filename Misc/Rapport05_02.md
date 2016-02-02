@@ -1,9 +1,9 @@
 #Avancement
-- Base de données totalement fonctionelle (verifier pour le primaire
+- Base de données totalement fonctionelle (verifier pour le primaire!!!!!!!
     - Montrer le schéma
 - Script de récupération des annotations permet de:
     - Recupérer les annotations refseq des génomes complets: si c'est pas refseq mettre en primaire ou ds autres
-
+    - Récuperer en même temps les annotations primaires dans les refseq!!!!!
 
 
 #A faire:
@@ -11,6 +11,9 @@
 
 - Souche de reférence d'experience: b21 NZ_CP010528.1
     - Regarder uniprot: 4 protéines trouvées au total /!\ faire attention aux bouts de génomes,etre sur uniprotkb
+        - col gene ontolgy biolo process, CIRM BIA1 très bien annotée effectivement
+        - col kegg (genome annotation), pas souvent de crossref finalement
+        - col pathway (function)
     - Regarder kegg: metabolism of cofactor and vitamins; b6 =>> 5 vitamines trouvées
     - Regarder metacyc: 
     - Regarder la bdd Brenda: marche bien, mais donne que le num ec et le nom recommendé

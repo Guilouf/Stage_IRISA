@@ -1,0 +1,39 @@
+Bonjour à tous les deux,
+Depuis la dernière réunion j'ai continué comme convenu le travail sur la bdd, voici le schéma en pièce jointe.
+Elle est désormais opérationnelle, ainsi que le script de récupération des numéros ec via le NCBI: les numeros ec,
+qu'ils proviennent d'une séquence complète ou wgs sont enregistrés dans la base de donnée, classés comme provenant d'une
+annotation primaire ou refseq //!\\ RECUPERATION DES PRIMAIREs
+Je pourrais peut être la modifier pour définir les numeros ec qui sont en lien avec la production de protéines
+Des statistiques sommaires sur la base de données sont également en pièce jointes.
+J'ai aussi ajouté d'autres génomes draft sur MicroScope, et commencé, très légèrement le rapport en y ajoutant des
+informations sur les différents numéros d'accession potentiellement rencontrés.
+
+Maintenant, tout ce qui concerne les protéines est pour moi assez nouveau et confus, et j'avoue avoir un peu de mal
+à récuperer les numéros ec qui sont associés à un organisme et une voie métabolique particulière, celle des vitamines,
+j'ai passé pas mal de temps dessus dernièrement sans grand résultats:
+
+- UniprotKB, qui a de ce que j'ai vu la meilleure interface et api, ne possède pas toujours de cross reference avec des
+numeros ec ou vers KEGG/metacyc. Ne sachant pas comment selectionner certaines voies métaboliques, je passe par les go
+terms, et à part chez les espèces modèles il n'y a pas de résultats pour nos bactéries en ce qui concerne la vitamine b6
+
+
+- Je n'ai pour l'instant rien compris de metacyc, enfin si j'ai reussi à trouver un numéro ec pour toutes les
+Lactococcus lactis (uniprot trouve en 10, pour le même ec et 67000 proteines pour lactococcus lactis..)
+    - Je ne trouve aucun lien pour télécharger quoique ce soit, ou alors il faut télécharger des logiciels
+    - Peut être qu'en ayant accès à la version anterieure enregistrée à l'INRIA j'arriverais à trouver mon bonheur
+
+- Sur KEGG j'arrive à trouver les métabolites en fonction de l'organisme ou des voies métaboliques, et même télécharger
+un fichier xml "KGML" qui contient l'ensemble des métabolites de la voie, avec ceux qui sont présents dans l'organisme
+selectionné différentiés avec un code couleur HTML, sauf que le numéro ec n'est pas présent dans le fichier, il y a
+à la place un numéro de "composant", numero de composant qui n'est pas accessible directement depuis la page du numéro
+ec, mais heuresement le numéro ec est accessible depuis la page du composant.
+De plus il faut un logiciel pour convertir les voies métaboliques vers un fichier sbml.
+
+- Brenda lance plutot de bonnes recherches, sauf que la recherche avancée bug (ou une fonctionnalité que je n'ai pas
+ bien saisie, mais..)
+
+- expasy!!!!!!!
+- prosite!!
+
+Désolé pour la longeur du message, il m'a servit en même temps de bloc note et jue préfert être exaustif plutot que
+manquer de transmettre certaines informations.

@@ -24,6 +24,7 @@ de mon unité centrale)
 
 #Options sympas:
 - Editeur divisible
+- Option plein ecran, avec un affichage de l'heure!
 - Création de snippets
 - Intégration de git, possibilité de push pull commit etc avec visualisation des changements
 - Plugin pour visualiser les markdown
