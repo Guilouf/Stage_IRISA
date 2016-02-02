@@ -22,6 +22,9 @@ les anciens numéros d'accession sont conservés.
         - disonible en SBML
     - Des identifiants d'autres bdd(uniprot, ncbi), mais ce n'est pas toujours complet
     - Le locus id de biocyc
+    
+- Uniprot: 
+    - 
 - Bdd sql pour interoger plusieurs bdd bio: http://biowarehouse.ai.sri.com/PublicHouseOverview.html
     
 

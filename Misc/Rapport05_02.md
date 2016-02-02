@@ -7,13 +7,13 @@
 
 
 #A faire:
-- Commencer le rapport
+- Commencer le rapport, décrit les formats d'accessions
 
 - Souche de reférence d'experience: b21 NZ_CP010528.1
-    - Regarder uniprot: 4 protéines trouvées au total /!\ faire attention aux bouts de génomes..
+    - Regarder uniprot: 4 protéines trouvées au total /!\ faire attention aux bouts de génomes,etre sur uniprotkb
     - Regarder kegg: metabolism of cofactor and vitamins; b6 =>> 5 vitamines trouvées
     - Regarder metacyc: 
-    - Regarder la bdd Brenda
+    - Regarder la bdd Brenda: marche bien, mais donne que le num ec et le nom recommendé
     
 - Récupérer les accessions primaires!!!!
 - Mettre les annotations non refseq dans d'autres catégories=>>ben en primaire du coup, donc fait!
