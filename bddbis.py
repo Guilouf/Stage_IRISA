@@ -39,7 +39,7 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     hasPrimaire = relationship("EC_numbers", secondary=association_table_primaire, back_populates="hasAccesByPrimaire")
 
 
-class EC_numbers(Base):
+class EC_numbers(Base):  # mettre en camelCase
 
     __tablename__ = "EC_numbers_tab"
 
@@ -126,10 +126,10 @@ listAccessTruc = ["stringEC3", "stringEC4"]
 inst_remplissage = Remplissage()
 # inst_remplissage.ajout_access("grande bzacterie1")
 # inst_remplissage.ajout_ec("mechantNum2")
-inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
-
-inst_remplissage.access_has_refeseq("acc1", ["2"])
-inst_remplissage.access_has_primaire("acc2", ["3"])
+# inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
+#
+# inst_remplissage.access_has_refeseq("acc1", ["2"])
+# inst_remplissage.access_has_primaire("acc2", ["3"])
 ###################################################################
 "Requete sur les Tables et les relations "
 ####################################################################
@@ -171,9 +171,9 @@ class Requetes:
 
     # print(association_table.c.Accessions_tab_id)
 
-# requetes = Requetes()  # instance de la classe requetes
-# requetes.print_table_access()
-# requetes.print_table_ecnum()
+requetes = Requetes()  # instance de la classe requetes
+requetes.print_table_access()
+requetes.print_table_ecnum()
 
 
 

@@ -32,8 +32,9 @@ De plus il faut un logiciel pour convertir les voies métaboliques vers un fichi
 - Brenda lance plutot de bonnes recherches, sauf que la recherche avancée bug (ou une fonctionnalité que je n'ai pas
  bien saisie, mais..)
 
-- expasy!!!!!!!
-- prosite!!
+- expasy: moteur de recherche à travers différentes bases de données
+- enzyme: les numeros ec y sont, et il y a des liens vers Uniprot
+- prosite: pour les motifs, osef
 
 Désolé pour la longeur du message, il m'a servit en même temps de bloc note et jue préfert être exaustif plutot que
 manquer de transmettre certaines informations.

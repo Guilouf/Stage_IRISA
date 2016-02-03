@@ -16,9 +16,6 @@ Questions:
 - try exepect stop iteration pour le generateur
 
 Révélations: le générateur est composé d'un record, donc renovyer juste un next serait pas mal
-
-
-
 """
 class Recup_EC :
     ##################################################################
@@ -56,11 +53,20 @@ class Recup_EC :
         :return: true si c'est le complet, false si master, puis le numéro d'accession , meme si il est déjà dans le fichier..
         """
 
-        for cle in gbk.annotations:
-            if cle == "wgs":
-                return False
+        comm = gbk.annotations["comment"]  # com est un string
+        """
+        print(comm[0:18])  # REFSEQ INFORMATION pour tester si ya un primaire
+        print(comm[60:68])  # le numero d'accession de l'annot primaire
+        """
+        access_prim = None
+        if comm[0:18] == "REFSEQ INFORMATION":
+            access_prim = comm[60:68]
 
-        return True
+        for cle in gbk.annotations:  # permet de tester si le fichier est un master record
+            if cle == "wgs":
+                return False, access_prim
+
+        return True, access_prim
 
 
 
@@ -77,13 +83,11 @@ class Recup_EC :
         :param num_access: le numero d'accession, qui vient de la liste d'accessions fournie
         :return:
         """
-        refseq = False
 
-        list_str_motcle = gbk.annotations["keywords"]
-        for motcle in list_str_motcle:
+        refseq = False
+        for motcle in gbk.annotations["keywords"]:
             if motcle == "RefSeq":
                 refseq = True
-
 
         for donne in gbk.features:
             if donne.type == "CDS":
@@ -141,10 +145,15 @@ if __name__ == "__main__":
         test_parse = gbk
         gbk_gener = gbk
 
-        if recu.detection(test_parse):  # faut que testparse renvoi aussi le type d'annotations
+        detection = recu.detection(test_parse)
+
+        if detection[0]:  # faut que testparse renvoi aussi le type d'annotations
             print("complet")
             print(access)  # c'est bien un str
-            recu.recup_ec(gbk_gener, access)  # ici itérer avec le second generateur cree par tee
+            recu.recup_ec(gbk_gener, access)
+            if detection[1] is not None:
+                gbk_prot = recu.telecharge(detection[1])
+                recu.recup_ec(gbk_prot, access)  # je laisse le num ec refseq
 
         else:
             print("master")

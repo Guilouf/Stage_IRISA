@@ -5,6 +5,11 @@
     - Recupérer les annotations refseq des génomes complets: si c'est pas refseq mettre en primaire ou ds autres
     - Récuperer en même temps les annotations primaires dans les refseq!!!!!
 
+- Parlé à Clemence Frioux, pour la récupération des voies métaboliques associées à la synthèse de vitamines chez les 
+souches modèles
+    - J'ai donc un accès pour télécharger des fichiers pour certaines bactéries....!!
+    - Metacyc 18.5 en local     
+
 
 #A faire:
 - Commencer le rapport, décrit les formats d'accessions
