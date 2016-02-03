@@ -123,7 +123,7 @@ class Remplissage:
 
 listAccessTruc = ["stringEC3", "stringEC4"]
 
-inst_remplissage = Remplissage()
+# inst_remplissage = Remplissage()
 # inst_remplissage.ajout_access("grande bzacterie1")
 # inst_remplissage.ajout_ec("mechantNum2")
 # inst_remplissage.access_has_refeseq("grande bzacterie", listAccessTruc)
@@ -166,14 +166,37 @@ class Requetes:
             pass
 
     @staticmethod
+    def statistiques_par_access():
+        resulAcc = ses.query(Accessions).all()
+        total_ec_refseq = 0
+        total_ec_primaire = 0
+        for i, acc in enumerate(resulAcc):
+            list_ec_refseq = acc.hasRefSeq
+            for j, ec in enumerate(list_ec_refseq):
+                pass
+            print("nb d'ec refseq de l'access: ", j)
+            total_ec_refseq += j
+
+            list_ec_primaire = acc.hasPrimaire
+            for numP, ecc in enumerate(list_ec_primaire):
+                pass
+            print("nb d'ec primaire de l'access: ", numP)
+            total_ec_primaire += numP
+            pass
+        print("Nombre de access: ", i)
+        print("Nombre de ec refseq: ", total_ec_refseq)
+        print("Nombre de ec primaire: ", total_ec_primaire)
+
+    @staticmethod
     def print_has_refseq(self, param_accession):
         resuRela = ses.query()  # boh en fait c'est a moitié déjà fait
 
     # print(association_table.c.Accessions_tab_id)
 
 requetes = Requetes()  # instance de la classe requetes
-requetes.print_table_access()
-requetes.print_table_ecnum()
+requetes.statistiques_par_access()
+# requetes.print_table_access()
+# requetes.print_table_ecnum()
 
 
 

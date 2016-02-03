@@ -54,6 +54,7 @@ class Recup_EC :
         """
 
         comm = gbk.annotations["comment"]  # com est un string
+        # /!\/!\/!\ ya une key error, comme par enchantement sur la souche de l'inra
         """
         print(comm[0:18])  # REFSEQ INFORMATION pour tester si ya un primaire
         print(comm[60:68])  # le numero d'accession de l'annot primaire
@@ -96,10 +97,10 @@ class Recup_EC :
                 # print(num_ec_from_web)
                 if num_ec_from_web is not None and refseq:  # du coup ca ajoute jamais l'accession si ya pas de num ec associé
                     self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
-                    print("accesplacée")
+                    # print("accesplacée")
                 elif num_ec_from_web is not None:
                     self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
-                    print("primairePlacée")
+                    # print("primairePlacée")
 
     ##################################################################
     "Partie recup des accessions à partir d'un master record (NZ_AZSI00000000)"

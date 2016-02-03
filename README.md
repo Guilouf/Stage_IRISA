@@ -16,7 +16,6 @@ Scripts et BDD sur la reconstruction des metagénomes
 - http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ =>le site de merde qui bug...
 
 #TODO:
-- Faire un nouveau delivery sur micro => OK!
 - Regarder l'API de uniprot (ou metacyc?)
 - Récuprérer les réactions des vitamines
 - Faire un schéma de la bdd (analyse si)

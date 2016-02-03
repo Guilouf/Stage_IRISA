@@ -1,10 +1,15 @@
 Bonjour à tous les deux,
 Depuis la dernière réunion j'ai continué comme convenu le travail sur la bdd, voici le schéma en pièce jointe.
+(la description est fidèle à la base de donnée, mais dans les faits un numéro ec aura une relation [1,N] car le script
+n'entre pas de numéros ec sans accession attribuée)
 Elle est désormais opérationnelle, ainsi que le script de récupération des numéros ec via le NCBI: les numeros ec,
-qu'ils proviennent d'une séquence complète ou wgs sont enregistrés dans la base de donnée, classés comme provenant d'une
-annotation primaire ou refseq //!\\ RECUPERATION DES PRIMAIREs
+qu'ils proviennent d'une séquence complète ou wgs sont enregistrés dans la base de donnée, sont classés comme provenant
+d'une annotation primaire ou refseq, et lorsque qu'il y a les deux types d'annotation disponible, la récupération des
+annotations primaires et refseq.
 Je pourrais peut être la modifier pour définir les numeros ec qui sont en lien avec la production de protéines
-Des statistiques sommaires sur la base de données sont également en pièce jointes.
+Des statistiques sommaires sur la base de données sont également disponibles en pièce jointes.
+(Il y a une erreur pour la souche CIRM-BIA1 car elle ne dispose pas de champ "comment", je reglerais ca demain
+A part celle ci, toutes les souches avec génome complet qui sont disponibles sur le NCBI ont été traitées)
 J'ai aussi ajouté d'autres génomes draft sur MicroScope, et commencé, très légèrement le rapport en y ajoutant des
 informations sur les différents numéros d'accession potentiellement rencontrés.
 
@@ -12,29 +17,39 @@ Maintenant, tout ce qui concerne les protéines est pour moi assez nouveau et co
 à récuperer les numéros ec qui sont associés à un organisme et une voie métabolique particulière, celle des vitamines,
 j'ai passé pas mal de temps dessus dernièrement sans grand résultats:
 
+- J'ai vu Marie et Clemence, qui m'on donné une version téléchargée de Metacyc (18.5), sauf que ce n'est pas vraiment
+une base de donnée mais une collection d'une cinquantaine de fichiers texte, qu'elles m'ont conseillé de parser avec
+des scripts bash ou python, ce qui n'est pas vraiment pratique et demandera encore du temps à mettre au point.
+L'autre solution est un logiciel de MetaCyc, pathway tools, j'ai fait un ticket pour qu'il soit installé sur mon
+ordinateur, probablement demain.
+Je dispose aussi d'identifiants pour me connecter à différentes parties de metacyc.
+
+- Concernant la partie en ligne de metacyc, elle est diffcilement utilisable sans le logiciel associé, et la recherche
+ne me retourne qu'un numéro ec pour toutes les lactococcus lactis (il y en a beaucoup plus sur metacyc, mais je n'arrive
+pas à les retrouver par ce biais là)
+
 - UniprotKB, qui a de ce que j'ai vu la meilleure interface et api, ne possède pas toujours de cross reference avec des
 numeros ec ou vers KEGG/metacyc. Ne sachant pas comment selectionner certaines voies métaboliques, je passe par les go
-terms, et à part chez les espèces modèles il n'y a pas de résultats pour nos bactéries en ce qui concerne la vitamine b6
-
-
-- Je n'ai pour l'instant rien compris de metacyc, enfin si j'ai reussi à trouver un numéro ec pour toutes les
-Lactococcus lactis (uniprot trouve en 10, pour le même ec et 67000 proteines pour lactococcus lactis..)
-    - Je ne trouve aucun lien pour télécharger quoique ce soit, ou alors il faut télécharger des logiciels
-    - Peut être qu'en ayant accès à la version anterieure enregistrée à l'INRIA j'arriverais à trouver mon bonheur
+terms, et à part chez les espèces modèles, il n'y a pas de résultats pour nos bactéries en ce qui concerne la vitamine b6
 
 - Sur KEGG j'arrive à trouver les métabolites en fonction de l'organisme ou des voies métaboliques, et même télécharger
 un fichier xml "KGML" qui contient l'ensemble des métabolites de la voie, avec ceux qui sont présents dans l'organisme
-selectionné différentiés avec un code couleur HTML, sauf que le numéro ec n'est pas présent dans le fichier, il y a
-à la place un numéro de "composant", numero de composant qui n'est pas accessible directement depuis la page du numéro
-ec, mais heuresement le numéro ec est accessible depuis la page du composant.
-De plus il faut un logiciel pour convertir les voies métaboliques vers un fichier sbml.
+selectionné différentiés avec un code couleur HTML, sauf que le numéro ec n'est pas présent dans le fichier, il faut
+repasser par d'autres accessions pour retrouver le numéros ec.
+Il existe cependant un logiciel pour convertir les voies métaboliques vers un fichier sbml, pas encore testé.
 
-- Brenda lance plutot de bonnes recherches, sauf que la recherche avancée bug (ou une fonctionnalité que je n'ai pas
- bien saisie, mais..)
+- Brenda lance plutot de bonnes recherches, sauf que la recherche avancée bug (ou alors une fonctionnalité que je n'ai
+pas bien saisie, mais..)
 
-- expasy: moteur de recherche à travers différentes bases de données
-- enzyme: les numeros ec y sont, et il y a des liens vers Uniprot
-- prosite: pour les motifs, osef
+ - J'ai regardé aussi de coté d'expasy et enzyme, je trouve pas mal d'informations mais là encore difficile de filtrer
+ les résultats
 
-Désolé pour la longeur du message, il m'a servit en même temps de bloc note et jue préfert être exaustif plutot que
-manquer de transmettre certaines informations.
+Désolé pour la densité du message, il m'a servi en même temps de bloc note et ca permet de rendre compte des différentes
+directions que j'ai pu prendre. Ceci étant, je devrais demain avec l'arrivée de logiciel pathway tools pouvoir commencer
+à récupérer les numéros ec présents dans les voies de synthèse de vitamines des bactéries modèles.
+
+PS: Je sais que l'on ne se voit pas avant un certain temps, mais je ne me rappelle plus s'il y avait une éventuelle
+date de réunion? (je n'ai pas mes papiers sous le yeux)
+
+Cordialement,
+Guillaume LEBRETON
