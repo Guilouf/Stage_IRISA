@@ -16,8 +16,11 @@ Scripts et BDD sur la reconstruction des metagénomes
 - http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ =>le site de merde qui bug...
 
 #TODO:
+- Ramener le tascam
 - Regarder l'API de uniprot (ou metacyc?)
 - Récuprérer les réactions des vitamines
+    - b9(acide folique) ,b12(cobalamine) et k2 (menaquinone)
+- Regarder bigg?
 - Faire un schéma de la bdd (analyse si)
 - Compter les numéros EC
 - Ajouter des données de qualité?

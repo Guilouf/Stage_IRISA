@@ -42,7 +42,7 @@ class Recup_EC :
         # fermer gbkIO? ben on peut pas sinon c op sur closed file..
         return next(gbk)
 
-        #self.detection()
+        # self.detection()
 
     def detection(self, gbk=None):
         """
@@ -68,8 +68,6 @@ class Recup_EC :
                 return False, access_prim
 
         return True, access_prim
-
-
 
     ######################################################################
     "Partie recup numeroEC à partir d'un genbank complet (NZ_CP009472.1)"

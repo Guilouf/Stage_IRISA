@@ -9,10 +9,12 @@
 souches modèles
     - J'ai donc un accès pour télécharger des fichiers pour certaines bactéries....!!
     - Metacyc 18.5 en local     
+    - Pathwaytools installé
 
+- Commencer le rapport, décrit les formats d'accessions
 
 #A faire:
-- Commencer le rapport, décrit les formats d'accessions
+
 
 - Souche de reférence d'experience: b21 NZ_CP010528.1
     - Regarder uniprot: 4 protéines trouvées au total /!\ faire attention aux bouts de génomes,etre sur uniprotkb
