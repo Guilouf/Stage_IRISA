@@ -21,8 +21,8 @@ Scripts et BDD sur la reconstruction des metagénomes
 - Récuprérer les réactions des vitamines
     - b9(acide folique, folate, glutamic) ,b12(cobalamine) et k2 (menaquinone)
 - Regarder bigg?
-- Faire un schéma de la bdd (analyse si)
-- Compter les numéros EC
+- [x] Faire un schéma de la bdd (analyse si)
+- [x] Compter les numéros EC
 - Ajouter des données de qualité?
 - Ajouter une relation pour dire qu'une protéine appartient au voies de synthèse des vitamines
 
@@ -34,4 +34,5 @@ Scripts et BDD sur la reconstruction des metagénomes
 * liste non ordonnée
 1. liste numérotée, suivie avec un "*"
 * voila, ca marche pas mais normalement c'est bon
+* [x] checkbox
 - double espace ca fait revenir à la ligne
