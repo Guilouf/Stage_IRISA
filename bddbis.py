@@ -178,11 +178,15 @@ class Requetes:
             total_ec_refseq += j
 
             list_ec_primaire = acc.hasPrimaire
-            for numP, ecc in enumerate(list_ec_primaire):
-                pass
-            print("nb d'ec primaire de l'access: ", numP)
-            total_ec_primaire += numP
+            try:
+                for numP, ecc in enumerate(list_ec_primaire): #faire un try execpt, ou un if pour les nones
+                    pass
+                print("nb d'ec primaire de l'access: ", numP)
+                total_ec_primaire += numP
+            except:
+                print("ya un ti bug dans les stats")
             pass
+
         print("Nombre de access: ", i)
         print("Nombre de ec refseq: ", total_ec_refseq)
         print("Nombre de ec primaire: ", total_ec_primaire)

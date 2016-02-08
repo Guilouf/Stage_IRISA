@@ -21,6 +21,8 @@ Scripts et BDD sur la reconstruction des metagénomes
 - Récuprérer les réactions des vitamines
     - b9(acide folique, folate, glutamic) ,b12(cobalamine) et k2 (menaquinone)
 - Regarder bigg?
+- Regarder biowarehouse
+- Telecharger metacyc et le refaire..
 - [x] Faire un schéma de la bdd (analyse si)
 - [x] Compter les numéros EC
 - Ajouter des données de qualité?
