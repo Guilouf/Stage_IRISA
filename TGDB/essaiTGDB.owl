@@ -1,0 +1,12 @@
+@prefix reaction: <http://localhost:3030/essaiTGDB/class/reaction> .
+@prefix gene:  <http://localhost:3030/essaiTGDB/class/gene> .
+@prefix protein: <http://localhost:3030/essaiTGDB/class/protein> .
+@prefix rel:   <http://localhost:3030/essaiTGDB/relation> .
+@prefix pathway: <http://localhost:3030/essaiTGDB/class/pathway> .
+@prefix attr:  <http://localhost:3030/essaiTGDB/attr> .
+@prefix compound: <http://localhost:3030/essaiTGDB/class/composant> .
+@prefix class: <http://localhost:3030/essaiTGDB/class> .
+
+compound:coke  rel:hasxref  attr:came .
+
+pathway:synthesecame  rel:hasname  "labocolombien" .
