@@ -10,3 +10,9 @@
 compound:coke  rel:hasxref  attr:came .
 
 pathway:synthesecame  rel:hasname  "labocolombien" .
+
+compound:truc1  rel:hasvalue "idmeta1","e-" .
+
+<truc2>
+	rel:hasvalue "idmeta1" ;
+	rel:isa	class: .
