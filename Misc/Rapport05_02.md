@@ -29,7 +29,7 @@ souches modèles
 - Mettre les annotations non refseq dans d'autres catégories=>>ben en primaire du coup, donc fait!
 - Trouver des wgs avec les num ec: AXZV00000000.1,>> et bonne nouvelle ca marche!
 - Verifier si les annotations entre genbank et embl/ensembl sont les mêmes
-
+- il y avait public house pour faire des requetes sql mais ca a été fermé
 
 - Télécharger les num_ec des vitamines, par rapport aux bactéries de références
     - Actino bactéries proches propio:

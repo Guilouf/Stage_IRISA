@@ -19,7 +19,7 @@ Scripts et BDD sur la reconstruction des metagénomes
 - Ramener le tascam
 - Regarder l'API de uniprot (ou metacyc?)
 - Récuprérer les réactions des vitamines
-    - b9(acide folique, folate, glutamic) ,b12(cobalamine) et k2 (menaquinone)
+    - b9(acide folique, folate, glutamic) ,b12(cobalamine) et k2 (menaquinone, ds quinol biosynth)
 - Regarder bigg?
 - Regarder biowarehouse
 - Telecharger metacyc et le refaire..
