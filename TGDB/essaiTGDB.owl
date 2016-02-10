@@ -1,18 +1,24 @@
-@prefix reaction: <http://localhost:3030/essaiTGDB/class/reaction> .
-@prefix gene:  <http://localhost:3030/essaiTGDB/class/gene> .
-@prefix protein: <http://localhost:3030/essaiTGDB/class/protein> .
-@prefix rel:   <http://localhost:3030/essaiTGDB/relation> .
-@prefix pathway: <http://localhost:3030/essaiTGDB/class/pathway> .
-@prefix attr:  <http://localhost:3030/essaiTGDB/attr> .
-@prefix compound: <http://localhost:3030/essaiTGDB/class/composant> .
+@prefix reaction: <http://localhost:3030/essaiTGDB/reaction> .
+@prefix gene:  <http://localhost:3030/essaiTGDB/gene> .
+@prefix protein: <http://localhost:3030/essaiTGDB/protein> .
+@prefix pathway: <http://localhost:3030/essaiTGDB/pathway> .
 @prefix class: <http://localhost:3030/essaiTGDB/class> .
+@prefix compound: <http://localhost:3030/essaiTGDB/composant> .
+@prefix name: <http://localhost:3030/essaiTGDB/name> .
+@prefix xref: <http://localhost:3030/essaiTGDB/xref> .
+@prefix suppData: <http://localhost:3030/essaiTGDB/suppData> .
+@prefix rel:   <http://localhost:3030/essaiTGDB/relation> .
+@prefix attr:  <http://localhost:3030/essaiTGDB/attr> .
 
-compound:coke  rel:hasxref  attr:came .
 
-pathway:synthesecame  rel:hasname  "labocolombien" .
+compound:uneprotparla  rel:hasxref  attr:metaprot .
 
-compound:truc1  rel:hasvalue "idmeta1","e-" .
+pathway:syntheseparla  rel:hasname  "protdici" .
 
-<truc2>
-	rel:hasvalue "idmeta1" ;
-	rel:isa	class: .
+compound:truc1  rel:hasvalue  "idmeta1" , "e-" .
+
+compound:truc2
+        rel:hasvalue  "idmeta1" ;
+        rel:hasxref       xref:e- .
+
+class:truc3 rel:hasvalue
