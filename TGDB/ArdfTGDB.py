@@ -9,6 +9,7 @@ class TgdbToRDF:
     alors je pourrai faire un truc classe et lisible en ne mettant que des doublets après avoir déclaré le premier truc,
     mais comme c'est plus simple je vais pour l'instant faire crade.
     J'ai l'impression que son truc me sort de l'aléatoire...
+    ya un pb avec molecular weight et son putain d'espace=> c'est bon
     """
 
 
@@ -55,7 +56,7 @@ class TgdbToRDF:
             dicomisc = node.getMisc()
             for key in dicomisc.keys():  # impression du misc
                 print(key)
-                self.fich_sortie.write(str_node+"\t"+"metacyc:"+key+'\t"'+str(dicomisc[key][0])+'"'+" .\n")
+                self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+str(dicomisc[key][0])+'"'+" .\n")
                 # /!\/!\/!\ les valeurs sont des listes.. je ne sais pas si ya plusieurs valeurs parfois
                 # TODO faire un avertissment si ya des listes de plus de 1, genre un assert
                 # print(dicomisc[key])
