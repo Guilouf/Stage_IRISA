@@ -5,6 +5,11 @@
 from tinygraphdb import Tinygraphdb
 
 class TgdbToRDF:
+    """
+    alors je pourrai faire un truc classe et lisible en ne mettant que des doublets après avoir déclaré le premier truc,
+    mais comme c'est plus simple je vais pour l'instant faire crade.
+    J'ai l'impression que son truc me sort de l'aléatoire...
+    """
 
 
     def __init__(self):
@@ -24,9 +29,9 @@ class TgdbToRDF:
         def gener_ident_bis(stochioint, idmetaparam):
             list_ident = []
             if stochioint == 1:  # si stochio à un, on retourne l'id de base
-                return [idmetaparam]
+                return [idmetaparam.lower()]
             for num in range(stochioint):
-                list_ident.append(idmetaparam.lower()+"B"+str(num))
+                list_ident.append(idmetaparam.lower()+"b"+str(num))
             return list_ident
 
         if stochio.isdigit():  # detecte si c un nombre
@@ -43,14 +48,14 @@ class TgdbToRDF:
     def nodes_to_rdf(self):
         for node in self.tgdb.getDicOfNode().values():
             print("/!\ID du noeud:      ", node.getId())  # tgdb:"lid du truc"
+            str_node = "tgdb:"+node.getId().lower()
 
-
-            self.fich_sortie.write("tgdb:"+node.getId().lower()+" a metacyc:"+node.getClass()+";\n")  # crée le nom du noeud et sa class
+            self.fich_sortie.write(str_node+" a metacyc:"+node.getClass()+" .\n")  # crée le nom du noeud et sa class
 
             dicomisc = node.getMisc()
             for key in dicomisc.keys():  # impression du misc
                 print(key)
-                self.fich_sortie.write("metacyc:"+key+'\t"'+str(dicomisc[key][0])+'"'+";\n")
+                self.fich_sortie.write(str_node+"\t"+"metacyc:"+key+'\t"'+str(dicomisc[key][0])+'"'+" .\n")
                 # /!\/!\/!\ les valeurs sont des listes.. je ne sais pas si ya plusieurs valeurs parfois
                 # TODO faire un avertissment si ya des listes de plus de 1, genre un assert
                 # print(dicomisc[key])
@@ -66,31 +71,30 @@ class TgdbToRDF:
                 for rel in relations_tpl:
                     print(rel.getType())
                     if rel.getType() == "is a":
-                        self.fich_sortie.write("rdfs:subClassOf\t"+"tgdb:"+rel.getIdOut().lower()+";\n")
+                        self.fich_sortie.write(str_node+"\t"+"rdfs:subClassOf\t"+"tgdb:"+rel.getIdOut().lower()+" .\n")
 
                     elif rel.getType() == "produces" or rel.getType() == "consumes":  #pour les stochios
-                        # self.fich_sortie.write("tgdb:"+rel.getType().replace(" ", "")+"\ttgdb:"+rel.getIdOut().lower()+";\n")
+                        # TODO pas oublier catalyse...
 
                         valeur_sto_recti = TgdbToRDF.rectif_stochio(rel.getMisc(), rel.getIdOut())  # c une liste
                         for ident_recti in valeur_sto_recti:
-                            self.fich_sortie.write("tgdb:"+rel.getType()+" "+"tgdb:"+ident_recti+" .\n")
+                            self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType()+" "+"tgdb:"+ident_recti+" .\n")
                             pass
 
                         dico_pr_stochio[rel.getIdOut()] = valeur_sto_recti  #on charge dans le dico
-
                         # TODO attention c plutot getidout() (ok mais verif)
 
                         pass
                     else:
-                        self.fich_sortie.write("tgdb:"+rel.getType().replace(" ", "")+"\ttgdb:"+rel.getIdOut().lower()+";\n")
+                        self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType().replace(" ", "")+"\ttgdb:"+rel.getIdOut().lower()+" .\n")
                     pass
 
             # ecriture des ref la stochiometrie
             for key in dico_pr_stochio:
-                for list_ident_b in dico_pr_stochio[key]:
-                    if len(list_ident_b) > 1 :  # ca sert à rien d'écrire si l'ident pas modif..
-                        for ident_b in list_ident_b:
-                            self.fich_sortie.write("tgdb:"+ident_b+" a\t"+"tgdb:"+key.lower()+" .\n")
+                for ident_b in dico_pr_stochio[key]:
+                    if len(dico_pr_stochio[key]) > 1 :  # ca sert à rien d'écrire si l'ident pas modif..
+                        self.fich_sortie.write("tgdb:"+ident_b.lower()+" a\t"+"tgdb:"+key.lower()+" .\n")
+                        # todo un for de trop...
 
             self.fich_sortie.flush()  # pour decharger le buffer avant le kbinterupt
             # TODO enlever le flush une fois mis au point
