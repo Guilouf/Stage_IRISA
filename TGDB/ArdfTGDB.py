@@ -8,9 +8,6 @@ from tinygraphdb import Tinygraphdb
 tgdb = Tinygraphdb("tgdbRef.tgdb")
 
 
-
-
-
 #print(tgdb.getDicOfNode())
 
 def printnodes():
@@ -42,8 +39,8 @@ def attrnodes():
 # attrnodes()
 
 
-for i in tgdb.getTuplOfRelation():  # c'est un tupe
-    # print(i.getIdIn())
+for i in tgdb.getTuplOfRelation():  # c'est un tuple
+    # print(i.getIdIn())  # avec ca on peut chopper ce qui m'interesse
     # print(i.getIdOut())
     print(i.getType())
     pass

@@ -72,8 +72,9 @@ tgdb:meta2268 a metacyc:class ;
 
 
 #a ne pas suppr
-- difference entre db	metacyc	id	et metacyc_id?
-- information redondante entre le dico et les relations(id aussi en xref)
+- difference entre db	metacyc	id	et metacyc_id? resolu
+- triplets redondants ajoutés?
+- information redondante entre le dico et les relations(id aussi en xref)en effet
 - bon pas de relations de reactions pour ce composant
 - label, comme beaucoup de cle du dico, ne sont pas présente dans les relations autorisées. comment les lister?
 - pourquoi une différence de syntaxe entre la query et la definition du graphe? (zapper la syntaxe turtle)
