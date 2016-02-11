@@ -1,0 +1,3 @@
+#Avancement
+- tgdb vers rdf:
+    - 

@@ -75,11 +75,10 @@ tgdb:meta2268 a metacyc:class ;
 - difference entre db	metacyc	id	et metacyc_id? resolu
 - triplets redondants ajoutés?
 - information redondante entre le dico et les relations(id aussi en xref)en effet
-- bon pas de relations de reactions pour ce composant
 - label, comme beaucoup de cle du dico, ne sont pas présente dans les relations autorisées. comment les lister?
+    - via le script, c'est bon
 - pourquoi une différence de syntaxe entre la query et la definition du graphe? (zapper la syntaxe turtle)
 - ca remplace rdf:type par "a"; ouais c'est un raccourci de ce prefixOfThedeath
-- insérer un autre niveau de superclasse
 - hierarchie des classes dans la requète? comment recupérer toute la hierarchie en une seule requète? *=>transitivité
     - sauf que ca récupère aussi la propre classe..
 - rdfalchemy orm?
