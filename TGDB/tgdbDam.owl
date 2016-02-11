@@ -49,6 +49,26 @@ tgdb:meta171029
 	rdf:type metacyc:xref ;
 	metacyc:id "CPD-7834" .
 
+tgdb:meta48967 a metacyc:reaction ;
+	rdfs:subClassOf tgdb:meta1527, tgdb:meta3531 ;
+	metacyc:id "RXN0-6529" ;
+	metacyc:direction "LEFT-TO-RIGHT" ;
+	metacyc:ec "EC-3.1.26.1" ;
+	tgdb:hasxref tgdb:meta347552 ;
+	tgdb:consumes tgdb:meta22304, tgdb:meta9318 ;
+	tgdb:produces tgdb:meta2268A, tgdb:meta2268B.
+
+
+tgdb:meta2268A a tgdb:meta2268 .
+tgdb:meta2268B a tgdb:meta2268 .
+
+
+
+tgdb:meta2268 a metacyc:class ;
+	rdfs:subClassOf tgdb:meta762 ;
+	metacyc:commonName "a single-stranded RNA" ;
+	metacyc:metacyc_id "ssRNAs" ;
+	tgdb:hasname tgdb:meta78523, tgdb:meta78524 .
 
 
 #a ne pas suppr
@@ -63,8 +83,8 @@ tgdb:meta171029
     - sauf que ca récupère aussi la propre classe..
 - rdfalchemy orm?
 - prefix générique? metacyc:? =>definir avant
-- ne pas oublier aussi les stochiométries..
-
+- ne pas oublier aussi les stochiométries.. n=> on met à 1; n+1? bah on va mettre 2 alors..
+    - mais zapper le assignement
 SELECT  ?class
 WHERE {
 	tgdb:meta22465 tgdb:hasname ?truc .
