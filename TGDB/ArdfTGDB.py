@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
-#from lib.tinygraphdbplus import Tinygraphdbplus
+# from lib.tinygraphdbplus import Tinygraphdbplus
 from tinygraphdb import Tinygraphdb
+
 
 class TgdbToRDF:
     """
@@ -11,7 +11,6 @@ class TgdbToRDF:
     J'ai l'impression que son truc me sort de l'aléatoire...
     ya un pb avec molecular weight et son putain d'espace=> c'est bon
     """
-
 
     def __init__(self):
         self.tgdb = Tinygraphdb("tgdbRef.tgdb")
@@ -22,7 +21,7 @@ class TgdbToRDF:
         # TODO mettre les points à la fin... ou faire des triplets complets
 
     @staticmethod
-    def rectif_stochio(dicoSto, idmetaparam): #renvoit la liste d'identifiants bis à la place de la stochio
+    def rectif_stochio(dicoSto, idmetaparam):  # renvoit la liste d'identifiants bis à la place de la stochio
         stochio = dicoSto["stoichiometry"][0]  # TODO etre sur qu'il n'y ait qu'une clé, ce serait pas la première surprise
         # TODO au fait ca ne sert que si la stochio est sup à 1...
         # et qu'une seule valeur...
@@ -59,12 +58,15 @@ class TgdbToRDF:
                 self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+str(dicomisc[key][0])+'"'+" .\n")
                 # /!\/!\/!\ les valeurs sont des listes.. je ne sais pas si ya plusieurs valeurs parfois
                 # TODO faire un avertissment si ya des listes de plus de 1, genre un assert
+                # TODO ben gère les dico multiples..
                 # print(dicomisc[key])
 
             """
             if dicomisc is not None:
-                TgdbToRDF.write_misc(dicomisc)  # ecrit le misc du noeud
+                TgdbToRDF.write_misc(self, dicomisc)  # ecrit le misc du noeud
+                self.write_misc(dicomisc)
             """
+
 
             relations_tpl = self.tgdb.getRelation(node.getId(), "in")  # renvoit un tuple des relations, none sinon..
             dico_pr_stochio = {}  #dico pr stocker les stochio associé au clés id
@@ -78,6 +80,7 @@ class TgdbToRDF:
                         # TODO pas oublier catalyse...
 
                         valeur_sto_recti = TgdbToRDF.rectif_stochio(rel.getMisc(), rel.getIdOut())  # c une liste
+                        # TODO detecter que la liste ne soit pas un none...
                         for ident_recti in valeur_sto_recti:
                             self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType()+" "+"tgdb:"+ident_recti+" .\n")
                             pass
@@ -91,19 +94,20 @@ class TgdbToRDF:
                     pass
 
             # ecriture des ref la stochiometrie
-            for key in dico_pr_stochio:
-                for ident_b in dico_pr_stochio[key]:
-                    if len(dico_pr_stochio[key]) > 1 :  # ca sert à rien d'écrire si l'ident pas modif..
-                        self.fich_sortie.write("tgdb:"+ident_b.lower()+" a\t"+"tgdb:"+key.lower()+" .\n")
-                        # todo un for de trop...
+            self.write_stochio(dico_pr_stochio)
 
             self.fich_sortie.flush()  # pour decharger le buffer avant le kbinterupt
             # TODO enlever le flush une fois mis au point
 
+    def write_stochio(self, dico_pr_stochio_pr):
+        for key in dico_pr_stochio_pr:
+                for ident_b in dico_pr_stochio_pr[key]:
+                    if len(dico_pr_stochio_pr[key]) > 1 :  # ca sert à rien d'écrire si l'ident pas modif..
+                        self.fich_sortie.write("tgdb:"+ident_b.lower()+" a\t"+"tgdb:"+key.lower()+" .\n")
+
 
 """
-    # fait chier connerie de merde!!!!!!!!!!!!!!!!!!!!!
-    # @staticmethod
+    # alors en fait, en appel soit: self.write_misc(dicomiscparam) soit tgdb.write_misc(self, dicomiscparam)
     def write_misc(self, dicomiscparam):
         print("merde")
         for key in dicomiscparam.keys():
@@ -149,7 +153,7 @@ def rectif_stochio(dicoSto,idmetaparam): #renvoit la liste d'identifiants bis à
 dico_pr_stochio = {}
 for rel in rel_tpl:
     print(rel.getType())
-    # /!\/!\/!\if rel.getType() == ("produces" or "consumes"):  #pour les stochios TODO pourquoi mais pourquoi BORDEL???
+    # /!\/!\/!\if rel.getType() in ("produces", "consumes"):  #pour les stochios TODO pourquoi mais pourquoi BORDEL???
     if rel.getType() == "produces" or rel.getType() == "consumes":
         # fich_sortie.write("tgdb:"+rel.getType().replace(" ", "")+"\ttgdb:"+rel.getIdOut().lower()+";\n")
         print("merde")
