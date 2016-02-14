@@ -6,24 +6,25 @@ from tinygraphdb import Tinygraphdb
 
 class TgdbToRDF:
     """
-    alors je pourrai faire un truc classe et lisible en ne mettant que des doublets après avoir déclaré le premier truc,
-    mais comme c'est plus simple je vais pour l'instant faire crade.
     J'ai l'impression que son truc me sort de l'aléatoire...
-    ya un pb avec molecular weight et son putain d'espace=> c'est bon
+    Du coup, est-ce idiot de parcourir le document à chaque noeud découvert?
+    Ben pas forcément vu que je n'ai pas acces directement au document, et que les noeuds et les relations sont séparées
     """
-
+    # TODO Du coup, est-ce idiot de parcourir le document à chaque noeud découvert?
     def __init__(self):
         self.tgdb = Tinygraphdb("tgdbRef.tgdb")
 
-        self.fich_sortie = open("tgdbSortie.balec", 'w+')  # faire un with open ac la func principale dedans
+        self.fich_sortie = open("tgdbSortie.balec", 'w+')  # pas de close, mais balec
 
-        # écrire les préfixes dans le init
-        # TODO mettre les points à la fin... ou faire des triplets complets
+        self.fich_sortie.write("@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
+            @prefix tgdb:  <http://localhost:3030/essaiTGDB/tgdb> .\n\
+            @prefix metacyc: <http://localhost:3030/essaiTGDB/metacyc> .\n\
+            @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .")
 
     @staticmethod
     def rectif_stochio(dicoSto, idmetaparam):  # renvoit la liste d'identifiants bis à la place de la stochio
         stochio = dicoSto["stoichiometry"][0]  # TODO etre sur qu'il n'y ait qu'une clé, ce serait pas la première surprise
-        # TODO au fait ca ne sert que si la stochio est sup à 1...
+        # TODO au fait ca ne sert que si la stochio est sup à 1...(c'est fait)
         # et qu'une seule valeur...
 
         def gener_ident_bis(stochioint, idmetaparam):
@@ -46,20 +47,21 @@ class TgdbToRDF:
             return gener_ident_bis(2, idmetaparam)
 
     def nodes_to_rdf(self):
+        cpt_node = 0  # compteur de nombre de noeud parcouru, utilisé pour le flush
         for node in self.tgdb.getDicOfNode().values():
             print("/!\ID du noeud:      ", node.getId())  # tgdb:"lid du truc"
-            str_node = "tgdb:"+node.getId().lower()
+            str_node = "tgdb:"+node.getId().lower()  # le sujet, cad le noeud
 
-            self.fich_sortie.write(str_node+" a metacyc:"+node.getClass()+" .\n")  # crée le nom du noeud et sa class
+            cpt_node += 1  # incre du compteur de noeud
+            self.fich_sortie.write(str_node+" a metacyc:"+node.getClass()+" .\n")  # ecrit le nom du noeud et sa class
 
+            # impression du misc
             dicomisc = node.getMisc()
-            for key in dicomisc.keys():  # impression du misc
-                print(key)
-                self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+str(dicomisc[key][0])+'"'+" .\n")
-                # /!\/!\/!\ les valeurs sont des listes.. je ne sais pas si ya plusieurs valeurs parfois
-                # TODO faire un avertissment si ya des listes de plus de 1, genre un assert
-                # TODO ben gère les dico multiples..
-                # print(dicomisc[key])
+            for key in dicomisc.keys():  # /!\/!\/!\ les valeurs sont des listes.. META51128=>multiple
+                print("VALEUR DE CLE MULTIPLE") if len(dicomisc[key]) > 1 else None  # ternaire pr test multi val
+                for value in dicomisc[key]:  # les valeurs des clef sont des listes...
+                    self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+value+'"'+" .\n")
+
 
             """
             if dicomisc is not None:
@@ -67,16 +69,15 @@ class TgdbToRDF:
                 self.write_misc(dicomisc)
             """
 
-
             relations_tpl = self.tgdb.getRelation(node.getId(), "in")  # renvoit un tuple des relations, none sinon..
-            dico_pr_stochio = {}  #dico pr stocker les stochio associé au clés id
+            dico_pr_stochio = {}  # dico pr stocker les stochio associé au clés id
             if relations_tpl is not None:
                 for rel in relations_tpl:
-                    print(rel.getType())
+                    # print(rel.getType())
                     if rel.getType() == "is a":
                         self.fich_sortie.write(str_node+"\t"+"rdfs:subClassOf\t"+"tgdb:"+rel.getIdOut().lower()+" .\n")
 
-                    elif rel.getType() == "produces" or rel.getType() == "consumes":  #pour les stochios
+                    elif rel.getType() == "produces" or rel.getType() == "consumes":  # pour les stochios
                         # TODO pas oublier catalyse...
 
                         valeur_sto_recti = TgdbToRDF.rectif_stochio(rel.getMisc(), rel.getIdOut())  # c une liste
@@ -85,19 +86,22 @@ class TgdbToRDF:
                             self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType()+" "+"tgdb:"+ident_recti+" .\n")
                             pass
 
-                        dico_pr_stochio[rel.getIdOut()] = valeur_sto_recti  #on charge dans le dico
+                        dico_pr_stochio[rel.getIdOut()] = valeur_sto_recti  # on charge dans le dico
                         # TODO attention c plutot getidout() (ok mais verif)
 
                         pass
-                    else:
+                    else:  # pour les autres relations, hasname etc...
                         self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType().replace(" ", "")+"\ttgdb:"+rel.getIdOut().lower()+" .\n")
                     pass
 
             # ecriture des ref la stochiometrie
             self.write_stochio(dico_pr_stochio)
 
-            self.fich_sortie.flush()  # pour decharger le buffer avant le kbinterupt
-            # TODO enlever le flush une fois mis au point
+            if (cpt_node / 100)%1 == 0:  # tous les 100 itérations
+                self.fich_sortie.flush()  # pour decharger le buffer avant le kbinterupt
+                print("flush!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                print(cpt_node)
+            # TODO enlever le flush une fois mis au point, quoique..
 
     def write_stochio(self, dico_pr_stochio_pr):
         for key in dico_pr_stochio_pr:
