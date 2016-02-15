@@ -15,6 +15,9 @@ class TgdbToRDF:
     def __init__(self):
         self.tgdb = Tinygraphdb("tgdbRef.tgdb")
 
+        self.tgdb_nodes = (node for node in self.tgdb.getDicOfNode().values())  # générateur de noeuds
+        self.tgdb_rel = (rel for rel in self.tgdb.getTuplOfRelation())
+
         self.fich_sortie = open("tgdbSortie.balec", 'w+')  # pas de close, mais balec
 
         self.fich_sortie.write("@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
@@ -49,7 +52,7 @@ class TgdbToRDF:
 
     def nodes_to_rdf(self):
         cpt_node = 0  # compteur de nombre de noeud parcouru, utilisé pour le flush
-        for node in self.tgdb.getDicOfNode().values():
+        for node in self.tgdb_nodes:  # itere le générateur
             print("/!\ID du noeud:      ", node.getId())  # tgdb:"lid du truc"
             str_node = "tgdb:"+node.getId().lower()  # le sujet, cad le noeud
 
@@ -57,16 +60,17 @@ class TgdbToRDF:
             self.fich_sortie.write(str_node+" a metacyc:"+node.getClass()+" .\n")  # ecrit le nom du noeud et sa class
 
             # impression du misc
-            dicomisc = node.getMisc()
+            dicomisc = node.getMisc()  # TODO essayer de foutre ca en gener..
             for key in dicomisc.keys():  # /!\/!\/!\ les valeurs sont des listes.. META51128=>multiple
                 print("VALEUR DE CLE MULTIPLE") if len(dicomisc[key]) > 1 else None  # ternaire pr test multi val
                 for value in dicomisc[key]:  # les valeurs des clef sont des listes...
                     self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+value+'"'+" .\n")
-            # TODO rajouter les assignements
-            relations_tpl = self.tgdb.getRelation(node.getId(), "in")  # renvoit un tuple des relations, none sinon..
+
+            relations_tpl = self.tgdb.getRelation(node.getId(), "in")  # renvoit un tuple des relations, none sinon.. TODO c'est ca qui plombe le truc.. getTuplOfRelation
             dico_pr_stochio = {}  # dico pr stocker les stochio associé au clés id
             if relations_tpl is not None:  # test si le noeud possède bien des relations
                 for rel in relations_tpl:  # parcourt les relations que possede le noeud
+                    # TODO rajouter les assignements
 
                     if rel.getType() == "is a":  # pour le cas des sous classes
                         self.fich_sortie.write(str_node+"\t"+"rdfs:subClassOf\t"+"tgdb:"+rel.getIdOut().lower()+" .\n")
@@ -108,9 +112,20 @@ class TgdbToRDF:
 # alors en fait, en appel soit: self.write_misc(dicomiscparam) soit tgdb.write_misc(self, dicomiscparam)
 """
 
-inst = TgdbToRDF()
-inst.nodes_to_rdf()
+# inst = TgdbToRDF()
+# inst.nodes_to_rdf()
 
+"""
+tgdb = Tinygraphdb("tgdbRef.tgdb")
+
+tgdb_nodes = (node for node in tgdb.getDicOfNode().values())  # générateur de noeuds
+tgdb_rel = (rel for rel in tgdb.getTuplOfRelation())
+
+
+# tgdb_rel()
+# for rel in tgdb_rel:
+#     print(rel.getIdOut())
+"""
 ##################################################################
 # test pour la stochio
 ##################################################################
