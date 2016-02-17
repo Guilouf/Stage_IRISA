@@ -9,9 +9,10 @@ class TgdbToRDF:
     J'ai l'impression que son truc me sort de l'aléatoire...
     Pour les assignement, apparement il peut y avoir un truc de type "assignment	X	score	Y", mais pas observé
     dans le tgdb donc laissé tel quel pr l'instant.
+    La sortie doit se faire en .ttl, et non .owl ...
     """
 
-    def __init__(self):
+    def __init__(self, urlserv="http://localhost:3030/tgdbRDF/"):  # pas oublier le / a la fin
         self.tgdb = Tinygraphdb("tgdbRef.tgdb")
 
         self.tgdb_nodes = (node for node in self.tgdb.getDicOfNode().values())  # générateur de noeuds TODO inutile ca en fait, et p e dangereux
@@ -29,14 +30,15 @@ class TgdbToRDF:
 
         self.fich_sortie = open("tgdbSortie.balec", 'w+', encoding="utf-8")  # pas de close, mais balec
 
-        # le saut de ligne genere des tabs.. c normal crétin, tu prend les tabs de l'éditeur comme texte...
+
+        #  TODO adapter les uris pour qu'elles correspondent au serveur dans lequel elles sont chargées
         self.fich_sortie.write("# metacyc: les qualifiants directes des noeuds\n" +
                                "# tgdb: les entites(noeuds) et les relations\n" +
                                "# rdf:type la classe metacyc du noeud(feuille);" +
                                "rdfs:subClassOf la superclasse de noeud\n" +
                                "@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
-                               "@prefix tgdb:  <http://localhost:3030/essaiTGDB/tgdb> .\n" +
-                               "@prefix metacyc: <http://localhost:3030/essaiTGDB/metacyc> .\n" +
+                               "@prefix tgdb:  <" + urlserv + "tgdb> .\n" +
+                               "@prefix metacyc: <" + urlserv + "metacyc> .\n" +
                                "@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .\n")
 
     @staticmethod
