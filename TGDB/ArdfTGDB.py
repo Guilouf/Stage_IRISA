@@ -27,17 +27,17 @@ class TgdbToRDF:
             else:
                 self.dico_rel[rel.getIdIn()] = (rel,)
 
-
         self.fich_sortie = open("tgdbSortie.balec", 'w+', encoding="utf-8")  # pas de close, mais balec
 
         # le saut de ligne genere des tabs.. c normal crétin, tu prend les tabs de l'éditeur comme texte...
-        self.fich_sortie.write("# metacyc: les qualifiants directes des noeuds\n"\
-            "# tgdb: les entites(noeuds) et les relations\n" \
-            + "# rdf:type la classe metacyc du noeud(feuille); rdfs:subClassOf la superclasse de noeud\n" \
-            + "@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" \
-            + "@prefix tgdb:  <http://localhost:3030/essaiTGDB/tgdb> .\n" \
-            + "@prefix metacyc: <http://localhost:3030/essaiTGDB/metacyc> .\n" \
-            + "@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .\n")
+        self.fich_sortie.write("# metacyc: les qualifiants directes des noeuds\n" +
+                               "# tgdb: les entites(noeuds) et les relations\n" +
+                               "# rdf:type la classe metacyc du noeud(feuille);" +
+                               "rdfs:subClassOf la superclasse de noeud\n" +
+                               "@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
+                               "@prefix tgdb:  <http://localhost:3030/essaiTGDB/tgdb> .\n" +
+                               "@prefix metacyc: <http://localhost:3030/essaiTGDB/metacyc> .\n" +
+                               "@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .\n")
 
     @staticmethod
     def rectif_stochio(dicoSto, idmetaparam):  # renvoit la liste d'identifiants bis à la place de la stochio
@@ -51,7 +51,7 @@ class TgdbToRDF:
                 return [idmetaparam.lower()]
             for num in range(stochioint):
                 list_ident.append(idmetaparam.lower()+"b"+str(num))
-            return list_ident
+            return list_ident  # TODO spécifier le type de n (n× ou n+) si il y a
 
         if stochio.isdigit():  # detecte si c un nombre
             return gener_ident_bis(int(stochio), idmetaparam)
@@ -101,12 +101,12 @@ class TgdbToRDF:
                         dico_pr_stochio[rel.getIdOut()] = valeur_sto_recti  # on charge dans le dico
 
                     else:  # pour les autres relations, hasname etc...
-                        self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType().replace(" ", "")+"\ttgdb:"\
-                                               + rel.getIdOut().lower()+" .\n")
+                        self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType().replace(" ", "")+"\ttgdb:" +
+                                               rel.getIdOut().lower()+" .\n")
                         if len(rel.getMisc()) != 0:  # pour ajouter les assignements (si yen a)
                             assign = rel.getMisc()["assignment"]
-                            self.fich_sortie.write(str_node+"\t"+"tgdb:hasassign"\
-                                                   + "\ttgdb:"+assign[0].lower()+" .\n")
+                            self.fich_sortie.write(str_node+"\t"+"tgdb:hasassign" +
+                                                   "\ttgdb:"+assign[0].lower()+" .\n")
 
             # ecriture des ref la stochiometrie
             self.write_stochio(dico_pr_stochio)
