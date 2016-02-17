@@ -2,6 +2,9 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 import rdflib
 """
 bon essayer sparqlwrapper2, qui envoit directe en json
+Bien faire gaffe a ce que le uri correspondent au serv, et au données..
+hum, parfois les prefixs se synchonisent mais pas les uri... SUR La vielle version de fusek, et apparement
+pas d'impact sur les resultats. => en fait il additionne les triples on dirait
 """
 serveur = "http://localhost:3030/tgdbRDF"
 
@@ -17,8 +20,11 @@ prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT  ?class
 WHERE {
-    #?truc rdfs:type ?class .
-    ?class a metacyc:class
+    #?truc rdfs:type ?class
+    #?class a ?truc2
+    #?class a metacyc:class
+    ?class rdfs:subClassOf* tgdb:meta7325
+
 }
 """)
 
