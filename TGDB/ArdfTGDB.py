@@ -2,7 +2,7 @@
 
 # from lib.tinygraphdbplus import Tinygraphdbplus
 from tinygraphdb import Tinygraphdb
-
+import re
 
 class TgdbToRDF:
     """
@@ -57,7 +57,7 @@ class TgdbToRDF:
 
         if stochio.isdigit():  # detecte si c un nombre
             return gener_ident_bis(int(stochio), idmetaparam)
-        elif stochio == 'n': # TODO ca c 1, voir plus haut..
+        elif stochio == 'n':  # TODO ca c 1, voir plus haut..
             return gener_ident_bis(1, idmetaparam)
         elif stochio == "n+1":
             return gener_ident_bis(2, idmetaparam)
@@ -88,7 +88,6 @@ class TgdbToRDF:
             dico_pr_stochio = {}  # dico pr stocker les stochio associé au clés id
             if relations_tpl is not None:  # test si le noeud possède bien des relations
                 for rel in relations_tpl:  # parcourt les relations que possede le noeud
-
 
                     if rel.getType() == "is a":  # pour le cas des sous classes
                         self.fich_sortie.write(str_node+"\t"+"rdfs:subClassOf\t"+"tgdb:"+rel.getIdOut().lower()+" .\n")
@@ -127,6 +126,29 @@ class TgdbToRDF:
 
 inst = TgdbToRDF()
 inst.nodes_to_rdf()
+
+# pour refaire la fonction des stochios
+"""
+metacycdemerde = ["n", "2n", "2", "n+1", "(n+1)", "|n+1|"]
+
+
+for truc in metacycdemerde:
+    if "+" in truc:
+        for i in truc:
+            if i.isnumeric():
+                print(int(i)+1)
+        print("fin+\n")
+    elif "n" in truc:
+        if truc == "n":
+            print(1)
+        else:
+            for i in truc:
+                if i.isnumeric():
+                    print(int(i))
+    else:
+        print(int(truc))
+        print("finStand\n")
+"""
 
 """
 tgdb = Tinygraphdb("tgdbRef.tgdb")
