@@ -10,6 +10,7 @@ import irc
 from irc import *
 
 import random as ran
+import string
 import time
 """
 cat /udd/glebreto/Desktop/MesTrucs/Git/Bot/windows_killer_bot.py | ssh flamboyant python3 -
@@ -28,9 +29,10 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
     on ne jure pas marie thèrèse
     la partie client.py à l'air importante
     ssh flamboyant
+    string
     """
     def __init__(self):
-        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], "Fenetre", "surcours")
+        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], "gentilbot", "gentil")
 
         self.windows_error = ["An error as occured while displaying previous error",
                               "Windows problem reporting has stopped working",
@@ -67,6 +69,9 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
                                  "gens"]
         self.big_words = ["putain", "chier", "merde", "salope", "enculé", "enkulé", "bordel"]
 
+        self.big_nick = ["Lex", "Natir", "DrIDK", "Char-Al", "elucator", "munin", "Nedgang", "neolem", "pirc", "Plopp",
+                         "Elisyre", "Andrano"]
+
 
     def on_welcome(self, serv, ev):
         print("connexion au chan!!")
@@ -78,7 +83,7 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
 
     def on_kick(self, serv, ev):
         serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))
-        serv.realname(serv.get_realname() + str(ran.randint(0, 1000)))
+        # serv.realname(serv.get_realname() + str(ran.randint(0, 1000)))
 
         serv.join("#big_rennes")
 
@@ -109,7 +114,7 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
         elif "faire" in message[0].lower() and "noir" in message[0].lower():
             serv.privmsg("#big_rennes", message[1] + ": Ta gueule! ")
 
-        elif len(message[0]) < 3:
+        elif len(message[0]) < 1: # TODO inf à 1
             print(message[0][0:4])
             serv.privmsg("#big_rennes", message[1] + ": PSV t'envois un jolde en jif http://www.eazyhomepage.com"
                                                      "/gold-bars4.gif. ERROR: Too short message")
