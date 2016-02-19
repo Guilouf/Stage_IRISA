@@ -17,7 +17,7 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
     faire un truc pour faire chier munin
     """
     def __init__(self):
-        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], "winbot2", "botwin2")
+        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], "Lex", "lexlex")
 
         self.windows_error = ["An error as occured while displaying previous error",
                               "Windows problem reporting has stopped working",
@@ -34,11 +34,14 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
                               "Windows Must Restart Because the Remote Procedure Call (RPC) Service Terminated"
                               " Unexpectedly ",
                               "https://www.youtube.com/watch?v=IW7Rqwwth84"]
-        self.propaganda = ["La plupart des DABs (distributeurs de billets) tournent sous windows xp",
-                           ]
-        self.anti_linux = ["Le saviez vous? Linux est l'OS préféré des pédophiles.",
-                           " lp0 on fire",
-                           ""]
+        self.propaganda = [": La plupart des DABs (distributeurs de billets) tournent sous windows xp",
+                           ": Ceux qui disent qu'il y a une alternative à Windows sont les"
+                           " mêmes qui ont créé le goulag comme alternative au capitalisme"]
+
+        self.anti_linux = [": Le saviez vous? Linux est l'OS préféré des pédophiles.",
+                           ": lp0 on fire",
+                           ": T'es pas au courrant? Linux c'est de la merde! Gratuite certes,"
+                           " mais de la merde quand même."]
         self.welcome_message = ["Coucou, je suis votre nouvel ami!",
                                 "Avec moi, vous allez oublier la propagande malhonnète ochestrée par le puissant"
                                 " lobby de linux, en effet nul n'est plus esclave que celui qui se croit libre ",
@@ -54,25 +57,36 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
         serv.join("#big_rennes")
         serv.privmsg("#big_rennes",  self.welcome_message[ran.randint(0, len(self.welcome_message)-1)])
 
+    def on_nicknameinuse(self, serv, ev):  # permet de changer de nick si déjà utilisé
+        serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))
+
+    def on_kick(self, serv, ev):  # TODO: changer le nick aussi
+        serv.join("#big_rennes")
+
     def on_pubmsg(self, serv, ev):
         message = (ev.arguments[0], ev.source.nick)  # message = ev.arguments()[0] petit pb là...
         if str(message[0][0:5]) == "flood" and message[0][5:7].isnumeric():
             for i in range(0, int(message[0][5:7])):
                 serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
                 time.sleep(3)
+
         elif "linux" in message[0].lower():
-            serv.privmsg("#big_rennes", message[1] + ": T'es pas au courrant? Linux c'est de la merde! Gratuite certes,"
-                                                     " mais de la merde quand même.")
+            serv.privmsg("#big_rennes", message[1] + self.anti_linux[ran.randint(0, len(self.anti_linux)-1)])
+
         elif "windows" in message[0].lower():
-            serv.privmsg("#big_rennes", message[1] + ": Ceux qui disent qu'il y a une alternative à Windows sont les"
-                                                     " mêmes qui ont créé le goulag comme alternative au capitalisme")
+            serv.privmsg("#big_rennes", message[1] + self.propaganda[ran.randint(0, len(self.propaganda)-1)])
             serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
-        elif message[0].lower() in ("error", "erreur"):  # pas au point, match que sur les mots entiers TODO: "probleme",
+
+        elif "err" in message[0].lower():  # pas au point, match que sur les mots entiers TODO: "probleme",
             serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
-        elif len(message[0]) < 6:
+
+        elif "help" in message[0].lower():
+            serv.privmsg("#big_rennes", message[1] + ": Demerde toi, je suis un bot libre! (mais payant)")
+
+        elif len(message[0]) < 3:
             print(message[0][0:4])
-            serv.privmsg("#big_rennes", message[1] + ": ta geule batard !")
-        pass
+            serv.privmsg("#big_rennes", message[1] + ": PSV t'envois un jolde en jif http://www.eazyhomepage.com"
+                                                     "/gold-bars4.gif. ERROR: Too short message")
 
 
 
