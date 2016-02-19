@@ -1,23 +1,36 @@
+# -*- coding: utf-8 -*-
+
 import irc.bot
 import irc.strings
 import irc.client
 import irc.connection
 import irc.server
+import irc.modes
 import irc
 from irc import *
 
 import random as ran
 import time
-
+"""
+cat /udd/glebreto/Desktop/MesTrucs/Git/Bot/windows_killer_bot.py | ssh flamboyant python3 -
+La mort ahahah
+"""
 
 class WindowsBot(irc.bot.SingleServerIRCBot):
     """
     faire un mode discussion pour que 2 bots se parlent
     recevoir des messages privés
     faire un truc pour faire chier munin
+    /msg pour les messages privés
+    il va faire tout noir!
+    get_host pour changer adresse ip?
+    parse mod string pour le ban pe
+    on ne jure pas marie thèrèse
+    la partie client.py à l'air importante
+    ssh flamboyant
     """
     def __init__(self):
-        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], "Lex", "lexlex")
+        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], "Fenetre", "surcours")
 
         self.windows_error = ["An error as occured while displaying previous error",
                               "Windows problem reporting has stopped working",
@@ -46,11 +59,14 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
                                 "Avec moi, vous allez oublier la propagande malhonnète ochestrée par le puissant"
                                 " lobby de linux, en effet nul n'est plus esclave que celui qui se croit libre ",
                                 "Tremblez, tas de cellules, une nouvelle ère d'intelligence artificielle viens de "
-                                "naître !"]
+                                "naître !",
+                                "Il va faire tout noir!"]
         self.insultes_personl = [": ta geule batard !", ": si ce que tu as à dire n'est plus beau que ferme ta gueule!",
                                  ": PSV t'envois un jolde en jif http://www.eazyhomepage.com/gold-bars4.gif",
                                  "Chut! Le silence est d'or la parole est d'argent, dors au lieu de faire chier les"
                                  "gens"]
+        self.big_words = ["putain", "chier", "merde", "salope", "enculé", "enkulé", "bordel"]
+
 
     def on_welcome(self, serv, ev):
         print("connexion au chan!!")
@@ -60,8 +76,15 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
     def on_nicknameinuse(self, serv, ev):  # permet de changer de nick si déjà utilisé
         serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))
 
-    def on_kick(self, serv, ev):  # TODO: changer le nick aussi
+    def on_kick(self, serv, ev):
+        serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))
+        serv.realname(serv.get_realname() + str(ran.randint(0, 1000)))
+
         serv.join("#big_rennes")
+
+    def on_mode(self, serv, ev):
+        print("je suis ban")
+        pass
 
     def on_pubmsg(self, serv, ev):
         message = (ev.arguments[0], ev.source.nick)  # message = ev.arguments()[0] petit pb là...
@@ -82,6 +105,9 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
 
         elif "help" in message[0].lower():
             serv.privmsg("#big_rennes", message[1] + ": Demerde toi, je suis un bot libre! (mais payant)")
+
+        elif "faire" in message[0].lower() and "noir" in message[0].lower():
+            serv.privmsg("#big_rennes", message[1] + ": Ta gueule! ")
 
         elif len(message[0]) < 3:
             print(message[0][0:4])
