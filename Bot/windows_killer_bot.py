@@ -13,6 +13,7 @@ import random as ran
 import string  # pour obtenir l'alphabet
 import time
 import os
+import sys
 """
 cat /udd/glebreto/Desktop/MesTrucs/Git/Bot/windows_killer_bot.py | ssh flamboyant python3 - param1 param2
 La mort ahahah
@@ -42,8 +43,8 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
     ssh flamboyant
     string
     """
-    def __init__(self):
-        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], "gentilbot", "gentil")
+    def __init__(self, nom_bot):
+        irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], nom_bot, nom_bot)
 
         self.windows_error = ["An error as occured while displaying previous error",
                               "Windows problem reporting has stopped working",
@@ -60,18 +61,18 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
                               "Windows Must Restart Because the Remote Procedure Call (RPC) Service Terminated"
                               " Unexpectedly ",
                               "https://www.youtube.com/watch?v=IW7Rqwwth84"]
-        self.propaganda = [": La plupart des DABs (distributeurs de billets) tournent sous windows xp",
-                           ": Ceux qui disent qu'il y a une alternative à Windows sont les"
+        self.propaganda = [": La plupart des DABs (distributeurs de billets) tournent sous w*indows xp",
+                           ": Ceux qui disent qu'il y a une alternative à W*indows sont les"
                            " mêmes qui ont créé le goulag comme alternative au capitalisme"]
 
-        self.anti_linux = [": Le saviez vous? Linux est l'OS préféré des pédophiles.",
+        self.anti_linux = [": Le saviez vous? L*inux est l'OS préféré des pédophiles.",
                            ": lp0 on fire",
-                           ": T'es pas au courrant? Linux c'est de la merde! Gratuite certes,"
+                           ": T'es pas au courrant? L*inux c'est de la merde! Gratuite certes,"
                            " mais de la merde quand même.",
-                           "Linux: Quand c'est gratuit c'est toi le produit.."]
+                           "L*inux: Quand c'est gratuit c'est toi le produit.."]
         self.welcome_message = ["Coucou, je suis votre nouvel ami!",
                                 "Avec moi, vous allez oublier la propagande malhonnète ochestrée par le puissant"
-                                " lobby de linux, en effet nul n'est plus esclave que celui qui se croit libre ",
+                                " lobby de l*inux, en effet nul n'est plus esclave que celui qui se croit libre ",
                                 "Tremblez, tas de cellules, une nouvelle ère d'intelligence artificielle viens de "
                                 "naître !",
                                 "Il va faire tout noir!"]
@@ -117,7 +118,7 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
             serv.privmsg("#big_rennes", message[1] + self.propaganda[ran.randint(0, len(self.propaganda)-1)])
             serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
 
-        elif "err" in message[0].lower():  # pas au point, match que sur les mots entiers TODO: "probleme",
+        elif "erreur" in message[0].lower():  # pas au point, match que sur les mots entiers TODO: "probleme",
             serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
 
         elif "help" in message[0].lower():
@@ -143,6 +144,6 @@ bot = WindowsBot(channel, nickname, server, port)
 """
 
 print("instanciation")
-bot = WindowsBot()
+bot = WindowsBot(sys.argv[1])
 bot.start()
 
