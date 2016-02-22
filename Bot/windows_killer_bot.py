@@ -10,12 +10,23 @@ import irc
 from irc import *
 
 import random as ran
-import string
+import string  # pour obtenir l'alphabet
 import time
+import os
 """
-cat /udd/glebreto/Desktop/MesTrucs/Git/Bot/windows_killer_bot.py | ssh flamboyant python3 -
+cat /udd/glebreto/Desktop/MesTrucs/Git/Bot/windows_killer_bot.py | ssh flamboyant python3 - param1 param2
 La mort ahahah
 """
+"""
+vhost, BNC, shell account
+NAT (Network...)
+hostmask
+"""
+"""
+ici noter les ip de l'inria, avec le nom des machines..
+"""
+
+# TODO faire que le bot utilise le nom de la personne qui est sur la machine...
 
 class WindowsBot(irc.bot.SingleServerIRCBot):
     """
@@ -56,7 +67,8 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
         self.anti_linux = [": Le saviez vous? Linux est l'OS préféré des pédophiles.",
                            ": lp0 on fire",
                            ": T'es pas au courrant? Linux c'est de la merde! Gratuite certes,"
-                           " mais de la merde quand même."]
+                           " mais de la merde quand même.",
+                           "Linux: Quand c'est gratuit c'est toi le produit.."]
         self.welcome_message = ["Coucou, je suis votre nouvel ami!",
                                 "Avec moi, vous allez oublier la propagande malhonnète ochestrée par le puissant"
                                 " lobby de linux, en effet nul n'est plus esclave que celui qui se croit libre ",
