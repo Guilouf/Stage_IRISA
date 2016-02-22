@@ -28,6 +28,8 @@ ici noter les ip de l'inria, avec le nom des machines..
 """
 
 # TODO faire que le bot utilise le nom de la personne qui est sur la machine...
+# TODO acceder à la liste des user connectés
+# TODO dessiner qq chose sur le graph de pierre...
 
 class WindowsBot(irc.bot.SingleServerIRCBot):
     """
@@ -43,8 +45,10 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
     ssh flamboyant
     string
     """
-    def __init__(self, nom_bot):
+    def __init__(self, nom_bot, message):
         irc.bot.SingleServerIRCBot.__init__(self, [("irc.freenode.net", 6667)], nom_bot, nom_bot)
+
+        self.first_message = message
 
         self.windows_error = ["An error as occured while displaying previous error",
                               "Windows problem reporting has stopped working",
@@ -89,23 +93,35 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
     def on_welcome(self, serv, ev):
         print("connexion au chan!!")
         serv.join("#big_rennes")
+        serv.join("#natriste")
         serv.privmsg("#big_rennes",  self.welcome_message[ran.randint(0, len(self.welcome_message)-1)])
+        serv.privmsg("#big_rennes",  self.first_message)
+        serv.privmsg("#big_rennes",  "Natir: Ne me kick pas, je fez rien de mal!")
 
     def on_nicknameinuse(self, serv, ev):  # permet de changer de nick si déjà utilisé
-        serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))
+        serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))  # TODO là ca append le premier nick
 
     def on_kick(self, serv, ev):
-        serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))
+        serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))  # TODO ici aussi
         # serv.realname(serv.get_realname() + str(ran.randint(0, 1000)))
 
         serv.join("#big_rennes")
 
     def on_mode(self, serv, ev):
-        print("je suis ban")
+        print("je suis ban")  # ca marche en fait...
+
+        serv.nick(serv.get_nickname() + str(ran.randint(0, 1000)))  # TODO ici aussi
+        serv.join("#big_rennes")
         pass
 
     def on_pubmsg(self, serv, ev):
         message = (ev.arguments[0], ev.source.nick)  # message = ev.arguments()[0] petit pb là...
+
+        serv.privmsg("#natriste", message)
+
+        if "botsay" in message[0]:
+            serv.privmsg("#big_rennes", message)
+
         if str(message[0][0:5]) == "flood" and message[0][5:7].isnumeric():
             for i in range(0, int(message[0][5:7])):
                 serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
@@ -144,6 +160,6 @@ bot = WindowsBot(channel, nickname, server, port)
 """
 
 print("instanciation")
-bot = WindowsBot(sys.argv[1])
+bot = WindowsBot(sys.argv[1], sys.argv[2])
 bot.start()
 
