@@ -47,25 +47,28 @@ class TgdbToRDF:
         # TODO au fait ca ne sert que si la stochio est sup à 1...(c'est fait)
         # et qu'une seule valeur...
 
-        def gener_ident_bis(stochioint, idmetaparam):
+        def gener_ident_bis(stochioint, idmetaparam, type):
             list_ident = []
-            if stochioint == 1:  # si stochio à un, on retourne l'id de base
-                return [idmetaparam.lower()]
+            if stochioint == 1:  # si stochio à un, on retourne l'id de base TODO ca peut etre n..
+                return [(idmetaparam.lower(), type)]
             for num in range(stochioint):
-                list_ident.append(idmetaparam.lower()+"b"+str(num))
+                list_ident.append( (idmetaparam.lower()+"b"+str(num), type) )  # c'est un tuple
             return list_ident  # TODO spécifier le type de n (n× ou n+) si il y a
 
-        if stochio.isdigit():  # detecte si c un nombre
-            return gener_ident_bis(int(stochio), idmetaparam)
-        elif stochio == 'n':  # TODO ca c 1, voir plus haut..
-            return gener_ident_bis(1, idmetaparam)
-        elif stochio == "n+1":
-            return gener_ident_bis(2, idmetaparam)
-        elif stochio == "(n+1)":
-            return gener_ident_bis(2, idmetaparam)
-        elif stochio == "2n":
-            return gener_ident_bis(2, idmetaparam)
-        else: return gener_ident_bis(0, idmetaparam)  # TODO faire qq chose pour les n bizares...
+        if "+" in stochio:
+            for i in stochio:
+                if i.isnumeric():  # isdigit,numeric? boh ca revient mm
+                    return gener_ident_bis(int(i)+1, idmetaparam, "n+")  # pour les cas n+x
+        elif "n" in stochio:  # pour les autres cas avec n
+            if stochio == "n":  # pour le cas ou c'est juste n
+                return gener_ident_bis(1, idmetaparam, "n*")
+            else:
+                for i in stochio:
+                    if i.isnumeric():
+                        return gener_ident_bis(int(i), idmetaparam, "n*")  # pour les n*x
+        else:
+            return gener_ident_bis(int(stochio), idmetaparam, None)  # le truc classique
+
 
     def nodes_to_rdf(self):
         cpt_node = 0  # compteur de nombre de noeud parcouru, utilisé pour le flush TODO asuppr
@@ -95,9 +98,10 @@ class TgdbToRDF:
                     elif rel.getType() in ("produces", "consumes"):  # pour les stochios
                         # TODO pas oublier catalyse (en fait non, ya pas de stochio associé)
 
-                        valeur_sto_recti = TgdbToRDF.rectif_stochio(rel.getMisc(), rel.getIdOut())  # c une liste, parfois none qd erreur genre 4n
-                        for ident_recti in valeur_sto_recti:
-                            self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType()+" "+"tgdb:"+ident_recti+" .\n")
+                        valeur_sto_recti = TgdbToRDF.rectif_stochio(rel.getMisc(), rel.getIdOut())
+                        # c une liste de tuples(identifiant bis+flag n..) parfois erreur
+                        for ident_recti in valeur_sto_recti:  # ecris les relations de réactions
+                            self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType()+" "+"tgdb:"+ident_recti[0]+" .\n")
 
                         dico_pr_stochio[rel.getIdOut()] = valeur_sto_recti  # on charge dans le dico
 
@@ -122,7 +126,7 @@ class TgdbToRDF:
         for key in dico_pr_stochio_pr:
                 for ident_b in dico_pr_stochio_pr[key]:
                     if len(dico_pr_stochio_pr[key]) > 1:  # ca sert à rien d'écrire si l'ident pas modif..
-                        self.fich_sortie.write("tgdb:"+ident_b.lower()+" a\t"+"tgdb:"+key.lower()+" .\n")
+                        self.fich_sortie.write("tgdb:"+ident_b+" a\t"+"tgdb:"+key.lower()+" .\n")
 
 inst = TgdbToRDF()
 inst.nodes_to_rdf()

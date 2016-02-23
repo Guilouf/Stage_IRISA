@@ -15,7 +15,7 @@ import time
 import os
 import sys
 """
-cat /udd/glebreto/Desktop/MesTrucs/Git/Bot/windows_killer_bot.py | ssh flamboyant python3 - param1 param2
+
 La mort ahahah
 """
 """
