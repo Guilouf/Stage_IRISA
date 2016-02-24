@@ -131,8 +131,9 @@ class WindowsBot(irc.bot.SingleServerIRCBot):
             serv.privmsg("#big_rennes", message[1] + self.anti_linux[ran.randint(0, len(self.anti_linux)-1)])
 
         elif "windows" in message[0].lower():
-            serv.privmsg("#big_rennes", message[1] + self.propaganda[ran.randint(0, len(self.propaganda)-1)])
-            serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
+            # serv.privmsg("#big_rennes", message[1] + self.propaganda[ran.randint(0, len(self.propaganda)-1)])
+            # serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
+            pass
 
         elif "erreur" in message[0].lower():  # pas au point, match que sur les mots entiers TODO: "probleme",
             serv.privmsg("#big_rennes",  self.windows_error[ran.randint(0, len(self.windows_error)-1)])
