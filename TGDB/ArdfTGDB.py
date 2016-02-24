@@ -47,6 +47,10 @@ class TgdbToRDF:
         stochio = dicoSto["stoichiometry"][0]  # TODO etre sur qu'il n'y ait qu'une clé, ce serait pas la première surprise
         # TODO au fait ca ne sert que si la stochio est sup à 1...(c'est fait)
         # et qu'une seule valeur...
+        """
+        sotchio: m+q maintenant... (META57937)
+        <i>... (META49763)
+        """
 
         def gener_ident_bis(stochioint, idmetaparam, type):
             list_ident = []
@@ -59,14 +63,13 @@ class TgdbToRDF:
         if "+" in stochio:
             for i in stochio:
                 if i.isnumeric():  # isdigit,numeric? boh ca revient mm
-                    return gener_ident_bis(int(i)+1, idmetaparam, "n+")  # pour les cas n+x
+                    return gener_ident_bis(int(i)+1, idmetaparam, "nplus")  # pour les cas n+x
         elif "n" in stochio:  # pour les autres cas avec n
-            if stochio == "n":  # pour le cas ou c'est juste n
-                return gener_ident_bis(1, idmetaparam, "n*")
-            else:
-                for i in stochio:
-                    if i.isnumeric():
-                        return gener_ident_bis(int(i), idmetaparam, "n*")  # pour les n*x
+            for i in stochio:
+                if i.isnumeric():
+                    return gener_ident_bis(int(i), idmetaparam, "nstar")  # pour les n*x
+            return gener_ident_bis(1, idmetaparam, "nstar")  # si ya pas de valeur numérique trouvée
+            # pour le cas ou c'est juste n, ya aussi le cas ou c'est |n|, etc..
         else:
             return gener_ident_bis(int(stochio), idmetaparam, None)  # le truc classique
 
@@ -99,8 +102,8 @@ class TgdbToRDF:
                     elif rel.getType() in ("produces", "consumes"):  # pour les stochios
                         # TODO pas oublier catalyse (en fait non, ya pas de stochio associé)
 
-                        valeur_sto_recti = TgdbToRDF.rectif_stochio(rel.getMisc(), rel.getIdOut())
-                        # c une liste de tuples(identifiant bis+flag n..) parfois erreur
+                        valeur_sto_recti = self.rectif_stochio(rel.getMisc(), rel.getIdOut())
+                        # c une liste de tuples(identifiant bis+flag n..) parfois None, PK???
                         for ident_recti in valeur_sto_recti:  # ecris les relations de réactions
                             self.fich_sortie.write(str_node+"\t"+"tgdb:"+rel.getType()+" "+"tgdb:"+ident_recti[0]+" .\n")
 

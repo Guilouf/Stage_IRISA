@@ -1,7 +1,7 @@
 from libsbml import SBMLReader
 
 lecteur = SBMLReader()
-doc = lecteur.readSBMLFromFile("exemple/subti_folate")
+doc = lecteur.readSBMLFromFile("SBML/subti_folate")
 model = doc.getModel()
 print(model.getNumSpecies())
 print(model.getNumReactions())

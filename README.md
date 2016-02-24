@@ -16,17 +16,14 @@ Scripts et BDD sur la reconstruction des metagénomes
 - http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ =>le site de merde qui bug...
 
 #TODO:
-- Ramener le tascam
-- Regarder l'API de uniprot (ou metacyc?)
 - Récuprérer les réactions des vitamines
     - b9(acide folique, folate, glutamic) ,b12(cobalamine) et k2 (menaquinone, ds quinol biosynth)
-- Regarder bigg?
-- Regarder biowarehouse
-- Telecharger metacyc et le refaire..
 - [x] Faire un schéma de la bdd (analyse si)
 - [x] Compter les numéros EC
 - Ajouter des données de qualité?
 - Ajouter une relation pour dire qu'une protéine appartient au voies de synthèse des vitamines
+- [] Télécharger et regarder les plans des voies de synthèse des vitamines
+- Mettre les données des fichiers sbml dans le rdf
 
 #Cheat markdown:
 - _italic_

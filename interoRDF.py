@@ -11,10 +11,10 @@ serveur = "http://localhost:3030/tgdbRDF"
 
 sparql = SPARQLWrapper(serveur)
 listriple = ["#truc\n"]
-# """ + "".join([tri for tri in listriple]) + """
+list_var = ["", "class", "nom"]  # la string vide c'est pour le join
 
 
-
+print(" ?".join([var for var in list_var]))
 
 
 sparql.setQuery("""
@@ -23,7 +23,7 @@ prefix metacyc: <"""+serveur+"""/metacyc>
 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT  ?class ?nom
+SELECT  """ + " ?".join([var for var in list_var]) + """
 WHERE {
     """ + "".join([tri for tri in listriple]) + """
     #?class a ?truc2
@@ -34,11 +34,9 @@ WHERE {
 """)
 
 
-""
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
 for result in results["results"]["bindings"]:
-    print(result["class"]["value"], end="")
+    print(result["class"]["value"], end="")  # le end pour ne pas sauter de lignes
     print(result["nom"]["value"])
-""
