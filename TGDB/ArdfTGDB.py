@@ -11,6 +11,7 @@ class TgdbToRDF:
     dans le tgdb donc laissé tel quel pr l'instant.
     La sortie doit se faire en .ttl, et non .owl ...
     """
+    # TODO faire qq chose pour les stochio à 0.5.. les supprimer à la main par exemple
 
     def __init__(self, urlserv="http://localhost:3030/tgdbRDF/"):  # pas oublier le / a la fin
         self.tgdb = Tinygraphdb("tgdbRef.tgdb")
@@ -124,9 +125,14 @@ class TgdbToRDF:
 
     def write_stochio(self, dico_pr_stochio_pr):
         for key in dico_pr_stochio_pr:
-                for ident_b in dico_pr_stochio_pr[key]:
-                    if len(dico_pr_stochio_pr[key]) > 1:  # ca sert à rien d'écrire si l'ident pas modif..
-                        self.fich_sortie.write("tgdb:"+ident_b+" a\t"+"tgdb:"+key.lower()+" .\n")
+
+            for ident_b in dico_pr_stochio_pr[key]:  # itere les identifiants modifiés d'un composant
+
+                if ident_b[1] is not None:  # si stochio spéciale
+                        self.fich_sortie.write("tgdb:"+ident_b[0]+" a\t"+"tgdb:"+ident_b[1]+" .\n")
+
+                if len(dico_pr_stochio_pr[key]) > 1:  # ca sert à rien d'écrire si l'ident pas modif..
+                    self.fich_sortie.write("tgdb:"+ident_b[0]+" a\t"+"tgdb:"+key.lower()+" .\n")
 
 inst = TgdbToRDF()
 inst.nodes_to_rdf()
