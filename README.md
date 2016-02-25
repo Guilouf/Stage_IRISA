@@ -24,6 +24,7 @@ Scripts et BDD sur la reconstruction des metagénomes
 - Ajouter une relation pour dire qu'une protéine appartient au voies de synthèse des vitamines
 - [] Télécharger et regarder les plans des voies de synthèse des vitamines
 - Mettre les données des fichiers sbml dans le rdf
+- [] Faire le graphe de schéma de mon truc rdf
 
 #Cheat markdown:
 - _italic_
