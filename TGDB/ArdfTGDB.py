@@ -70,8 +70,10 @@ class TgdbToRDF:
                     return gener_ident_bis(int(i), idmetaparam, "nstar")  # pour les n*x
             return gener_ident_bis(1, idmetaparam, "nstar")  # si ya pas de valeur numérique trouvée
             # pour le cas ou c'est juste n, ya aussi le cas ou c'est |n|, etc..
-        else:
+        elif stochio.isnumeric():
             return gener_ident_bis(int(stochio), idmetaparam, None)  # le truc classique
+        else:
+            return gener_ident_bis(1, idmetaparam, None) # TODO pour les cas désepérés, ne gère pas m+q..
 
 
     def nodes_to_rdf(self):

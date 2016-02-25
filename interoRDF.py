@@ -42,9 +42,11 @@ class Query:
         #?class a metacyc:class .
         #?class rdfs:subClassOf tgdb:meta7325 .
         #?class metacyc:common_name ?nom .
-        ?class a metacyc:class  .
-        ?class metacyc:label ?nom .
+        #?class a metacyc:class  .
+        #?class metacyc:label ?nom .
         #rdf:guigui rdf:type ?nom .
+        ?class a metacyc:pathway . # pour trouver les pathways
+        ?class metacyc:common_name ?nom . # pour trouver les pathways
     }
     """)
 
