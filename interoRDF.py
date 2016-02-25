@@ -34,7 +34,8 @@ class Query:
         #?class a metacyc:class
         #?class rdfs:subClassOf tgdb:meta7325 .
         #?class metacyc:common_name ?nom .
-        ?class metacyc:ec ?nom
+        #?class metacyc:ec ?nom
+        rdf:guigui rdf:type ?nom
     }
     """)
 
@@ -43,26 +44,29 @@ class Query:
     results = sparql.query().convert()
 
     for result in results["results"]["bindings"]:
-        print(result["class"]["value"], end=" ")  # le end pour ne pas sauter de lignes
+        # print(result["class"]["value"], end=" ")  # le end pour ne pas sauter de lignes
         print(result["nom"]["value"])
 
-#Query
+# Query
 
 
-serveur = "http://localhost:3030/tgdbRDF/update"
+serveur = "http://localhost:3030/tgdbRDF"
 sparql2 = SPARQLWrapper(serveur)
+
 
 class Update:
     sparql2.method = 'POST'
     sparql2.setQuery("""
-
+    prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
     INSERT DATA {
-        "guigui" a "génie" .
+        rdf:guigui rdf:type "genie"  .
     }
     """)
     sparql2.method = 'POST'
     sparql2.setReturnFormat(JSON)
     result = sparql2.query().convert()
+    print(result)
 
-Update
+# Update
