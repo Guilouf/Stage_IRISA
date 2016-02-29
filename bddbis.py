@@ -161,7 +161,7 @@ class Requetes:
             listobjet = set(laccessinBis.hasAccesByRefSeq + laccessinBis.hasAccesByPrimaire)
             # ben ya plus qu'a les rendre unique...
             for obj in listobjet:
-                print(" Id de l'access: ", obj.Id_access, "/", end="")
+                print(" Id de l'access: ", obj.Id_access, "/", end="", sep=" ")
             print("\n")
             pass
 
@@ -198,10 +198,9 @@ class Requetes:
     # print(association_table.c.Accessions_tab_id)
 
 requetes = Requetes()  # instance de la classe requetes
-requetes.print_table_ecnum()
 # requetes.statistiques_par_access()
 # requetes.print_table_access()
-# requetes.print_table_ecnum()
+requetes.print_table_ecnum()
 
 
 
