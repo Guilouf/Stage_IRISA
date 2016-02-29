@@ -166,6 +166,18 @@ class Requetes:
             pass
 
     @staticmethod
+    def print_rdf(): # todo les littérals ne peuvent pas être des sujets.. or dans le rdf les ec sont des littérals
+        resul_ec = ses.query(EC_numbers).all()
+        string_rdf = ""
+        for num in resul_ec:
+            accessions_refseq = num.hasAccesByRefSeq # TODO enlever les "" pour les id access
+            for acc in accessions_refseq:
+                yield num.Id_ec+" metagdb:hasannot_refseq \""+acc.Id_access+"\"\n"
+            accessions_primaire = num.hasAccesByPrimaire
+            for acc in accessions_primaire:
+                yield num.Id_ec+" metagdb:hasannot_primaire \""+acc.Id_access+"\"\n"
+
+    @staticmethod
     def statistiques_par_access():
         resulAcc = ses.query(Accessions).all()
         total_ec_refseq = 0
@@ -200,7 +212,8 @@ class Requetes:
 requetes = Requetes()  # instance de la classe requetes
 # requetes.statistiques_par_access()
 # requetes.print_table_access()
-requetes.print_table_ecnum()
+# for i in requetes.print_rdf():
+#     print(i)
 
 
 

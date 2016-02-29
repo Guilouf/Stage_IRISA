@@ -1,3 +1,4 @@
+import bddbis
 from SPARQLWrapper import SPARQLWrapper, JSON
 import rdflib
 """
@@ -68,11 +69,12 @@ class Update:
     """
     def __init__(self, triples):
         """
-        a voir si on on balance une update à la fois ou toute une série
+        a voir si on on balance une update à la fois ou toute une série, de toute facon c un peu la mm
         """
 
         sparql.setQuery("""
         """+prefixes+"""
+        prefix metagdb: <http://localhost:3030/essaiTGDB/metagdb>
 
         INSERT DATA {
             """+triples+"""
@@ -80,10 +82,18 @@ class Update:
         """)
 
     @staticmethod
-    def commit_update(self):
+    def commit_update():
         sparql.method = 'POST'
         sparql.setReturnFormat(JSON)
         result = sparql.query().convert()
         print(result)
 
-# Update
+
+def importation_bdd():
+
+    for triple in bddbis.requetes.print_rdf():
+        Update(triple).commit_update()
+
+# importation_bdd()
+
+Update("guigui rdf:type genie").commit_update()
