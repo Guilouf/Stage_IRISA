@@ -44,9 +44,11 @@ class Query:
         #?class metacyc:common_name ?nom .
         #?class a metacyc:class  .
         #?class metacyc:label ?nom .
-        #rdf:guigui rdf:type ?nom .
         ?class a metacyc:pathway . # pour trouver les pathways
-        ?class metacyc:common_name ?nom . # pour trouver les pathways
+
+        # pour retrouver les truc appartenants à une espèce
+        ?class metacyc:common_name "Bacillus subtilis" .
+        ?nom tgdb:isinspecies ?class .
     }
     """)
 
@@ -64,16 +66,24 @@ class Update:
     """
     Insérer les données de ma bdd des numéros ec
     """
-    sparql.setQuery("""
-    """+prefixes+"""
+    def __init__(self, triples):
+        """
+        a voir si on on balance une update à la fois ou toute une série
+        """
 
-    INSERT DATA {
-        rdf:guigui rdf:type "genie"  .
-    }
-    """)
-    sparql.method = 'POST'
-    sparql.setReturnFormat(JSON)
-    result = sparql.query().convert()
-    print(result)
+        sparql.setQuery("""
+        """+prefixes+"""
+
+        INSERT DATA {
+            """+triples+"""
+        }
+        """)
+
+    @staticmethod
+    def commit_update(self):
+        sparql.method = 'POST'
+        sparql.setReturnFormat(JSON)
+        result = sparql.query().convert()
+        print(result)
 
 # Update

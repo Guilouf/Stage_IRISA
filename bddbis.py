@@ -198,7 +198,8 @@ class Requetes:
     # print(association_table.c.Accessions_tab_id)
 
 requetes = Requetes()  # instance de la classe requetes
-requetes.statistiques_par_access()
+requetes.print_table_ecnum()
+# requetes.statistiques_par_access()
 # requetes.print_table_access()
 # requetes.print_table_ecnum()
 
