@@ -53,14 +53,14 @@ class Recup_EC :
         :return: true si c'est le complet, false si master, puis le numéro d'accession , meme si il est déjà dans le fichier..
         """
 
-        comm = gbk.annotations["comment"]  # com est un string
+        comm = gbk.annotations.get("comment", None)  # com est un string #todo mettre un get!!!
         # /!\/!\/!\ ya une key error, comme par enchantement sur la souche de l'inra
         """
         print(comm[0:18])  # REFSEQ INFORMATION pour tester si ya un primaire
         print(comm[60:68])  # le numero d'accession de l'annot primaire
         """
         access_prim = None
-        if comm[0:18] == "REFSEQ INFORMATION":
+        if comm is not None and comm[0:18] == "REFSEQ INFORMATION":
             access_prim = comm[60:68]
 
         for cle in gbk.annotations:  # permet de tester si le fichier est un master record
@@ -166,7 +166,7 @@ if __name__ == "__main__":
     with open('exemple/ListeAccess', mode='r') as listaccess:
         for numacc in listaccess:  # itère la liste des accessions à regarder
             # print("le num d'acc qui ne s'affiche aps", numacc)
-            traitement(numacc)  # gaffe aux espaces à la fin du doc..
+            traitement(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
 
 
 # instantiation des classes de bbdbis pr test

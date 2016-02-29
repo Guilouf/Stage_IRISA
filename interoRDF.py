@@ -71,7 +71,7 @@ class Update:
         """
         a voir si on on balance une update à la fois ou toute une série, de toute facon c un peu la mm
         """
-
+        # todo les littérals ne peuvent pas être des sujets.. or dans le rdf les ec sont des littérals
         sparql.setQuery("""
         """+prefixes+"""
         prefix metagdb: <http://localhost:3030/essaiTGDB/metagdb>
@@ -91,9 +91,9 @@ class Update:
 
 def importation_bdd():
 
-    for triple in bddbis.requetes.print_rdf():
+    for triple in bddbis.requetes.print_rdf(): # TODO c'est super lent, faire la requete multiple
         Update(triple).commit_update()
 
-# importation_bdd()
+importation_bdd()
 
-Update("guigui rdf:type genie").commit_update()
+# Update("rdf:guigui rdf:type \"genie\"").commit_update()

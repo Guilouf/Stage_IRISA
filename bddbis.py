@@ -166,16 +166,16 @@ class Requetes:
             pass
 
     @staticmethod
-    def print_rdf(): # todo les littérals ne peuvent pas être des sujets.. or dans le rdf les ec sont des littérals
+    def print_rdf():
         resul_ec = ses.query(EC_numbers).all()
         string_rdf = ""
         for num in resul_ec:
-            accessions_refseq = num.hasAccesByRefSeq # TODO enlever les "" pour les id access
+            accessions_refseq = num.hasAccesByRefSeq  # TODO enlever les "" pour les id access, et pr les ec ds le rdf
             for acc in accessions_refseq:
-                yield num.Id_ec+" metagdb:hasannot_refseq \""+acc.Id_access+"\"\n"
+                yield "metagdb:"+num.Id_ec+" metagdb:hasannot_refseq metagdb:"+acc.Id_access
             accessions_primaire = num.hasAccesByPrimaire
             for acc in accessions_primaire:
-                yield num.Id_ec+" metagdb:hasannot_primaire \""+acc.Id_access+"\"\n"
+                yield "metagdb:"+num.Id_ec+" metagdb:hasannot_primaire metagdb:"+acc.Id_access
 
     @staticmethod
     def statistiques_par_access():
