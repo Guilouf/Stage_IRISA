@@ -15,6 +15,7 @@ sparql = SPARQLWrapper(serveur)
 prefixes = """
 prefix tgdb: <"""+serveur+"""/tgdb>
 prefix metacyc: <"""+serveur+"""/metacyc>
+prefix metagdb: <"""+serveur+"""/metagdb>
 prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 """
@@ -74,7 +75,7 @@ class Update:
         # todo les littérals ne peuvent pas être des sujets.. or dans le rdf les ec sont des littérals
         sparql.setQuery("""
         """+prefixes+"""
-        prefix metagdb: <http://localhost:3030/essaiTGDB/metagdb>
+
 
         INSERT DATA {
             """+triples+"""
@@ -91,8 +92,8 @@ class Update:
 
 def importation_bdd():
 
-    for triple in bddbis.requetes.print_rdf(): # TODO c'est super lent, faire la requete multiple
-        Update(triple).commit_update()
+    for triple in bddbis.requetes.print_rdf():  # TODO c'est super lent, faire la requete multiple
+        Update(triple).commit_update()  # bizare, cava bien plus vite sur l'ordi du taff..
 
 importation_bdd()
 

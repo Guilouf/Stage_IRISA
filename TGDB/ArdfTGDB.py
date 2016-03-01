@@ -12,6 +12,7 @@ class TgdbToRDF:
     La sortie doit se faire en .ttl, et non .owl ...
     """
     # TODO faire qq chose pour les stochio à 0.5.. les supprimer à la main par exemple
+    # TODO les classes pour les pathway ne sont pas les mm que pour les métabolites ou autres..
 
     def __init__(self, urlserv="http://localhost:3030/tgdbRDF/"):  # pas oublier le / a la fin
         self.tgdb = Tinygraphdb("tgdbRef.tgdb")
@@ -90,7 +91,7 @@ class TgdbToRDF:
             for key in dicomisc.keys():  # /!\/!\/!\ les valeurs sont des listes.. META51128=>multiple
                 print("VALEUR DE CLE MULTIPLE") if len(dicomisc[key]) > 1 else None  # ternaire pr test multi val
                 for value in dicomisc[key]:  # les valeurs des clef sont des listes...
-                    self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+value+'"'+" .\n")
+                    self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+value+'" .\n')  # todo plus de litt, corriger les ec ||, mais fait bugger
 
             relations_tpl = self.dico_rel.get(node.getId(), None)
 
