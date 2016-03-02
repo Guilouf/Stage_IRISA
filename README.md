@@ -27,6 +27,9 @@ Scripts et BDD sur la reconstruction des metagénomes
 - [] Faire le graphe de schéma de mon truc rdf
 - sqlite database browser(en qt, fait chier)
 - Relier les ec des annotations avec le nom des proteines, regarder les cross ref dispo dans les gbk
+    - Il y a autant de xref uniprot que entrez..
+    - Pour le lien des entrées entrez ds uniprot c ncbi/Embl CDS, EN FAIT C en bordel: ya des GI, des accessions etc..
+    - Quelques GI sont presque bien annotés, 7-8 quoi.., et toujours dans la case entrez
 - Commencer la rédaction
 
 #Cheat markdown:
