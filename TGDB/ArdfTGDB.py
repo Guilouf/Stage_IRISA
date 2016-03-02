@@ -13,6 +13,7 @@ class TgdbToRDF:
     """
     # TODO faire qq chose pour les stochio à 0.5.. les supprimer à la main par exemple
     # TODO les classes pour les pathway ne sont pas les mm que pour les métabolites ou autres..
+    # TODO => faire des rdfs:label pour les littérals, et générer des identifiants à la volée
 
     def __init__(self, urlserv="http://localhost:3030/tgdbRDF/"):  # pas oublier le / a la fin
         self.tgdb = Tinygraphdb("tgdbRef.tgdb")

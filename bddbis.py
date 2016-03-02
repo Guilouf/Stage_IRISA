@@ -21,6 +21,10 @@ association_table_primaire = Table('association_primaire', Base.metadata,
     Column('Accessions_tab_id', String, ForeignKey('Accessions_tab.Id_access')),
     Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
 )
+association_table_xref = Table('association_xref', Base.metadata,
+    Column('Xref_tab_id', String, ForeignKey('Xref_tab.Id_xref')),
+    Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
+)
 
 ####################################################################
 "Objets de la BDD"
@@ -39,6 +43,7 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     hasPrimaire = relationship("EC_numbers", secondary=association_table_primaire, back_populates="hasAccesByPrimaire")
 
 
+
 class EC_numbers(Base):  # mettre en camelCase
 
     __tablename__ = "EC_numbers_tab"
@@ -46,6 +51,15 @@ class EC_numbers(Base):  # mettre en camelCase
     Id_ec = Column(String, primary_key=True)
     hasAccesByRefSeq = relationship("Accessions", secondary=association_table_refeseq, back_populates="hasRefSeq") # mouais, mais hasprimaire alors?
     hasAccesByPrimaire = relationship("Accessions", secondary=association_table_primaire, back_populates="hasPrimaire")
+    hasXref = relationship("Xref", secondary=association_table_xref, back_populates="hasEc")
+
+class Xref(Base):
+
+    __tablename__ = "Xref_tab"
+
+    Id_xref = Column(String, primary_key=True)
+    hasEc = relationship("EC_numbers", secondary=association_table_xref, back_populates="hasXref")
+
 
 # Ne pas mettre au dessus...
 Base.metadata.bind = eng
@@ -64,15 +78,21 @@ class Remplissage:
         pass
 
     @staticmethod
-    def ajout_access(param_access): #gérer les doublons: plutot utiliser first car ne renvoit pas d''exeptions mais None
+    def ajout_access(param_access):  # gérer les doublons: plutot utiliser first car ne renvoit pas d''exeptions mais None
         if ses.query(Accessions).filter(Accessions.Id_access == param_access).first() is None:
             ses.add(Accessions(Id_access=param_access))
             ses.commit()
 
     @staticmethod
-    def ajout_ec(param_num_ec): # bon théoriquement ca devrait jamais arriver si c'est bien fait
+    def ajout_ec(param_num_ec):  # bon théoriquement ca devrait jamais arriver si c'est bien fait
         if ses.query(EC_numbers).filter(EC_numbers.Id_ec == param_num_ec).first() is None:
             ses.add(EC_numbers(Id_ec=param_num_ec))
+            ses.commit()
+
+    @staticmethod
+    def ajout_xref(param_xref):
+        if ses.query(Xref).filter(Xref.Id_xref == param_xref).first() is None:
+            ses.add(Xref(Id_xref=param_xref))
             ses.commit()
 
     def access_has_refeseq(self, param_id_access, param_list_ec):  #faudra test les exeptions aussi qd mm  §§§§CORRIGER LE TYPO!!!!
@@ -105,7 +125,7 @@ class Remplissage:
         """
         list_objet_ec = []
         for ec in param_list_ec:  # parcourt la liste des strings du param, par contre parcourt les lettres si juste srt
-            Remplissage.ajout_ec(ec)  #guette si le truc est déjà la ou non
+            Remplissage.ajout_ec(ec)  # guette si le truc est déjà la ou non
             selec_ec = ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()
             list_objet_ec.append(selec_ec)
 
@@ -116,6 +136,18 @@ class Remplissage:
         ses.add(selec)
         ses.commit()
 
+    def ec_has_xref(self, param_list_ec, param_list_xref):  # etre bien sur que c'est toujours des gi..
+        list_objet_ec = []
+        for ec in param_list_ec:  # parcourt la liste des strings du param, par contre parcourt les lettres si juste srt
+            Remplissage.ajout_ec(ec)  # guette si le truc est déjà la ou non
+            selec_ec = ses.query(EC_numbers).filter(EC_numbers.Id_ec == ec).first()
+            list_objet_ec.append(selec_ec)
+
+        Remplissage.ajout_xref(param_list_xref[0])  # on prend le premier en espérant qu'il n'y a q'une cross ref par ec
+        selec = ses.query(Xref).filter(Xref.Id_xref == param_list_xref[0]).first()
+        selec.hasEc += list_objet_ec
+        ses.add(selec)
+        ses.commit()
 
 ####################################################################
 "Test de remplissage"
@@ -163,7 +195,21 @@ class Requetes:
             for obj in listobjet:
                 print(" Id de l'access: ", obj.Id_access, "/", end="", sep=" ")
             print("\n")
-            pass
+            listref = laccessinBis.hasXref
+            for obj in listref:
+                print(" Id de la ref: ", obj.Id_xref, "/", end="", sep=" ")
+            print("\n")
+
+
+    @staticmethod
+    def print_table_xref():
+        resul_xref = ses.query(Xref).all()
+        for xref in resul_xref:
+            print("Id de la ref: ", xref.Id_xref, sep=" ")
+            listobj = xref.hasEc
+            for obj in listobj:
+                print("Id de l'ec: ", obj.Id_ec, "/", end="", sep=" ")
+            print("\n")
 
     @staticmethod
     def print_rdf():
@@ -212,6 +258,8 @@ class Requetes:
 requetes = Requetes()  # instance de la classe requetes
 # requetes.statistiques_par_access()
 # requetes.print_table_access()
+requetes.print_table_ecnum()
+# requetes.print_table_xref()
 # for i in requetes.print_rdf():
 #     print(i)
 

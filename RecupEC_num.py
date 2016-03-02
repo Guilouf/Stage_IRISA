@@ -17,6 +17,9 @@ Questions:
 
 Révélations: le générateur est composé d'un record, donc renovyer juste un next serait pas mal
 """
+# TODO récupérer les num GI, yen a ds le tgdb en tant que "entrez"
+
+
 class Recup_EC :
     ##################################################################
     "Partie recuperation"
@@ -53,7 +56,7 @@ class Recup_EC :
         :return: true si c'est le complet, false si master, puis le numéro d'accession , meme si il est déjà dans le fichier..
         """
 
-        comm = gbk.annotations.get("comment", None)  # com est un string #todo mettre un get!!!
+        comm = gbk.annotations.get("comment", None)  # com est un string, parfois absent dc get
         # /!\/!\/!\ ya une key error, comme par enchantement sur la souche de l'inra
         """
         print(comm[0:18])  # REFSEQ INFORMATION pour tester si ya un primaire
@@ -91,13 +94,19 @@ class Recup_EC :
         for donne in gbk.features:
             if donne.type == "CDS":
                 # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
-                num_ec_from_web = donne.qualifiers.get("EC_number", None)  # bon ca doit etre une liste jimagine vu que ca marche
+                num_ec_from_web = donne.qualifiers.get("EC_number", None)  # fait gaffe c'est d listes..
+                num_gi_from_web = donne.qualifiers.get("db_xref", None)  # etre sur que c toujours des gi..
                 # print(num_ec_from_web)
                 if num_ec_from_web is not None and refseq:  # du coup ca ajoute jamais l'accession si ya pas de num ec associé
                     self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
+                    print(num_gi_from_web)
+                    self.inst_rempl.ec_has_xref(num_ec_from_web, num_gi_from_web)
                     # print("accesplacée")
                 elif num_ec_from_web is not None:
                     self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
+                    print(num_gi_from_web)
+                    self.inst_rempl.ec_has_xref(num_ec_from_web, num_gi_from_web)
+                    # self.inst_rempl.ajout_xref(num_gi_from_web[0])
                     # print("primairePlacée")
 
     ##################################################################
