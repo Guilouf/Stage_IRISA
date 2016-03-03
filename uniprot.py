@@ -1,0 +1,40 @@
+import urllib
+from urllib.request import *
+from urllib.parse import *
+
+"""
+http://www.uniprot.org/help/programmatic_access
+"""
+
+
+class Uniprot:
+
+    def __init__(self, list_id):
+
+        url = "http://www.uniprot.org/mapping/"
+
+        params = {
+            'from': 'P_GI',
+            'to': 'ID',  # id est plus long, mais apporte pas d'info par rapport à acc
+            'format': 'tab',
+            'query': " ".join([id for id in list_id])
+        }
+
+        data = urlencode(params).encode('utf-8')
+        request = Request(url, data)
+
+        response = urlopen(request)
+        self.page = (line.decode('utf-8') for line in response)
+
+    def print_resul(self):
+
+        print(self.page)
+
+    def gener_id(self):
+        header = next(self.page)
+        for i in self.page:
+            print(i.split('\t')[1])
+            yield i.split('\t').strip()[1]  # récupère l'id, enlève le \n
+
+
+Uniprot(['917680677', '917680578']).gener_id()
