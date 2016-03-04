@@ -33,8 +33,8 @@ class Uniprot:
     def gener_id(self):
         header = next(self.page)
         for i in self.page:
-            print(i.split('\t')[1])
-            yield i.split('\t').strip()[1]  # récupère l'id, enlève le \n
+            # print(i.split('\t')[1])
+            yield i.split('\t')[1].strip()  # récupère l'id, enlève le \n
 
-
-Uniprot(['917680677', '917680578']).gener_id()
+# ['917680677', '917680578']
+print(next(Uniprot(['917680677']).gener_id()))

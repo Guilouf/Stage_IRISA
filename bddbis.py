@@ -258,7 +258,7 @@ class Requetes:
 requetes = Requetes()  # instance de la classe requetes
 # requetes.statistiques_par_access()
 # requetes.print_table_access()
-requetes.print_table_ecnum()
+# requetes.print_table_ecnum()
 # requetes.print_table_xref()
 # for i in requetes.print_rdf():
 #     print(i)

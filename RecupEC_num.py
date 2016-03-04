@@ -5,6 +5,7 @@ from io import StringIO
 import copy
 from itertools import tee
 import bddbis  # execute le truc à l'import
+from uniprot import Uniprot
 
 """
 Installation des modules(en -user si pas root):
@@ -95,17 +96,20 @@ class Recup_EC :
             if donne.type == "CDS":
                 # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
                 num_ec_from_web = donne.qualifiers.get("EC_number", None)  # fait gaffe c'est d listes..
-                num_gi_from_web = donne.qualifiers.get("db_xref", None)  # etre sur que c toujours des gi..
+                num_gi_from_web = donne.qualifiers.get("db_xref", None)
+                if num_gi_from_web is not None: num_gi_from_web[0] = num_gi_from_web[0][3:]  # modifie pour retirer gi:
                 # print(num_ec_from_web)
-                if num_ec_from_web is not None and refseq:  # du coup ca ajoute jamais l'accession si ya pas de num ec associé
+                if num_ec_from_web is not None and num_gi_from_web is not None and refseq:  # du coup ca ajoute jamais l'accession si ya pas de num ec associé
+
                     self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
                     print(num_gi_from_web)
                     self.inst_rempl.ec_has_xref(num_ec_from_web, num_gi_from_web)
                     # print("accesplacée")
-                elif num_ec_from_web is not None:
+                elif num_ec_from_web is not None and num_gi_from_web is not None:
                     self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
                     print(num_gi_from_web)
-                    self.inst_rempl.ec_has_xref(num_ec_from_web, num_gi_from_web)
+                    self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())])  # pb qd géné vide, et surtt de numéro avec gi: devant..ok
+                    # TODO faire gaffe ya plusieurs accession uniprot associées parfois.. bon ca prend la première qui est pas mal généralement
                     # self.inst_rempl.ajout_xref(num_gi_from_web[0])
                     # print("primairePlacée")
 
@@ -118,7 +122,7 @@ class Recup_EC :
         """
         rangeaccess = gbk.annotations["wgs"]  # ou wgs scaffold? il ont l'air de plus faire dériver vers des refseq
 
-        def gener_access(paramrangeaccess):  # essayer de faire un foutu générateur...
+        def gener_access(paramrangeaccess):
             start = paramrangeaccess[0]
             stop = paramrangeaccess[1]
             locus = start[0:5]  # on rajoute le 0 qui se trouve devant le 1
