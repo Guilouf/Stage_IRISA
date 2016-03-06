@@ -97,7 +97,11 @@ class Recup_EC :
                 # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
                 num_ec_from_web = donne.qualifiers.get("EC_number", None)  # fait gaffe c'est d listes..
                 num_gi_from_web = donne.qualifiers.get("db_xref", None)
-                if num_gi_from_web is not None: num_gi_from_web[0] = num_gi_from_web[0][3:]  # modifie pour retirer gi:
+                # todo FN806773 UDO:CBL55599.1
+                if num_gi_from_web is not None and num_gi_from_web[0][0:3] == "GI:":
+                    num_gi_from_web[0] = num_gi_from_web[0][3:]  # modifie pour retirer gi:
+                else:
+                    num_gi_from_web = None
                 # print(num_ec_from_web)
                 if num_ec_from_web is not None and num_gi_from_web is not None and refseq:  # du coup ca ajoute jamais l'accession si ya pas de num ec associé
 
