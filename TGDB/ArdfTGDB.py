@@ -92,7 +92,7 @@ class TgdbToRDF:
             for key in dicomisc.keys():  # /!\/!\/!\ les valeurs sont des listes.. META51128=>multiple
                 print("VALEUR DE CLE MULTIPLE") if len(dicomisc[key]) > 1 else None  # ternaire pr test multi val
                 for value in dicomisc[key]:  # les valeurs des clef sont des listes...
-                    self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+value+'" .\n')  # todo plus de litt, corriger les ec ||, mais fait bugger
+                    self.fich_sortie.write(str_node+"\t"+"metacyc:"+key.replace(" ", "")+'\t"'+value+'" .\n')  # TODO plus de litt, corriger les ec ||, mais fait bugger
 
             relations_tpl = self.dico_rel.get(node.getId(), None)
 
