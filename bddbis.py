@@ -214,7 +214,6 @@ class Requetes:
     @staticmethod
     def print_rdf():
         resul_ec = ses.query(EC_numbers).all()
-        string_rdf = ""
         for num in resul_ec:
             accessions_refseq = num.hasAccesByRefSeq  # TODO enlever les "" pour les id access, et pr les ec ds le rdf
             for acc in accessions_refseq:
@@ -222,7 +221,16 @@ class Requetes:
             accessions_primaire = num.hasAccesByPrimaire
             for acc in accessions_primaire:
                 yield "metagdb:"+num.Id_ec+" metagdb:hasannot_primaire metagdb:"+acc.Id_access
+                # TODO je sais plus si ca marche a force..
 
+    @staticmethod
+    def write_asp():
+        with open("ASP/test_asp.lp", "w") as asp_file:
+            resul_ec = ses.query(EC_numbers).all()
+            for num in resul_ec:
+                list_xref = num.hasXref
+                for xref in list_xref:
+                    yield "uniprot("+num.Id_ec.replace(".", ',')+","+xref.Id_xref+")."
     @staticmethod
     def statistiques_par_access():
         resulAcc = ses.query(Accessions).all()
@@ -264,4 +272,7 @@ requetes = Requetes()  # instance de la classe requetes
 #     print(i)
 
 
-
+"""
+for i in requetes.write_asp():
+    print(i)
+    """
