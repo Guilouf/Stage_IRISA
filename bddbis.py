@@ -229,8 +229,13 @@ class Requetes:
             resul_ec = ses.query(EC_numbers).all()
             for num in resul_ec:
                 list_xref = num.hasXref
+                list_access = set(num.hasAccesByPrimaire+num.hasAccesByRefSeq)
                 for xref in list_xref:
-                    yield "uniprot("+num.Id_ec.replace(".", ',')+","+xref.Id_xref+")."
+                    yield "uniprot("+num.Id_ec.replace(".", ',')+","+xref.Id_xref+")."  # a voir si je garde les - des incomplets
+                    # todo virer le -, et inverser la sequence darguments
+                for acc in list_access:
+                    yield "num_access("+num.Id_ec.replace(".", ',')+","+acc.Id_access+")."
+
     @staticmethod
     def statistiques_par_access():
         resulAcc = ses.query(Accessions).all()
@@ -272,7 +277,7 @@ requetes = Requetes()  # instance de la classe requetes
 #     print(i)
 
 
-"""
+""
 for i in requetes.write_asp():
     print(i)
-    """
+    ""
