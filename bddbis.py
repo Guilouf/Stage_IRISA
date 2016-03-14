@@ -6,8 +6,8 @@ from sqlalchemy.orm import sessionmaker, relationship
 """
 incrementation auto des ids, pas d'unicité par contre... pour les accessions
 ou alors mettre son identifiant en clé..
-trouver un moyen de mettre à jour les relations..
 """
+
 eng = create_engine('sqlite:///testBis.balec')
 
 Base = declarative_base()
@@ -25,6 +25,11 @@ association_table_xref = Table('association_xref', Base.metadata,
     Column('Xref_tab_id', String, ForeignKey('Xref_tab.Id_xref')),
     Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
 )
+association_table_xref_acc = Table('association_xref_acc', Base.metadata,
+    Column('Accessions_tab_id', String, ForeignKey('Accessions_tab.Id_access')),
+    Column('Xref_tab_id', String, ForeignKey('Xref_tab.Id_xref'))
+)
+
 
 ####################################################################
 "Objets de la BDD"
@@ -34,6 +39,7 @@ association_table_xref = Table('association_xref', Base.metadata,
 class Accessions(Base):  # le truc (Base) c'est l'héritage
 
     __tablename__ = "Accessions_tab"
+    # __tableargs__ soit index soit contrainte unicité.
 
     # Id = Column(Integer, primary_key=True, autoincrement=True)  # auto increment va gérer les id tt seul
     Id_access = Column(String, primary_key=True)
@@ -41,15 +47,16 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     #Les relations
     hasRefSeq = relationship("EC_numbers", secondary=association_table_refeseq, back_populates="hasAccesByRefSeq")
     hasPrimaire = relationship("EC_numbers", secondary=association_table_primaire, back_populates="hasAccesByPrimaire")
-
-
+    uniHasAccess = relationship("Xref", secondary=association_table_xref_acc, back_populates="xrefHasAccess")
+    # le nom est nul, ce serait plutot accessHasUni
 
 class EC_numbers(Base):  # mettre en camelCase
 
     __tablename__ = "EC_numbers_tab"
 
     Id_ec = Column(String, primary_key=True)
-    hasAccesByRefSeq = relationship("Accessions", secondary=association_table_refeseq, back_populates="hasRefSeq") # mouais, mais hasprimaire alors?
+
+    hasAccesByRefSeq = relationship("Accessions", secondary=association_table_refeseq, back_populates="hasRefSeq")
     hasAccesByPrimaire = relationship("Accessions", secondary=association_table_primaire, back_populates="hasPrimaire")
     hasXref = relationship("Xref", secondary=association_table_xref, back_populates="hasEc")
 
@@ -58,8 +65,10 @@ class Xref(Base):
     __tablename__ = "Xref_tab"
 
     Id_xref = Column(String, primary_key=True)
-    hasEc = relationship("EC_numbers", secondary=association_table_xref, back_populates="hasXref")
 
+    hasEc = relationship("EC_numbers", secondary=association_table_xref, back_populates="hasXref")
+    xrefHasAccess = relationship("Accessions", secondary=association_table_xref_acc, back_populates="uniHasAccess")
+    # on met hasprimaire, mais en fait vaut mieux recreer un autre truc
 
 # Ne pas mettre au dessus...
 Base.metadata.bind = eng
@@ -136,7 +145,8 @@ class Remplissage:
         ses.add(selec)
         ses.commit()
 
-    def ec_has_xref(self, param_list_ec, param_list_xref):  # etre bien sur que c'est toujours des gi..
+    # todo ajouter l'accession (replace.replace, str.maketrans...
+    def ec_has_xref(self, param_list_ec, param_list_xref, param_access):  # etre bien sur que c'est toujours des gi..
         list_objet_ec = []
         for ec in param_list_ec:  # parcourt la liste des strings du param, par contre parcourt les lettres si juste srt
             Remplissage.ajout_ec(ec)  # guette si le truc est déjà la ou non
@@ -146,6 +156,8 @@ class Remplissage:
         Remplissage.ajout_xref(param_list_xref[0])  # on prend le premier en espérant qu'il n'y a q'une cross ref par ec
         selec = ses.query(Xref).filter(Xref.Id_xref == param_list_xref[0]).first()
         selec.hasEc += list_objet_ec
+        # l'accession doit bien être présente à la base, nrmlt c'est bon
+        selec.xrefHasAccess += [ses.query(Accessions).filter(Accessions.Id_access == param_access).first()]
         ses.add(selec)
         ses.commit()
 
@@ -277,7 +289,7 @@ requetes = Requetes()  # instance de la classe requetes
 #     print(i)
 
 
-""
+"""
 for i in requetes.write_asp():
     print(i)
-    ""
+    """

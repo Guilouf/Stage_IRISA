@@ -107,12 +107,12 @@ class Recup_EC :
 
                     self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
                     print(num_gi_from_web)
-                    self.inst_rempl.ec_has_xref(num_ec_from_web, num_gi_from_web)
+                    self.inst_rempl.ec_has_xref(num_ec_from_web, num_gi_from_web, num_access)
                     # print("accesplacée")
                 elif num_ec_from_web is not None and num_gi_from_web is not None:
                     self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
                     print(num_gi_from_web)
-                    self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())])  # pb qd géné vide, et surtt de numéro avec gi: devant..ok
+                    self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)  # pb qd géné vide, et surtt de numéro avec gi: devant..ok
                     # TODO faire gaffe ya plusieurs accession uniprot associées parfois.. bon ca prend la première qui est pas mal généralement
                     # self.inst_rempl.ajout_xref(num_gi_from_web[0])
                     # print("primairePlacée")
