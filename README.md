@@ -30,7 +30,19 @@ Scripts et BDD sur la reconstruction des metagénomes
     - Il y a autant de xref uniprot que entrez..
     - Pour le lien des entrées entrez ds uniprot c ncbi/Embl CDS, EN FAIT C en bordel: ya des GI, des accessions etc..
     - Quelques GI sont presque bien annotés, 7-8 quoi.., et toujours dans la case entrez
-- Commencer la rédaction
+    
+ Télécharger les num_ec des vitamines, par rapport aux bactéries de références
+    - Actino bactéries proches propio:
+        - Corynebacterium glutamicum
+        - Mycobacterium tuberculosis
+        - Bifidobacterium longum
+    - Gram + :
+        - Bacillus subtilis (regarder ds la partie genome du ncbi)
+    - Firmicutes:
+        - Lactococcus lactis
+        - Lactobacillus acidophilus
+        - Lactobacillus delbrueckii subsp. bulgaricus
+        - Streptococcus thermophilus
 
 #Cheat markdown:
 - _italic_
