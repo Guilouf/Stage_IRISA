@@ -39,7 +39,7 @@ association_table_xref_acc = Table('association_xref_acc', Base.metadata,
 class Accessions(Base):  # le truc (Base) c'est l'héritage
 
     __tablename__ = "Accessions_tab"
-    # __tableargs__ soit index soit contrainte unicité.
+    # __tableargs__h soit index soit contrainte unicité.
 
     # Id = Column(Integer, primary_key=True, autoincrement=True)  # auto increment va gérer les id tt seul
     Id_access = Column(String, primary_key=True)

@@ -16,6 +16,8 @@ Scripts et BDD sur la reconstruction des metagénomes
 - http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ =>le site de merde qui bug...
 
 #TODO:
+- 154146A : matricule INRA
+- Pour le rdf, on peut utiliser des blank nodes avec rdflib qui font automatiquement des clés!!
 - Récuprérer les réactions des vitamines
     - b9(acide folique, folate, glutamic) ,b12(cobalamine) et k2 (menaquinone, ds quinol biosynth)
 - [x] Faire un schéma de la bdd (analyse si)
