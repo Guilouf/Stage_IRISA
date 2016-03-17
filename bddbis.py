@@ -243,10 +243,10 @@ class Requetes:
                 list_xref = num.hasXref
                 list_access = set(num.hasAccesByPrimaire+num.hasAccesByRefSeq)
                 for xref in list_xref:
-                    yield "uniprot("+num.Id_ec.replace(".", ',')+","+xref.Id_xref+")."  # a voir si je garde les - des incomplets
+                    yield "uniprot( ec("+num.Id_ec.replace(".", ',').replace(",-", "")+"),"+xref.Id_xref+")."
                     # todo virer le -, et inverser la sequence darguments
                 for acc in list_access:
-                    yield "num_access("+num.Id_ec.replace(".", ',')+","+acc.Id_access+")."
+                    yield "num_access("+acc.Id_access+","+xref.Id_xref+")."
 
     @staticmethod
     def statistiques_par_access():
@@ -289,7 +289,7 @@ requetes = Requetes()  # instance de la classe requetes
 #     print(i)
 
 
-"""
+""
 for i in requetes.write_asp():
     print(i)
-    """
+    ""
