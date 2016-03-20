@@ -15,7 +15,7 @@ class Uniprot:
 
         params = {
             'from': 'P_GI',
-            'to': 'ID',  # id est plus long, mais apporte pas d'info par rapport à acc
+            'to': 'ACC',  # id est plus long, mais apporte pas d'info par rapport à acc. C'est acc dans metacyc..
             'format': 'tab',
             'query': " ".join([id for id in list_id])
         }

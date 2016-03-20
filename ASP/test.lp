@@ -11,7 +11,10 @@ is_a(class or compound, class_id).
 is_a(pathway_id, pathway_id).
 *%
 
-
+ %*
+ C'est sensé donner les ident uniprot de mes protéines qui ont un ec associé à une reaction ou des menaquinols sont
+ produits
+ *%
 
 target(X):- is_a(X,"Menaquinols").
 
@@ -20,6 +23,8 @@ numero_ec(Ec) :- ec_number(Reac, Ec).
 
 ref_uni(Access_uni) :- uniprot( Ec,Access_uni).
 
+uni_commun(Enzyme_id) :- uniprotID(Enzyme_id, Access_uni).
+
 #show.
 %#show target/1.
 % bon ca ne marche que en mettant /1...
@@ -27,4 +32,5 @@ ref_uni(Access_uni) :- uniprot( Ec,Access_uni).
 %#show le_reac/1.
 %#show numero_ec/1.
 #show ref_uni/1.
+#show enzyme_id/1.
 

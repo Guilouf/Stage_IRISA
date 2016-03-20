@@ -107,7 +107,7 @@ class Recup_EC :
 
                     self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
                     print(num_gi_from_web)
-                    self.inst_rempl.ec_has_xref(num_ec_from_web, num_gi_from_web, num_access)
+                    self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)
                     # print("accesplacée")
                 elif num_ec_from_web is not None and num_gi_from_web is not None:
                     self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
