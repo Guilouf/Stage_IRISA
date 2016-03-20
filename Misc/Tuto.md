@@ -31,6 +31,8 @@ de mon unité centrale)
 - Thème intégralement configurable et indépendant des couleurs système
 - Edition simple des raccourcis claviers, tous entièrement configurables
 - Plugins qui se téléchargent automatiquement
+- Possibilité de faire ses propres highlight en fonction des langages, par exemple pour ASP..
+- Pour aller plus loin il est possible de créer des plugins: http://blog.jetbrains.com/idea/2013/01/how-to-write-custom-language-support-plugins/
 
 #A reconfigurer selon les gouts:
 - La sauvegarde automatique (désactiver)
