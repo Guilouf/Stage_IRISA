@@ -13,8 +13,7 @@ Call:
 #const maxpath=1.
 
 target(X):- is_a(X,"Menaquinols").
-pw(Pathway):- produced(0,X); product(Reaction, X, _); 
-	in_pathway(Reaction,Pathway). 
+pw(Pathway):- produced(0,X); product(Reaction, X, _); in_pathway(Reaction,Pathway).
 pw(Pathway2):- pw(Pathway1); is_a(Pathway1,SuperPathway); is_a(Pathway2,SuperPathway); Pathway1!= Pathway2.
 
 1{t(X):target(X)}1.
