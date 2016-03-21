@@ -16,21 +16,28 @@ is_a(pathway_id, pathway_id).
  produits
  *%
 
-target(X):- is_a(X,"Menaquinols").
+% selectionne un truc qui est un menaquinol
+%target(X) :- is_a(X,"Menaquinols").
 
-le_reac(Reac) :- product(Reac, X, Stoc).
-numero_ec(Ec) :- ec_number(Reac, Ec).
+% selec la reaction qui produit le truc
+%la_reac(Reac) :- product(Reac, X, Stoc).
 
-ref_uni(Access_uni) :- uniprot( Ec,Access_uni).
+% selec le numero ec de la reaction
+%numero_ec(Ec) :- ec_number(Reac, Ec).
 
-uni_commun(Enzyme_id) :- uniprotID(Enzyme_id, Access_uni).
+%selection une de mes l'access uniprot qui matchent ac le numero ec
+ref_uni(Access_uni) :- uniprot( Ec, Access_uni).
+
+% relie l'enzyme id a mon access uniport
+uni_commun(Enzyme_id) :- uniprotID(Enzyme_id, ref_uni(Access_uni))  .
 
 #show.
 %#show target/1.
 % bon ca ne marche que en mettant /1...
 
-%#show le_reac/1.
+%#show la_reac/1.
+
 %#show numero_ec/1.
 #show ref_uni/1.
-#show enzyme_id/1.
+#show uni_commun/1.
 

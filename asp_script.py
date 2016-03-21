@@ -5,6 +5,8 @@ from io import StringIO
 # TODO ya des numeros Gi qui se balladent en tant que uniprot..=> voir le todo pr abruti ds recup ec..
 # TODO apparement c'est pas le bons uniprot dans le metacyc et ceux que j'ai, les miens sont trop longs
 
+# TODO on peut envoyer les trucs asp en strings, regarder le tuto
+
 """
 Memmo base:
 is_a(truc,cekilest)
