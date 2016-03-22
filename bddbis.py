@@ -239,14 +239,14 @@ class Requetes:
     def write_asp():
         with open("ASP/test_asp.lp", "w") as asp_file:
             resul_ec = ses.query(EC_numbers).all()
-            for num in resul_ec:
-                list_xref = num.hasXref
-                list_access = set(num.hasAccesByPrimaire+num.hasAccesByRefSeq)
+            for num in resul_ec:  # num correspond au numero ec
+                list_xref = num.hasXref  # la liste des xref du num_ec
+                list_access = set(num.hasAccesByPrimaire+num.hasAccesByRefSeq)  # liste de ses acc NCBI
                 for xref in list_xref:
                     yield "uniprot( ec("+num.Id_ec.replace(".", ',').replace(",-", "")+"),\""+xref.Id_xref+"\")."
-                    # todo virer le -, et inverser la sequence darguments
-                for acc in list_access:
-                    yield "num_access(\""+acc.Id_access+"\",\""+xref.Id_xref+"\")."
+                    # vire le -, et inverser la sequence darguments
+                    for acc in list_access:
+                        yield "num_access(\""+acc.Id_access+"\",\""+xref.Id_xref+"\")."
 
     @staticmethod
     def statistiques_par_access():

@@ -8,11 +8,7 @@ from io import StringIO
 # TODO on peut envoyer les trucs asp en strings, regarder le tuto
 
 """
-Memmo base:
-is_a(truc,cekilest)
-in_pathway(Reaction,Pathway)
-ec_number(Reaction,EC)
-
+#Memmo base#
 common_name(reaction_id or enzyme_id or pathway_id or compound_id , common_name).
 direction(reaction_id, reaction_direction).
 ec_number(reaction_id, ec(x,x,x,x) ou ec(x,x,x)).
@@ -23,6 +19,10 @@ catalysed_by(reaction_id, enzyme_id).
 uniprotID(enzyme_id, uniprot_id).
 is_a(class or compound, class_id).
 is_a(pathway_id, pathway_id).
+
+#Memmo ma base#
+uniprot( ec(2,1,1,72),"A0A0L7Y7H5").
+num_access("NC_020229.1","A0A0L7Y7H5").
 """
 ###########
 # memmo ASP
