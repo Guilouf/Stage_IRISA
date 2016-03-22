@@ -12,10 +12,6 @@ is_a(pathway_id, pathway_id).
 *%
 
  %*
- C'est sensé donner les ident uniprot de mes protéines qui ont un ec associé à une reaction ou des menaquinols sont
- produits
- *%
-
 % selectionne un truc qui est un menaquinol
 %target(X) :- is_a(X,"Menaquinols").
 
@@ -26,18 +22,47 @@ is_a(pathway_id, pathway_id).
 %numero_ec(Ec) :- ec_number(Reac, Ec).
 
 %selection une de mes l'access uniprot qui matchent ac le numero ec
-ref_uni(Access_uni) :- uniprot( Ec, Access_uni).
+%mes_uni(Ec, Access_uni) :- uniprot( Ec, Access_uni).
+
+
 
 % relie l'enzyme id a mon access uniport
-uni_commun(Enzyme_id) :- uniprotID(Enzyme_id, ref_uni(Access_uni))  .
+%uni_tgdb(Enzyme_id) :- uniprotID(Enzyme_id, Access_uni)  ; uniprot( Ec, Access_uni).
 
+
+%uni_tgdb(Enzyme_id, Access_uni) :- uniprotID(Enzyme_id, Access_uni).
+
+
+ec_commmun(Ec, Reaction_id) :- ec_number(Reaction_id, Ec) ; uniprot( Ec, Access_uni).
+
+
+%dire de ne montrer que les trucs que je veux
 #show.
+
 %#show target/1.
 % bon ca ne marche que en mettant /1...
 
 %#show la_reac/1.
 
 %#show numero_ec/1.
-#show ref_uni/1.
+%#show uniprot/2.
+#show ec_commmun/2.
+#show uni_tgdb/2.
 #show uni_commun/1.
+#show coucou(X): mes_uni(X,_).
 
+%bon apparement ya pas de correspondance entre les acc de mes proteines et celles de tgdb..
+*%
+
+%bon alors ce pathway n'est pas associé à une reaction.. mais certains trucs sont des instances de ce pathway..
+react_path(Autrepath, Reaction_id) :- in_pathway(Reaction_id, Autrepath) ;
+                        is_a(Autrepath, Pathway_id); %"faudrait remonter toute la hierarchie, comme en rdf"
+
+                        common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
+
+id_path(Pathway_id) :- common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
+
+#show.
+
+#show react_path/2.
+%#show id_path/1.
