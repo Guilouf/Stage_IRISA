@@ -59,7 +59,7 @@ uni_comun(Uniref) :- uniprot( _, Uniref) ; uniprotID(_, Uniref).
 
 %ok on va essayer de remonter la hierarchie de is_a
 %"PWY-6612", is_a: "ALL-CHORISMATE-PWY","FOLSYN-PWY"
-% et "PWY-6543","PWY-6614","PWY-6147" sont des 6612.
+% et "PWY-6543","PWY-6614","PWY-6147" sont des 6612..
 
 
 hierarchie(I+1,Hier_inf) :- is_a(Hier_inf,Hier_sup) ; niveau(I,Hier_inf).
