@@ -27,44 +27,47 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 % selec le numero ec de la reaction
 %numero_ec(Ec) :- ec_number(Reac, Ec).
 
-%selection une de mes l'access uniprot qui matchent ac le numero ec
-ref_uni(Access_uni) :- uniprot( Ec, Access_uni).
-
-% relie l'enzyme id a mon access uniport
-uni_commun(Enzyme_id) :- uniprotID(Enzyme_id, ref_uni(Access_uni))  .
-
-
-%uni_tgdb(Enzyme_id, Access_uni) :- uniprotID(Enzyme_id, Access_uni).
-
-
-ec_commmun(Ec, Reaction_id) :- ec_number(Reaction_id, Ec) ; uniprot( Ec, Access_uni).
-
-
-%dire de ne montrer que les trucs que je veux
-#show.
-%#show target/1.
-% bon ca ne marche que en mettant /1...
-
-%#show la_reac/1.
-
-%#show numero_ec/1.
-#show ref_uni/1.
-#show uni_commun/1.
 *%
 
+ %*
 %a partir de ca on peut retrouver des reactions associés un pathway chez mes bactéries
 %bon alors ce pathway n'est pas associé à une reaction.. mais certains trucs sont des instances de ce pathway..
-react_path(Autrepath, Reaction_id, Uniref, Ec) :- in_pathway(Reaction_id, Autrepath) ;
-                        is_a(Autrepath, Pathway_id); %"faudrait remonter toute la hierarchie, comme en rdf"
+react_path(Autrepath, Reaction_id, Uniref, Ec) :-
+        in_pathway(Reaction_id, Autrepath) ;
+        is_a(Autrepath, Pathway_id); %"faudrait remonter toute la hierarchie, comme en rdf"
 
-                        ec_number(Reaction_id, Ec);
-                        uniprot(Ec, Uniref);
-                        num_access(Refseq, Uniref);
-                        common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
+        ec_number(Reaction_id, Ec);
+        uniprot(Ec, Uniref);
+        num_access(Refseq, Uniref);
+        common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
 
 id_path(Pathway_id) :- common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
 
+%donc pas d'acc uniprot en commun..
+uni_comun(Uniref) :- uniprot( _, Uniref) ; uniprotID(_, Uniref).
+
 #show.
 
-#show react_path/4.
+%#show react_path/4.
+
+%cool ca marche, c'est pour montrer le nom des paths
+#show nom_path(Nom): react_path(Autrepath, Reaction_id, Uniref, Ec) ; common_name(Autrepath, Nom).
 %#show id_path/1.
+%#show uni_comun/1.
+
+*%
+
+%ok on va essayer de remonter la hierarchie de is_a
+%"PWY-6612", is_a: "ALL-CHORISMATE-PWY","FOLSYN-PWY"
+% et "PWY-6543","PWY-6614","PWY-6147" sont des 6612.
+
+
+hierarchie(I+1,Hier_inf) :- is_a(Hier_inf,Hier_sup) ; niveau(I,Hier_inf).
+
+
+niveau(0,Hier_inf) :- is_a(Hier_inf, "FOLSYN-PWY").
+niveau(I,Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
+
+
+#show.
+#show hierarchie/2.
