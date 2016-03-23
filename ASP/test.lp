@@ -36,7 +36,7 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 react_path(Hier_inf, Reaction_id,  Ec) :-
         in_pathway(Reaction_id, Hier_inf) ;
 
-        hierarchie(I+1, Hier_inf);
+        niveau(I, Hier_inf);
 
         %uniprot(Ec, Uniref);
         %num_access(Refseq, Uniref);
@@ -48,7 +48,9 @@ react_path(Hier_inf, Reaction_id,  Ec) :-
 %"superpathway of tetrahydrofolate biosynthesis"
 %"adenosylcobalamin biosynthesis I (early cobalt insertion)"
 
-hierarchie(I+1, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I, Hier_inf).
+%N = #count {react_path(Hier_inf, Reaction_id,  Ec): react_path(Hier_inf, Reaction_id,  Ec)}
+
+%compt(Hier_inf, N) :- react_path(Hier_inf, Reaction_id,  Ec).
 
 niveau(0, Hier_inf) :- is_a(Hier_inf, Pathway_id); common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
 niveau(I, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
@@ -64,21 +66,20 @@ niveau(I, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
 #show react_path/3.
 
 #show ec_trois/1.
+#show compt/2.
 
 
 %cool ca marche, c'est pour montrer le nom des paths
 %#show nom_path(Nom): react_path(Autrepath, Reaction_id, Uniref, Ec) ; common_name(Autrepath, Nom).
 
 %#show uni_comun/1.
-
  %*
-hierarchie(I+1,Hier_inf) :- is_a(Hier_inf,Hier_sup) ; niveau(I,Hier_inf).
-
+%bon yen a 5
 niveau(0,Hier_inf) :- is_a(Hier_inf, "FOLSYN-PWY").
 niveau(I,Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
 *%
 
-%#show hierarchie/2.
+#show niveau/2.
 
 
 
