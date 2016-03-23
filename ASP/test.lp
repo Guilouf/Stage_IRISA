@@ -29,45 +29,53 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 
 *%
 
- %*
+
 %a partir de ca on peut retrouver des reactions associés un pathway chez mes bactéries
-%bon alors ce pathway n'est pas associé à une reaction.. mais certains trucs sont des instances de ce pathway..
-react_path(Autrepath, Reaction_id, Uniref, Ec) :-
-        in_pathway(Reaction_id, Autrepath) ;
-        is_a(Autrepath, Pathway_id); %"faudrait remonter toute la hierarchie, comme en rdf"
+%il manque pr tetrahydro 1 ec(3.6.1.67).. et RXN-9311", ec(3,1,2,28)=> pas chez mes trucs c tt..
 
-        ec_number(Reaction_id, Ec);
-        uniprot(Ec, Uniref);
-        num_access(Refseq, Uniref);
-        common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
+react_path(Hier_inf, Reaction_id,  Ec) :-
+        in_pathway(Reaction_id, Hier_inf) ;
 
-id_path(Pathway_id) :- common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
+        hierarchie(I+1, Hier_inf);
+
+        %uniprot(Ec, Uniref);
+        %num_access(Refseq, Uniref);
+        ec_number(Reaction_id, Ec).
+
+
+%le recursif pour retrouver les is_a inferieurs
+%"superpathway of menaquinol-7 biosynthesis"
+%"superpathway of tetrahydrofolate biosynthesis"
+%"adenosylcobalamin biosynthesis I (early cobalt insertion)"
+
+hierarchie(I+1, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I, Hier_inf).
+
+niveau(0, Hier_inf) :- is_a(Hier_inf, Pathway_id); common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
+niveau(I, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
+
 
 %donc pas d'acc uniprot en commun..
-uni_comun(Uniref) :- uniprot( _, Uniref) ; uniprotID(_, Uniref).
+%uni_comun(Uniref) :- uniprot( _, Uniref) ; uniprotID(_, Uniref).
 
 #show.
 
-%#show react_path/4.
+%c presque bon mais il me manque 2 ec au niveau du gtp..
+#show react_path/3.
 
 %cool ca marche, c'est pour montrer le nom des paths
-#show nom_path(Nom): react_path(Autrepath, Reaction_id, Uniref, Ec) ; common_name(Autrepath, Nom).
-%#show id_path/1.
+%#show nom_path(Nom): react_path(Autrepath, Reaction_id, Uniref, Ec) ; common_name(Autrepath, Nom).
+
 %#show uni_comun/1.
 
-*%
-
-%ok on va essayer de remonter la hierarchie de is_a
-%"PWY-6612", is_a: "ALL-CHORISMATE-PWY","FOLSYN-PWY"
-% et "PWY-6543","PWY-6614","PWY-6147" sont des 6612..
-
-
+ %*
 hierarchie(I+1,Hier_inf) :- is_a(Hier_inf,Hier_sup) ; niveau(I,Hier_inf).
-
 
 niveau(0,Hier_inf) :- is_a(Hier_inf, "FOLSYN-PWY").
 niveau(I,Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
+*%
+
+%#show hierarchie/2.
 
 
-#show.
-#show hierarchie/2.
+
+

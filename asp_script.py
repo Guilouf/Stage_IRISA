@@ -54,4 +54,5 @@ result = solver.run([hidden, base, test, metagdb], collapseTerms=True, collapseA
 for term in result[0]:
     print(term)
 
+print("Nombre: ", len(result[0]))
 
