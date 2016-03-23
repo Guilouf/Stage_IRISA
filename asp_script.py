@@ -6,6 +6,7 @@ from io import StringIO
 # TODO apparement c'est pas le bons uniprot dans le metacyc et ceux que j'ai, les miens sont trop longs
 
 # TODO on peut envoyer les trucs asp en strings, regarder le tuto
+# TODO matter si ya bien autant de ref que d'ec..
 
 """
 #Memmo base#

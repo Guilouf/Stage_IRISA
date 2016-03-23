@@ -53,6 +53,7 @@ hierarchie(I+1, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I, Hier_inf).
 niveau(0, Hier_inf) :- is_a(Hier_inf, Pathway_id); common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
 niveau(I, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
 
+%ec_trois(X) :- uniprot( ec(_,_,_,_), X).
 
 %donc pas d'acc uniprot en commun..
 %uni_comun(Uniref) :- uniprot( _, Uniref) ; uniprotID(_, Uniref).
@@ -61,6 +62,9 @@ niveau(I, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
 
 %c presque bon mais il me manque 2 ec au niveau du gtp..
 #show react_path/3.
+
+#show ec_trois/1.
+
 
 %cool ca marche, c'est pour montrer le nom des paths
 %#show nom_path(Nom): react_path(Autrepath, Reaction_id, Uniref, Ec) ; common_name(Autrepath, Nom).
