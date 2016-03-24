@@ -90,8 +90,8 @@ pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
 strain(S) :- num_access(S,_).
 %superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
-%superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
-superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
+superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
+%superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
 
 %les enzymes appartenants aux vitamines
 enzymeV(V,Ec) :- in_pathway(R,P) ; ec_number(R,Ec) ; pathwayV(V,P).
@@ -125,6 +125,7 @@ size_ec(ec(X,Y,Z,T),4) :- enzymeV(V,ec(X,Y,Z,T)).
 size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 %#show enzymeV/2.
+#show enzymeV(V,Ec): enzymeV(V,Ec), Ec=ec(X,Y,Z,T).
 %#show enzymeS/4.
 
 %#show statS(V,S,N): statS(V,S,(3,4),N).
@@ -133,7 +134,7 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %#show statS(V,S,T,N): statS(V,S,T,N), not statS(V,S,T,(0)).
 
 %pour tab ecv4,
-#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(3,3..4).
+%#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(3,3..4).
 
 %#show statS/4.
 %#show statV/3.
