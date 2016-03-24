@@ -32,7 +32,7 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 
 %a partir de ca on peut retrouver des reactions associés un pathway chez mes bactéries
 %il manque pr tetrahydro 1 ec(3.6.1.67).. et RXN-9311", ec(3,1,2,28)=> pas chez mes trucs c tt..
-
+ %*
 react_path(Hier_inf, Reaction_id,  Ec) :-
         in_pathway(Reaction_id, Hier_inf) ;
 
@@ -41,7 +41,7 @@ react_path(Hier_inf, Reaction_id,  Ec) :-
         %uniprot(Ec, Uniref);
         %num_access(Refseq, Uniref);
         ec_number(Reaction_id, Ec).
-
+*%
 
 %le recursif pour retrouver les is_a inferieurs
 %"superpathway of menaquinol-7 biosynthesis"
@@ -52,9 +52,10 @@ react_path(Hier_inf, Reaction_id,  Ec) :-
 
 %compt(Hier_inf, N) :- react_path(Hier_inf, Reaction_id,  Ec).
 
+ %*
 niveau(0, Hier_inf) :- is_a(Hier_inf, Pathway_id); common_name(Pathway_id, "superpathway of tetrahydrofolate biosynthesis").
 niveau(I, Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
-
+*%
 %ec_trois(X) :- uniprot( ec(_,_,_,_), X).
 
 %donc pas d'acc uniprot en commun..
@@ -79,8 +80,54 @@ niveau(0,Hier_inf) :- is_a(Hier_inf, "FOLSYN-PWY").
 niveau(I,Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
 *%
 
-#show niveau/2.
+%#show niveau/2.
+
+%Partie Jaques
 
 
+%définition du pathway, des vitamines et souches
+pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
+vitamin(V) :- superpathwayV(V,_).
+strain(S) :- num_access(S,_).
+superpathwayV(k,"superpathway of menaquinol-7 biosynthesis").
+%superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
+%superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
+
+%les enzymes appartenants aux vitamines
+enzymeV(V,Ec) :- in_pathway(R,P) ; ec_number(R,Ec) ; pathwayV(V,P).
+
+%les enzymes appartenants aux souches
+enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
+                     uniprot(EcS,Uniref);
+                     num_access(S,Uniref);
+                     map(EcV,EcS,T).
+
+%comptage des occurences de enzymesS
+%N=#count {enzymeS(V,S,Ec,T): enzymeS(V,S,Ec,T)}. equivalent: %N={enzymeS(_,_,_,_)}. %ce qui a a la place des _ n'est definit qu'entre les {}
+statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(V,S,_,T)}.
+%statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(_,_,_,_)}.
+
+%comptage des occurences de enzymesV
+statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): enzymeV(V,Ec),size_ec(Ec,T)}.
 
 
+%mappeur d'EC
+map(ec(X,Y,Z,T),ec(X,Y,Z,T),t(4,4)) :- enzymeV(V,ec(X,Y,Z,T)).
+map(ec(X,Y,Z,T),ec(X,Y,Z),t(4,3)) :- enzymeV(V,ec(X,Y,Z,T)).
+
+map(ec(X,Y,Z),ec(X,Y,Z,T),t(3,4)) :- enzymeV(V,ec(X,Y,Z)) ; uniprot(ec(X,Y,Z,T),_).
+map(ec(X,Y,Z),ec(X,Y,Z),t(3,3)) :- enzymeV(V,ec(X,Y,Z)).
+
+%type de correspondance
+type(t(4,4)). type(t(4,3)). type(t(3,4)). type(t(3,3)).
+
+size_ec(ec(X,Y,Z,T),4) :- enzymeV(V,ec(X,Y,Z,T)).
+size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
+
+%#show enzymeV/2.
+%#show enzymeS/4.
+%#show statS(V,S,N): statS(V,S,(3,4),N).
+#show statS/4.
+%#show statV/3.
+
+%#show size_ec/2.
