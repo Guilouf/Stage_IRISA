@@ -125,7 +125,7 @@ size_ec(ec(X,Y,Z,T),4) :- enzymeV(V,ec(X,Y,Z,T)).
 size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 %#show enzymeV/2.
-#show enzymeV(V,Ec): enzymeV(V,Ec), Ec=ec(X,Y,Z,T).
+%#show enzymeV(V,Ec): enzymeV(V,Ec), Ec=ec(X,Y,Z,T).
 %#show enzymeS/4.
 
 %#show statS(V,S,N): statS(V,S,(3,4),N).
@@ -133,8 +133,8 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %n'imprime pas ceux qui sont à 0 occurences
 %#show statS(V,S,T,N): statS(V,S,T,N), not statS(V,S,T,(0)).
 
-%pour tab ecv4,
-%#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(3,3..4).
+%pour tab ecv4, ou ecV3 si on change le premire
+#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(3,3..4).
 
 %#show statS/4.
 %#show statV/3.
