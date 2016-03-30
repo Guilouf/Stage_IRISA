@@ -15,19 +15,27 @@ Scripts et BDD sur la reconstruction des metagénomes
 #Memmo:
 - http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ =>le site de merde qui bug...
 
+#AGENDA:
+- 25 Avril 10h30: présentation des objectifs du stage 
+- 28-29 Avril: Reunion Dyliss
+- 13 Juin: 12 min 60 personnes..
+... les dates rapport et oral?
+
 #TODO:
-- 154146A : matricule INRA
+- 154146A : matricule INRA LOG: gulebreton MD/
+- Nouveau comptage des match en ASP
+- Tester les variations pour la K
+- Différencier en ASP les annotations primaires et refseq
+- Mettre des pourcentages dans le tableau
+- Ajouter des souches
+
 - Pour le rdf, on peut utiliser des blank nodes avec rdflib qui font automatiquement des clés!!
 - Récuprérer les réactions des vitamines
     - b9(acide folique, folate, glutamic) ,b12(cobalamine) et k2 (menaquinone, ds quinol biosynth)
 - [x] Faire un schéma de la bdd (analyse si)
 - [x] Compter les numéros EC
 - Ajouter des données de qualité?
-- Ajouter une relation pour dire qu'une protéine appartient au voies de synthèse des vitamines
-- [] Télécharger et regarder les plans des voies de synthèse des vitamines
-- Mettre les données des fichiers sbml dans le rdf
 - [] Faire le graphe de schéma de mon truc rdf
-- sqlite database browser(en qt, fait chier)
 - Relier les ec des annotations avec le nom des proteines, regarder les cross ref dispo dans les gbk
     - Il y a autant de xref uniprot que entrez..
     - Pour le lien des entrées entrez ds uniprot c ncbi/Embl CDS, EN FAIT C en bordel: ya des GI, des accessions etc..
