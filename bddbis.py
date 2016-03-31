@@ -241,13 +241,19 @@ class Requetes:
             resul_ec = ses.query(EC_numbers).all()
             for num in resul_ec:  # num correspond au numero ec
                 list_xref = num.hasXref  # la liste des xref du num_ec
-                list_access = set(num.hasAccesByPrimaire+num.hasAccesByRefSeq)  # liste de ses acc NCBI
+
+                list_access_refseq = num.hasAccesByRefSeq  # liste de ses acc NCBI
+                for xref in list_xref:  # défile les xref d'un EC
+                    yield "uniprot( ec("+num.Id_ec.replace(".", ',').replace(",-", "")+"),\""+xref.Id_xref+"\")."
+                    for acc in list_access_refseq:  # défile !!!!!!!!!!!!!
+                        yield "num_access(\""+acc.Id_access+"\",\""+xref.Id_xref+"\")."
+                """
+                list_access_primaire = num.hasAccesByPrimaire
                 for xref in list_xref:
                     yield "uniprot( ec("+num.Id_ec.replace(".", ',').replace(",-", "")+"),\""+xref.Id_xref+"\")."
-                    # vire le -, et inverser la sequence darguments
-                    for acc in list_access:
+                    for acc in list_access_primaire:
                         yield "num_access(\""+acc.Id_access+"\",\""+xref.Id_xref+"\")."
-
+                """
     @staticmethod
     def statistiques_par_access():
         resulAcc = ses.query(Accessions).all()
