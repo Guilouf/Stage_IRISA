@@ -25,7 +25,7 @@ Scripts et BDD sur la reconstruction des metagénomes
 - 154146A : matricule INRA LOG: gulebreton MD/
 - Nouveau comptage des match en ASP
 - Tester les variations pour la K
-- Différencier en ASP les annotations primaires et refseq
+- Différencier en ASP les annotations primaires et refseq OK
 - Mettre des pourcentages dans le tableau
 - Ajouter des souches
 

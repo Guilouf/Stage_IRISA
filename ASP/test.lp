@@ -88,7 +88,7 @@ niveau(I,Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
 %définition du pathway, des vitamines et souches
 pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
-strain(S) :- num_access(S,_).
+strain(S) :- num_access(S,_,_).
 %superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
 superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
 %superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
@@ -99,7 +99,7 @@ enzymeV(V,Ec) :- in_pathway(R,P) ; ec_number(R,Ec) ; pathwayV(V,P).
 %les enzymes appartenants aux souches
 enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
                      uniprot(EcS,Uniref);
-                     num_access(S,Uniref);
+                     num_access(S,Uniref,_);
                      map(EcV,EcS,T).
 
 %comptage des occurences de enzymesS
