@@ -99,7 +99,7 @@ enzymeV(V,Ec) :- in_pathway(R,P) ; ec_number(R,Ec) ; pathwayV(V,P).
 %les enzymes appartenants aux souches
 enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
                      uniprot(EcS,Uniref);
-                     num_access(S,Uniref,_);
+                     num_access(S,Uniref,"PRIMAIRE"); %888 changer ici pour refseq
                      map(EcV,EcS,T).
 
 %comptage des occurences de enzymesS

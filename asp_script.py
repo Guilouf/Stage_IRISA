@@ -59,8 +59,8 @@ for term in result[0]:
 
 print("Nombre: ", len(result[0]))
 
-list_souches = ["LEKW00000000.1", "NZ_CM003439.1", "NZ_CP010528.1", "NZ_CP009236.1", "NC_021514.1", "NC_020229.1"
-, "NC_014554.1", "NC_021224.2", "NC_012984.1", "AL935263.2", "FN806773"]
+list_souches = ["LEKW00000000.1", "NZ_CM003439.1", "NZ_CP010528.1", "NZ_CP009236.1", "NC_021514.1", "NC_020229.1",
+                "NC_014554.1", "NC_021224.2", "NC_012984.1", "AL935263.2", "FN806773"]
 
 for souche in list_souches:  # parcourt les souches
 
