@@ -293,10 +293,10 @@ requetes = Requetes()  # instance de la classe requetes
 #     print(i)
 
 
-""
+"""
 with open('ASP/ec_uni.lp', 'w') as fich_asp:
     for i in requetes.write_asp():
         print(i)
         fich_asp.write(i+"\n")
-""
+"""
 

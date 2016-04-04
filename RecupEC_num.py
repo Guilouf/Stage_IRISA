@@ -154,8 +154,8 @@ class Recup_EC :
 
         nvl_ref = Uniprot(vielle_ref).gener_id()  # /!\/!\/!\ c un générateur..
 
-        for i in range(0, len(list_ec_has_xref)-1):
-            self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], next(nvl_ref), list_ec_has_xref[i][2])
+        for i in range(0, len(list_ec_has_xref)):
+            self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], [next(nvl_ref)], list_ec_has_xref[i][2])
             print("ajoutXrefUniprot_insertion_bdd")
 
 
@@ -219,8 +219,10 @@ if __name__ == "__main__":
             print("master")
             for accessBis in recu.recup_master_access(gbk_gener):  # genere les identifiants vers les gbk du master
                 gbkprot = recu.telecharge(accessBis)
-                recu.recup_ec(gbkprot, access)  # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
-            # todo recup ec renvoit une liste, que l'on append à chaque tour et a la fin de la boucle on appelle uniprot
+                data_master = recu.recup_ec(gbkprot, access)  # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
+                recu.insertion_bdd(data_master)
+                print("insert_master")
+           # todo recup ec renvoit une liste, que l'on append à chaque tour et a la fin de la boucle on appelle uniprot
             # todo et la bdd
 
         # gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout

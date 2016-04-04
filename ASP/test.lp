@@ -139,7 +139,7 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 %#show enzymeV/2.
 %#show enzymeV(V,Ec): enzymeV(V,Ec), Ec=ec(X,Y,Z,T).
-%#show enzymeS/4.
+#show enzymeS/4.
 
 %#show statS(V,S,N): statS(V,S,(3,4),N).
 
@@ -155,7 +155,7 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %#show matched(V,S,Ec): matched(V,S,_,Ec), S="FN806773".
 
 
-#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773". %888 combine les match 3 et 4..
+%#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773". %888 combine les match 3 et 4..
 %#show enzymeV/2.
 
 %#show statS/4.
