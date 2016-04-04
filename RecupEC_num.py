@@ -54,7 +54,7 @@ class Recup_EC :
         vaut mieux detecter l'absence de cds dans les features.
 
         :param gbk: Le fichier genbank parsé
-        :return: true si c'est le complet, false si master, puis le numéro d'accession , meme si il est déjà dans le fichier..
+        :return: true si c'est le complet, false si master, puis le numéro d'accession primaire , meme si il est déjà dans le fichier..
         """
 
         comm = gbk.annotations.get("comment", None)  # com est un string, parfois absent dc get
@@ -87,12 +87,18 @@ class Recup_EC :
         :return:
         """
 
+        # les retours:
+        list_access_has_refeseq = []
+        list_access_has_primaire = []
+        list_ec_has_xref = []
+
+
         refseq = False
         for motcle in gbk.annotations["keywords"]:
             if motcle == "RefSeq":
                 refseq = True
 
-        for donne in gbk.features:
+        for donne in gbk.features:  # parcourt les features du fichier gbk(les prots en gros
             if donne.type == "CDS":
                 # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
                 num_ec_from_web = donne.qualifiers.get("EC_number", None)  # fait gaffe c'est d listes..
@@ -103,19 +109,55 @@ class Recup_EC :
                 else:
                     num_gi_from_web = None
                 # print(num_ec_from_web)
-                if num_ec_from_web is not None and num_gi_from_web is not None and refseq:  # du coup ca ajoute jamais l'accession si ya pas de num ec associé
+                if num_ec_from_web is not None and num_gi_from_web is not None and refseq:  # pour les gbk refseq
+                    # du coup ca ajoute jamais l'accession si ya pas de num ec associé
+                    list_access_has_refeseq.append((num_access, num_ec_from_web))  # ajout du tuple
+                    list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
 
-                    self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
-                    print(num_gi_from_web)
-                    self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)
-                    # print("accesplacée")
-                elif num_ec_from_web is not None and num_gi_from_web is not None:
-                    self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
-                    print(num_gi_from_web)
-                    self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)  # pb qd géné vide, et surtt de numéro avec gi: devant..ok
-                    # TODO faire gaffe ya plusieurs accession uniprot associées parfois.. bon ca prend la première qui est pas mal généralement
-                    # self.inst_rempl.ajout_xref(num_gi_from_web[0])
-                    # print("primairePlacée")
+                    # self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
+                    print(num_gi_from_web, ": accessRefseqplacée")
+                    # # TODO: donc ici faut tout stocker dans une liste, appelée une fois pas souche
+                    # self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)
+
+                elif num_ec_from_web is not None and num_gi_from_web is not None:  # pour les gbk non refseq
+                    list_access_has_primaire.append((num_access, num_ec_from_web))
+                    list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
+
+                    # self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
+                    print(num_gi_from_web, ": primairePlacée")
+                    # # TODO: donc ici faut tout stocker dans une liste, appelée une fois pas souche
+                    # self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)  # pb qd géné vide, ok
+                    # # TODO faire gaffe ya plusieurs accession uniprot associées parfois.. bon ca prend la première qui est pas mal généralement
+
+        return list_access_has_refeseq, list_access_has_primaire, list_ec_has_xref
+
+    def insertion_bdd(self, datarefseq):
+        list_access_has_refeseq = datarefseq[0]
+        list_access_has_primaire = datarefseq[1]
+        list_ec_has_xref = datarefseq[2]
+
+        if len(list_access_has_refeseq) != 0:  # si c'est un refseq, la liste n'est pas vide
+            for prot in list_access_has_refeseq:
+                self.inst_rempl.access_has_refeseq(prot[0], prot[1])  # le tuple des bonnes donnée..
+                print("ajoutRefseq_insertion_bdd")
+
+        else:
+            for prot_pri in list_access_has_primaire:
+                self.inst_rempl.access_has_primaire(prot_pri[0], prot_pri[1])
+                print("ajoutPrimaire_insertion_bdd")
+
+
+        # /!\/!\/!\ hashtag degeulasse
+        vielle_ref = []
+        for ref in list_ec_has_xref:
+            vielle_ref.append(ref[1][0])  # car ref est une liste de 1 element..
+
+        nvl_ref = Uniprot(vielle_ref).gener_id()  # /!\/!\/!\ c un générateur..
+
+        for i in range(0, len(list_ec_has_xref)-1):
+            self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], next(nvl_ref), list_ec_has_xref[i][2])
+            print("ajoutXrefUniprot_insertion_bdd")
+
 
     ##################################################################
     "Partie recup des accessions à partir d'un master record (NZ_AZSI00000000)"
@@ -123,6 +165,7 @@ class Recup_EC :
 
     def recup_master_access(self, gbk=None):
         """
+        Génère à partir d'un gbk master record, les identifiants vers les sous gbk.
         """
         rangeaccess = gbk.annotations["wgs"]  # ou wgs scaffold? il ont l'air de plus faire dériver vers des refseq
 
@@ -149,40 +192,42 @@ class Recup_EC :
     ##################################################################
 
 if __name__ == "__main__":
-    recu = Recup_EC()
+    recu = Recup_EC()  # instance de la classe entière
     """
     NZ_AZSI00000000 (master)
     NZ_CP009472.1
     """
-    def traitement(access):
-        gbk = recu.telecharge(access)
-
-        # test_parse, gbk_gener = tee(gbk)  # ok, tee de itertools permet de creer plusieur generateurs
-        test_parse = gbk
+    def traitement(access):  # appelé une fois par bactérie
+        gbk = recu.telecharge(access)  # le fichier gbk de la bacterie que l'on telecharge
+        test_parse = gbk  # ce sont des fichiers virtuels, dc nrmlt plus de generateurs...
         gbk_gener = gbk
+        # tt ce bordel etait à cause du générateur, nrmlt c fini
 
-        detection = recu.detection(test_parse)
+        detection = recu.detection(test_parse)  # [0] bool, true si complet. [1] num_acc
 
-        if detection[0]:  # faut que testparse renvoi aussi le type d'annotations
+        if detection[0]:  # faut que testparse renvoi aussi le type d'annotations(?) Cas des gbk complets, pas wgs
             print("complet")
             print(access)  # c'est bien un str
-            recu.recup_ec(gbk_gener, access)
-            if detection[1] is not None:
-                gbk_prot = recu.telecharge(detection[1])
-                recu.recup_ec(gbk_prot, access)  # je laisse le num ec refseq
+            data_refseq = recu.recup_ec(gbk_gener, access)  # pour télécharger la version refseq
+            recu.insertion_bdd(data_refseq)
+            if detection[1] is not None:  # ca veut dire qu'il y a un numéro d'acc primaire
+                gbk_prot = recu.telecharge(detection[1])  # telécharge la version annot primaire
+                data_prim = recu.recup_ec(gbk_prot, access)  # je laisse le num ec refseq
+                recu.insertion_bdd(data_prim)
 
-        else:
+        else:  # cas des master record
             print("master")
-            for accessBis in recu.recup_master_access(gbk_gener):  # faire une boucle de telechargement ici
+            for accessBis in recu.recup_master_access(gbk_gener):  # genere les identifiants vers les gbk du master
                 gbkprot = recu.telecharge(accessBis)
                 recu.recup_ec(gbkprot, access)  # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
+            # todo recup ec renvoit une liste, que l'on append à chaque tour et a la fin de la boucle on appelle uniprot
+            # todo et la bdd
 
         # gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
 
 
     with open('exemple/ListeAccess', mode='r') as listaccess:
         for numacc in listaccess:  # itère la liste des accessions à regarder
-            # print("le num d'acc qui ne s'affiche aps", numacc)
             traitement(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
 
 
