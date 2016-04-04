@@ -94,12 +94,14 @@ superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
 %superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
 
 %les enzymes appartenants aux vitamines
-enzymeV(V,Ec) :- in_pathway(R,P) ; ec_number(R,Ec) ; pathwayV(V,P).
+enzymeV(V,Ec) :-    in_pathway(R,P) ;
+                    ec_number(R,Ec) ;
+                    pathwayV(V,P).
 
-%les enzymes appartenants aux souches
+%les enzymes appartenants aux souches, et correspondant aux enzymes du pathway
 enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
                      uniprot(EcS,Uniref);
-                     num_access(S,Uniref,"PRIMAIRE"); %888 changer ici pour refseq
+                     num_access(S,Uniref,_); %888 changer ici pour refseq
                      map(EcV,EcS,T).
 
 %comptage des occurences de enzymesS
@@ -109,6 +111,17 @@ statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(V,S,_,T)}.
 
 %comptage des occurences de enzymesV
 statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): enzymeV(V,Ec),size_ec(Ec,T)}.
+
+ %*
+%comptage de la complétion (couples d'ec diff"érents) !! match exact
+matched(V,S,T,Ec) :-    vitamin(V) ;
+                        enzymeS(V,S,Ec,T) ;
+                        enzymeV(V,Ec).
+*%
+matched(V,S,T,EcV) :-    vitamin(V) ;
+                        enzymeS(V,S,EcS,T) ;
+                        map(EcV,EcS,T) ; %888 heu, ca revient au meme qu'avant?'
+                        enzymeV(V,EcV).
 
 
 %mappeur d'EC
@@ -134,7 +147,16 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %#show statS(V,S,T,N): statS(V,S,T,N), not statS(V,S,T,(0)).
 
 %pour tab ecv4, ou ecV3 si on change le premire
-#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(3,3..4).
+%#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(4,3..4).
+
+%!!! Matched ne donne que les matchs exacts, entre ec de mm taille
+%#show matched(V,S,T,Ec): matched(V,S,T,Ec), S="FN806773" ; T=t(4,3..4).
+%#show matched(V,S,T,Ec): matched(V,S,T,Ec), S="FN806773".
+%#show matched(V,S,Ec): matched(V,S,_,Ec), S="FN806773".
+
+
+#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773". %888 combine les match 3 et 4..
+%#show enzymeV/2.
 
 %#show statS/4.
 %#show statV/3.
