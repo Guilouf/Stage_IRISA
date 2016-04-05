@@ -70,14 +70,16 @@ for souche in list_souches:  # parcourt les souches
     for term in result[0]:  # parcourt les resultats (aléatoire..)
         split_term = str(term).split(",")
 
-        if split_term[1].replace("\"", '') == souche and int(split_term[3][0]) == 4:
+        if split_term[1].replace("\"", '') == souche and int(split_term[3][0]) == 4 \
+                and split_term[0][0:5] == "statS":
             # print(split_term[1], split_term[2][2:], split_term[3][0], split_term[4][0], end='; ')
             print(split_term[4].replace(')', ''), end=';')
 
     for term in result[0]:  # parcourt les resultats (aléatoire..)
         split_term = str(term).split(",")
 
-        if split_term[1].replace("\"", '') == souche and int(split_term[3][0]) == 3:
+        if split_term[1].replace("\"", '') == souche and int(split_term[3][0]) == 3 \
+                and split_term[0][0:5] == "statS":
             # print(split_term[1], split_term[2][2:], split_term[3][0], split_term[4][0], end=' ')
             print(split_term[4].replace(')', ''), end='')
 

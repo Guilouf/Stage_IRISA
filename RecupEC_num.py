@@ -195,6 +195,8 @@ if __name__ == "__main__":
     NZ_AZSI00000000 (master)
     NZ_CP009472.1
     """
+    print("Pense à supprimer la bdd si tu veux ecraser les données..")
+
     def traitement(access):  # appelé une fois par bactérie
         gbk = recu.telecharge(access)  # le fichier gbk de la bacterie que l'on telecharge
         test_parse = gbk  # ce sont des fichiers virtuels, dc nrmlt plus de generateurs...

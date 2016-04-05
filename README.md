@@ -14,6 +14,7 @@ Scripts et BDD sur la reconstruction des metagénomes
 
 #Memmo:
 - http://eutils.ncbi.nlm.nih.gov/entrez/eutils/ =>le site de merde qui bug...
+- Zotero: mdpcommitguit GuillaumeLebreton
 
 #AGENDA:
 - 25 Avril 10h30: présentation des objectifs du stage 

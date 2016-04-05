@@ -112,17 +112,20 @@ statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(V,S,_,T)}.
 %comptage des occurences de enzymesV
 statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): enzymeV(V,Ec),size_ec(Ec,T)}.
 
- %*
+
 %comptage de la complétion (couples d'ec diff"érents) !! match exact
-matched(V,S,T,Ec) :-    vitamin(V) ;
+full_match(V,S,T,Ec) :-    vitamin(V) ;
                         enzymeS(V,S,Ec,T) ;
                         enzymeV(V,Ec).
-*%
+
 matched(V,S,T,EcV) :-    vitamin(V) ;
                         enzymeS(V,S,EcS,T) ;
                         map(EcV,EcS,T) ; %888 heu, ca revient au meme qu'avant?'
                         enzymeV(V,EcV).
 
+
+%match_rest(V,S,T,Ec) :- enzymeS(V,S,Ec,T) ; not match4(V,S,Ec,T) ; match3(V,S,Ec,T). pourquoi il geule pas??
+match_rest(V,S,T,Ec) :- enzymeS(V,S,Ec,T) ; not full_match(V,S,T,Ec).
 
 %mappeur d'EC
 map(ec(X,Y,Z,T),ec(X,Y,Z,T),t(4,4)) :- enzymeV(V,ec(X,Y,Z,T)).
@@ -137,26 +140,37 @@ type(t(4,4)). type(t(4,3)). type(t(3,4)). type(t(3,3)).
 size_ec(ec(X,Y,Z,T),4) :- enzymeV(V,ec(X,Y,Z,T)).
 size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
+
+
+ %* PARTIE SHOW*%
+
+ %*Les show enzyme:  *%
 %#show enzymeV/2.
 %#show enzymeV(V,Ec): enzymeV(V,Ec), Ec=ec(X,Y,Z,T).
+%#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773". %888 combine les match 3 et 4..je devrais partir de là pr le match
 %#show enzymeS/4.
 
+
+ %*Les show stats:  *%
 %#show statS(V,S,N): statS(V,S,(3,4),N).
+
 
 %n'imprime pas ceux qui sont à 0 occurences
 %#show statS(V,S,T,N): statS(V,S,T,N), not statS(V,S,T,(0)).
 
 %pour tab ecv4, ou ecV3 si on change le premire
-#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(4,3..4).
+%#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(4,3..4).
 
+ %*Les show matched  *%
 %!!! Matched ne donne que les matchs exacts, entre ec de mm taille
 %#show matched(V,S,T,Ec): matched(V,S,T,Ec), S="FN806773" ; T=t(4,3..4).
 %#show matched(V,S,T,Ec): matched(V,S,T,Ec), S="FN806773".
 %#show matched(V,S,Ec): matched(V,S,_,Ec), S="FN806773".
 
-
-%#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773". %888 combine les match 3 et 4..
-%#show enzymeV/2.
+ %*Autre techeninique *%
+#show match_final(V,S,T,EcS) : match_rest(V,S,T,EcS) , S="FN806773".
+%#show full_match(V,S,Ec) : full_match(V,S,_,Ec) , S="FN806773". %888avec ca j'obtiens ce que jattend'
+% ok il me reste a faire une fonction pour dire que 2 ec commencant par le mm prefixe sont le mm... en qq sorte
 
 %#show statS/4.
 %#show statV/3.
