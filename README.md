@@ -22,10 +22,11 @@ Scripts et BDD sur la reconstruction des metagénomes
 ... les dates rapport et oral?
 
 #TODO:
-- 154146A : matricule INRA LOG: gulebreton MD/
+- 154146A : matricule INRA LOG: gulebreton MD: j'arrive pas à me connecter..
 - Nouveau comptage des match en ASP
 - Tester les variations pour la K
-- Différencier en ASP les annotations primaires et refseq OK
+- [X] Différencier en ASP les annotations primaires et refseq OK
+- [X] Refaire le système de téléchargement OK
 - Mettre des pourcentages dans le tableau
 - Ajouter des souches
 

@@ -113,19 +113,17 @@ class Recup_EC :
                     # du coup ca ajoute jamais l'accession si ya pas de num ec associé
                     list_access_has_refeseq.append((num_access, num_ec_from_web))  # ajout du tuple
                     list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
+                    print(num_gi_from_web, ": accessRefseqplacée")
 
                     # self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
-                    print(num_gi_from_web, ": accessRefseqplacée")
-                    # # TODO: donc ici faut tout stocker dans une liste, appelée une fois pas souche
                     # self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)
 
                 elif num_ec_from_web is not None and num_gi_from_web is not None:  # pour les gbk non refseq
                     list_access_has_primaire.append((num_access, num_ec_from_web))
                     list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
+                    print(num_gi_from_web, ": primairePlacée")
 
                     # self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
-                    print(num_gi_from_web, ": primairePlacée")
-                    # # TODO: donc ici faut tout stocker dans une liste, appelée une fois pas souche
                     # self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)  # pb qd géné vide, ok
                     # # TODO faire gaffe ya plusieurs accession uniprot associées parfois.. bon ca prend la première qui est pas mal généralement
 
@@ -222,8 +220,6 @@ if __name__ == "__main__":
                 data_master = recu.recup_ec(gbkprot, access)  # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes
                 recu.insertion_bdd(data_master)
                 print("insert_master")
-           # todo recup ec renvoit une liste, que l'on append à chaque tour et a la fin de la boucle on appelle uniprot
-            # todo et la bdd
 
         # gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
 
