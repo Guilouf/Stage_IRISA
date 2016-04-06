@@ -1,11 +1,11 @@
-Dans le pathway: CIRM-1
+Dans le pathway B9: CIRM-1
 enzymeV(b9,ec(2,7,6,3))
-enzymeV(b9,ec(4,1,3,38))
-enzymeV(b9,ec(2,5,1,15))
-enzymeV(b9,ec(2,6,1,85))
+enzymeV(b9,ec(4,1,3,38)) !
+enzymeV(b9,ec(2,5,1,15)) !
+enzymeV(b9,ec(2,6,1,85)) !
 enzymeV(b9,ec(6,3,2,12))
 enzymeV(b9,ec(3,5,4,16))
-enzymeV(b9,ec(3,6,1)) # un à 3 chiffres
+enzymeV(b9,ec(3,6,1)) # un à 3 chiffres, match avec un 3chiffre, et des 4 chiffres
 enzymeV(b9,ec(3,6,1,o)) #Faux, ne devrait jamais matcher
 enzymeV(b9,ec(1,5,1,3))
 enzymeV(b9,ec(4,1,2,25))
@@ -14,4 +14,28 @@ enzymeV(b9,ec(4,1,2,25))
 1 vrai 3 chfr
 8 vrai 4 chfr
 
-match 4: 8
+match 4/4: 8
+full_match: 9 (normal le 43)
+! c'est parce qu'en plus d'un match exact ils ont un match à 3 de ml'autre coté.
+le problème, c'est que le match de (3,6,1,o) est compté comme match alternatif..
+
+attendu: 9 matchs(correspond ici aux matchs exacts)
+
+Pathway k2 cIRM:
+10 ec dans le pathway
+enzymeV(k2_7,ec(5,4,4,2)) X
+enzymeV(k2_7,ec(4,2,99,20)) *
+enzymeV(k2_7,ec(3,1,2,28)) *
+enzymeV(k2_7,ec(2,5,1,30)) X  !
+enzymeV(k2_7,ec(4,2,1,113)) X
+enzymeV(k2_7,ec(2,1,1,163)) 43
+enzymeV(k2_7,ec(6,2,1,26)) X
+enzymeV(k2_7,ec(2,2,1,9)) *
+enzymeV(k2_7,ec(4,1,3,36)) X
+enzymeV(k2_7,ec(2,5,1,74)) 43 !
+
+5 match exacts (X)
+3 aucun match (*)
+2 match 43
+
+attendu: 7 ?

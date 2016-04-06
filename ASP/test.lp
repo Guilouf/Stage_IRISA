@@ -118,18 +118,22 @@ full_match(V,S,T,Ec) :-    vitamin(V) ;
                         enzymeS(V,S,Ec,T) ;
                         enzymeV(V,Ec).
 
-matched(V,S,T,EcV,EcS) :-   vitamin(V) ;
-                        enzymeS(V,S,EcS,T) ;
-                        map(EcV,EcS,T) ; %888 heu, ca revient au meme qu'avant?'
-                        enzymeV(V,EcV).
+%un peu pareil que enzyme S mais avec plus d'args
+matched(V,S,T,EcV,EcS) :-
+                        enzymeV(V,EcV) ;
+                        uniprot(EcS,Uniref);
+                        num_access(S,Uniref,_);
+                        map(EcV,EcS,T).
+
 
 
 
 %match_rest(V,S,T,Ec) :- enzymeS(V,S,Ec,T) ; not match4(V,S,Ec,T) ; match3(V,S,Ec,T). pourquoi il geule pas??   !!!!!!!!!!!
-%match_rest(V,S,T,Ec) :- enzymeS(V,S,Ec,T) ; not full_match(V,S,T,Ec).
-% il ne faut garder qu'un match 3.6.1 vers 3.6.1....
-match_rest(V,S,T,EcS) :- matched(V,S,T,EcV,EcS) ; not full_match(V,S,T,EcV).
 
+
+%visiblement le not marche pas comme je voudrais...=>ca marche par ensemble de variables...
+%%%%%%%%%%%%%%%%%%%%%%%% FAUDRA faire gaffe quand on voudra regarder plusieurs souches etc..%%%%%%%%%%
+match_rest(V,S,T,EcV,EcSS) :- matched(V,S,T,EcV,EcSS) ; not full_match(V,S,_,EcV) .
 
 %mappeur d'EC
 map(ec(X,Y,Z,T),ec(X,Y,Z,T),t(4,4)) :- enzymeV(V,ec(X,Y,Z,T)).
@@ -157,6 +161,8 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
  %*Les show stats:  *%
 %#show statS(V,S,N): statS(V,S,(3,4),N).
+%#show statS/4.
+%#show statV/3.
 
 
 %n'imprime pas ceux qui sont à 0 occurences
@@ -165,16 +171,17 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %pour tab ecv4, ou ecV3 si on change le premire
 %#show statS(V,S,T,N):  statS(V,S,T,N) , T=t(4,3..4).
 
- %*Les show matched  *%
-% au final c'est ca qui marche, il faut juste que un truc ayant matché en 4 n'ait plus a matcher en deux.
-#show matched(V,S,EcV): matched(V,S,T,EcV,_), S="FN806773".
-
- %*Autre techeninique *%
-%#show match_final(V,S,T,EcS) : match_rest(V,S,T,EcS) , S="FN806773".
+ %*AOn reprend depuis le début... pour B9 et CIRM => mauvais exemple..*%
+%#show enzymeV/2. %montre les ec du pathway: 10
+%#show matched(V,S,T,EcV,EcS) : matched(V,S,T,EcV,EcS) , S="FN806773".
+%#show match_final(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS).% , S="FN806773".
 %#show full_match(V,S,Ec) : full_match(V,S,_,Ec) , S="FN806773". %888avec ca j'obtiens ce que jattend'
 % ok il me reste a faire une fonction pour dire que 2 ec commencant par le mm prefixe sont le mm... en qq sorte
 
-%#show statS/4.
-%#show statV/3.
-
-%#show size_ec/2.
+ %*AOn reprend depuis le début... pour K2 et CIRM => mauvais exemple..*%
+%#show enzymeV/2. %montre les ec du pathway: 10
+%#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773".
+%#show matched(V,S,T,EcV,EcS) : matched(V,S,T,EcV,EcS) , S="FN806773".  % c'est logique quil yen ai une de +1 2.5.1'
+%#show match_final(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS) , S="FN806773". % plus qua additioner full match
+#show full_match(V,S,Ec) : full_match(V,S,_,Ec) , S="FN806773". %888avec ca j'obtiens ce que jattend'
+% ok il me reste a faire une fonction pour dire que 2 ec commencant par le mm prefixe sont le mm... en qq sorte
