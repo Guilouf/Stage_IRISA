@@ -113,7 +113,7 @@ class Recup_EC :
                     # du coup ca ajoute jamais l'accession si ya pas de num ec associé
                     list_access_has_refeseq.append((num_access, num_ec_from_web))  # ajout du tuple
                     list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
-                    print(num_gi_from_web, ": accessRefseqplacée")
+                    # print(num_gi_from_web, ": accessRefseqplacée")
 
                     # self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
                     # self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)
@@ -121,7 +121,7 @@ class Recup_EC :
                 elif num_ec_from_web is not None and num_gi_from_web is not None:  # pour les gbk non refseq
                     list_access_has_primaire.append((num_access, num_ec_from_web))
                     list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
-                    print(num_gi_from_web, ": primairePlacée")
+                    # print(num_gi_from_web, ": primairePlacée")
 
                     # self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
                     # self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)  # pb qd géné vide, ok
@@ -137,29 +137,34 @@ class Recup_EC :
         if len(list_access_has_refeseq) != 0:  # si c'est un refseq, la liste n'est pas vide
             for prot in list_access_has_refeseq:
                 self.inst_rempl.access_has_refeseq(prot[0], prot[1])  # le tuple des bonnes donnée..
-                print("ajoutRefseq_insertion_bdd")
+                # print("ajoutRefseq_insertion_bdd: ", prot[0], prot[1])
 
         else:
             for prot_pri in list_access_has_primaire:
                 self.inst_rempl.access_has_primaire(prot_pri[0], prot_pri[1])
-                print("ajoutPrimaire_insertion_bdd")
+                # print("ajoutPrimaire_insertion_bdd: ", prot_pri[0], prot_pri[1])
 
 
         # /!\/!\/!\ hashtag degeulasse
         vielle_ref = []
+        j = 0
         for ref in list_ec_has_xref:
+            print(ref[1][0], j)
+            j += 1
             vielle_ref.append(ref[1][0])  # car ref est une liste de 1 element..
 
         nvl_ref = Uniprot(vielle_ref).gener_id()  # /!\/!\/!\ c un générateur..
-
+        # TODO fait gaffe à la meca quantique, l'observateur modifie (print(next(**))
         for i in range(0, len(list_ec_has_xref)):
-            self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], [next(nvl_ref)], list_ec_has_xref[i][2])
-            print("ajoutXrefUniprot_insertion_bdd")
+            ref_uni = next(nvl_ref)
+            self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], [ref_uni], list_ec_has_xref[i][2])
+            print("ajoutXrefUniprot_insertion_bdd: ", list_ec_has_xref[i][0], [ref_uni],
+                  vielle_ref[i], i, list_ec_has_xref[i][2])
 
 
-    ##################################################################
+    ###########################################################################
     "Partie recup des accessions à partir d'un master record (NZ_AZSI00000000)"
-    ##################################################################
+    ###########################################################################
 
     def recup_master_access(self, gbk=None):
         """
