@@ -40,12 +40,12 @@ class Uniprot:
 
         self.page = [line.decode('utf-8') for line in response]
         # self.page = (line.decode('utf-8') for line in response)
-        # self.result_test = [line_.decode('utf-8') for line_ in response]  # ok, ca epuise self.page, qu'on m'explique..
+        # self.result_test = [line_.decode('utf-8') for line_ in response]  # ok, ca epuise self.page, qu'on m'explique.. c'est vide
 
     def print_resul(self):
         print(self.page)
 
-    # TODO faut gérer ceux qui ne peuvent pas être mappés..Y aurait il un problème de répétition de GI? (NC_017486.1) apparement non il gère les doublons
+    # TODO faut gérer ceux qui ne peuvent pas être mappés..Y aurait il un problème de répétition de GI? (NC_017486.1)
     # TODO sauf ceux qui sont collés à la suite qui devrait avoir une ref différente, pas si grave.
     def gener_id(self):
         """
@@ -53,14 +53,18 @@ class Uniprot:
         suivants.
         :return:
         """
-        # /!\/!\/!\ self.page est(ait) un putain de générateur..
+
+        # for i in self.page:
+        #     print(i)
+
         # header = next(self.page)  # sert à rien ca ??(dégager les header pe
         gener_page = (ligne for ligne in self.page)  # fait un générateur de la page de résultats
 
         for gi in self.list_id:  # défile les numeros gi de la liste
             for ligne in gener_page:  # itere le générateur des resultats
-                print(ligne.split('\t')[1].strip())
+                # print("linge_gener: ", ligne)
                 if ligne.split('\t')[0] == gi:  # a chaque match entre le numero GI de la liste et de la page resultat
+                    # print("ligne_yield: ", ligne)
                     yield ligne.split('\t')[1].strip()
                     break  # hum, ca break quoi exactement?
 
@@ -71,35 +75,33 @@ class Uniprot:
         =>en fait c'est sur le suivant que ca fait foirer.. donc c'est bien la faute des doublons
         """
 
-        print("test de debug")
-        for gi in self.list_id:
-            present = False
-            for ligne in self.page:
-                if ligne.split('\t')[0] == gi:
-                    # print("ref_resul: ", ligne.split('\t')[0])
-                    # print("num_gi: ", gi)  # c'est normal qu'il y ait plusieur matchs, c pr les ref multiples
-                    present = True
-            if present == False:
-                print("PB§§§", gi)
-
 
 # TODO dès qu'un truc ne match pas, le générateur s'épuise.(pas si sur) itertools pr 2eme générateur
-# TODO voir du coté de recup ec, au niveau de la longeur du for..
+
 
 # ['917680677', '917680578']
 # print(next(Uniprot(['917680677']).gener_id()))
 
-# list_test = ['489221419', '917680578', '917680677', '489221419', '490375107']
-list_test = ['917680578', '917680578', '917680677', '490375162', '917680578', '490375107']
-# list_test = ['489221419', '917680578', '917680677', '490375162', '490375107', '490374849', '489221547', '489221419'
-#              , '504383723']
-generateur = Uniprot(list_test).gener_id()
+# common_id = "489221419"
+# list_test = [common_id, '917680578', '917680677',  common_id, '489221547']
+# list_test = ['917680578', '917680578', '917680677', '490375162', '917680578', '490375107']
+# list_test = [common_id, '490375107', '489221547', common_id, '490374849']
 #
-for i in range(0, len(list_test)):
-    print(next(generateur))
+# generateur = Uniprot(list_test).gener_id()
+#
+# from itertools import zip_longest
+# for idp, elem in zip_longest(list_test, generateur):
+#     print("print du for: ", idp, elem)
+# pass
+
+
+
+# for i in range(0, len(list_test)):
+#     # next(generateur)
+#     print(next(generateur))
 
 """
-raaaaaaaaaaahhhhhhaaaaaaaaaaa ais pourquoi putain ca marfche aussedesss et pas la bordel de chiiotore!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+raaaaaaaaaaahhhhhhaaaaaaaaaaa
 """
 
 # with open("Test/debugRecup.txt", 'r') as list_gigo:
