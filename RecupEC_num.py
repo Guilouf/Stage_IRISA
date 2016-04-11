@@ -19,6 +19,7 @@ Questions:
 Révélations: le générateur est composé d'un record, donc renovyer juste un next serait pas mal
 """
 # TODO récupérer les num GI, yen a ds le tgdb en tant que "entrez"
+# TODO septembre 2016 plus de numero GI sur le NCBI
 
 
 class Recup_EC :
@@ -101,6 +102,7 @@ class Recup_EC :
         for donne in gbk.features:  # parcourt les features du fichier gbk(les prots en gros
             if donne.type == "CDS":
                 # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
+                # TODO transformer les listes en tuples
                 num_ec_from_web = donne.qualifiers.get("EC_number", None)  # fait gaffe c'est d listes..
                 num_gi_from_web = donne.qualifiers.get("db_xref", None)
                 # todo FN806773 UDO:CBL55599.1
@@ -112,7 +114,7 @@ class Recup_EC :
                 if num_ec_from_web is not None and num_gi_from_web is not None and refseq:  # pour les gbk refseq
                     # du coup ca ajoute jamais l'accession si ya pas de num ec associé
                     list_access_has_refeseq.append((num_access, num_ec_from_web))  # ajout du tuple
-                    list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
+                    list_ec_has_xref.append((tuple(num_ec_from_web), tuple(num_gi_from_web), num_access))
                     # print(num_gi_from_web, ": accessRefseqplacée")
 
                     # self.inst_rempl.access_has_refeseq(num_access, num_ec_from_web)
@@ -120,7 +122,7 @@ class Recup_EC :
 
                 elif num_ec_from_web is not None and num_gi_from_web is not None:  # pour les gbk non refseq
                     list_access_has_primaire.append((num_access, num_ec_from_web))
-                    list_ec_has_xref.append((num_ec_from_web, num_gi_from_web, num_access))
+                    list_ec_has_xref.append((tuple(num_ec_from_web), tuple(num_gi_from_web), num_access))
                     # print(num_gi_from_web, ": primairePlacée")
 
                     # self.inst_rempl.access_has_primaire(num_access, num_ec_from_web)
@@ -147,6 +149,8 @@ class Recup_EC :
 
         # /!\/!\/!\ hashtag degeulasse
         vielle_ref = []
+        list_ec_has_xref = list(set(list_ec_has_xref))  # faut mettre des tuples pr que ce soit hashable.
+
         j = 0
         for ref in list_ec_has_xref:
             print(ref[1][0], j)
@@ -158,8 +162,8 @@ class Recup_EC :
         for i in range(0, len(list_ec_has_xref)):
             ref_uni = next(nvl_ref)
             self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], [ref_uni], list_ec_has_xref[i][2])
-            print("ajoutXrefUniprot_insertion_bdd: ", list_ec_has_xref[i][0], [ref_uni],
-                  vielle_ref[i], i, list_ec_has_xref[i][2])
+            # print("ajoutXrefUniprot_insertion_bdd: ", list_ec_has_xref[i][0], [ref_uni],
+            #       vielle_ref[i], i, list_ec_has_xref[i][2])
 
 
     ###########################################################################
@@ -169,15 +173,19 @@ class Recup_EC :
     def recup_master_access(self, gbk=None):
         """
         Génère à partir d'un gbk master record, les identifiants vers les sous gbk.
+        Récupère le tuple dans la partie wgs du master_record qui contient le sous numéro d'acc de début et celui de
+        fin.
         """
         rangeaccess = gbk.annotations["wgs"]  # ou wgs scaffold? il ont l'air de plus faire dériver vers des refseq
 
         def gener_access(paramrangeaccess):
             start = paramrangeaccess[0]
-            stop = paramrangeaccess[1]
+            stop = paramrangeaccess[1]  # faire un try à la con
+            # todo pour CBUJ010000062 il y a un pb, nb trop grand 9 zero au lieu de 8, ordures..
+            # todo pour AZSI01000243 ya des inster master vides partout..
             locus = start[0:5]  # on rajoute le 0 qui se trouve devant le 1
-            nombre_sta = int(start[5:12])  # on garde le 1 du début pour que ca affiche les 0 tout en étant un int
-            nombre_sto = int(stop[5:12])
+            nombre_sta = int(start[5:])  # on garde le 1 du début pour que ca affiche les 0 tout en étant un int
+            nombre_sto = int(stop[5:])  # yavait 12 à la fin avant
             print(stop)
             print(locus)
             print(nombre_sta)
@@ -211,17 +219,18 @@ if __name__ == "__main__":
         detection = recu.detection(test_parse)  # [0] bool, true si complet. [1] num_acc
 
         if detection[0]:  # faut que testparse renvoi aussi le type d'annotations(?) Cas des gbk complets, pas wgs
-            print("complet")
-            print(access)  # c'est bien un str
+            print("########################################### COMPLET: ", access, "##################################")
             data_refseq = recu.recup_ec(gbk_gener, access)  # pour télécharger la version refseq
             recu.insertion_bdd(data_refseq)
             if detection[1] is not None:  # ca veut dire qu'il y a un numéro d'acc primaire
+                print("complet_primaire")
+                # todo re-regarder comment il différencie le primaire de refseq en cas d'une seule annot(nrmlt c bon)
                 gbk_prot = recu.telecharge(detection[1])  # telécharge la version annot primaire
                 data_prim = recu.recup_ec(gbk_prot, access)  # je laisse le num ec refseq
                 recu.insertion_bdd(data_prim)
 
         else:  # cas des master record
-            print("master")
+            print("############################################ MASTER RECORD: ", access, "###########################")
             for accessBis in recu.recup_master_access(gbk_gener):  # genere les identifiants vers les gbk du master
                 gbkprot = recu.telecharge(accessBis)
                 data_master = recu.recup_ec(gbkprot, access)  # bon le script marche, mais les nums ec n'y sont pas présents, sauf dans les notes

@@ -178,7 +178,7 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %#show full_match(V,S,Ec) : full_match(V,S,_,Ec) , S="FN806773". %888avec ca j'obtiens ce que jattend'
 % ok il me reste a faire une fonction pour dire que 2 ec commencant par le mm prefixe sont le mm... en qq sorte
 
- %*AOn reprend depuis le début... pour K2 et CIRM => mauvais exemple..*%
+ %*AOn reprend depuis le début... pour K2 et CIRM *%
 %#show enzymeV/2. %montre les ec du pathway: 10
 %#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773".
 %#show matched(V,S,T,EcV,EcS) : matched(V,S,T,EcV,EcS) , S="FN806773".  % c'est logique quil yen ai une de +1 2.5.1'
