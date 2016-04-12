@@ -19,7 +19,9 @@ Questions:
 Révélations: le générateur est composé d'un record, donc renovyer juste un next serait pas mal
 """
 # TODO récupérer les num GI, yen a ds le tgdb en tant que "entrez"
-# TODO septembre 2016 plus de numero GI sur le NCBI
+# TODO septembre 2016 plus de numero GI sur le NCBI..
+
+# TODO regarder comment ca se passe pour une prot associée à plusieurs EC..
 
 
 class Recup_EC :
@@ -102,7 +104,6 @@ class Recup_EC :
         for donne in gbk.features:  # parcourt les features du fichier gbk(les prots en gros
             if donne.type == "CDS":
                 # donne.qualifiers.get("EC_number", "erreurClef: "+str(donne.qualifiers["locus_tag"]))
-                # TODO transformer les listes en tuples
                 num_ec_from_web = donne.qualifiers.get("EC_number", None)  # fait gaffe c'est d listes..
                 num_gi_from_web = donne.qualifiers.get("db_xref", None)
                 # todo FN806773 UDO:CBL55599.1
@@ -158,7 +159,7 @@ class Recup_EC :
             vielle_ref.append(ref[1][0])  # car ref est une liste de 1 element..
 
         nvl_ref = Uniprot(vielle_ref).gener_id()  # /!\/!\/!\ c un générateur..
-        # TODO fait gaffe à la meca quantique, l'observateur modifie (print(next(**))
+        # fait gaffe à la meca quantique, l'observateur modifie (print(next(**))
         for i in range(0, len(list_ec_has_xref)):
             ref_uni = next(nvl_ref)
             self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], [ref_uni], list_ec_has_xref[i][2])
