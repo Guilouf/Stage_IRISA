@@ -66,7 +66,7 @@ class Recup_EC :
         """
         access_prim = None
         if comm is not None and comm[0:18] == "REFSEQ INFORMATION":
-            access_prim = comm[60:68]
+            access_prim = comm[60:68]  # todo parfois le num est plus long.. ya un point à la fin qui peut servir..
 
         for cle in gbk.annotations:  # permet de tester si le fichier est un master record
             if cle == "wgs":
@@ -223,7 +223,7 @@ if __name__ == "__main__":
             data_refseq = recu.recup_ec(gbk_gener, access)  # pour télécharger la version refseq
             recu.insertion_bdd(data_refseq)
             if detection[1] is not None:  # ca veut dire qu'il y a un numéro d'acc primaire
-                print("complet_primaire")
+                print("####################################### Complet_primaire: ", detection[1])
                 # todo re-regarder comment il différencie le primaire de refseq en cas d'une seule annot(nrmlt c bon)
                 gbk_prot = recu.telecharge(detection[1])  # telécharge la version annot primaire
                 data_prim = recu.recup_ec(gbk_prot, access)  # je laisse le num ec refseq
