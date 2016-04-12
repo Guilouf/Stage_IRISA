@@ -90,8 +90,8 @@ pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
 strain(S) :- num_access(S,_,_).
 %superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
-superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
-%superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
+%superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
+superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
 
 %les enzymes appartenants aux vitamines
 enzymeV(V,Ec) :-    in_pathway(R,P) ;
@@ -112,13 +112,7 @@ statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(V,S,_,T)}.
 %comptage des occurences de enzymesV
 statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): enzymeV(V,Ec),size_ec(Ec,T)}.
 
-
-%comptage de la complétion (couples d'ec diff"érents) !! match exact
-full_match(V,S,T,Ec) :-    vitamin(V) ;
-                        enzymeS(V,S,Ec,T) ;
-                        enzymeV(V,Ec).
-
-%un peu pareil que enzyme S mais avec plus d'args
+%Pareil que enzyme S mais avec plus d'args. Pour faire full_match, EcV = EcS..
 matched(V,S,T,EcV,EcS) :-
                         enzymeV(V,EcV) ;
                         uniprot(EcS,Uniref);
@@ -127,13 +121,9 @@ matched(V,S,T,EcV,EcS) :-
 
 
 
-
-%match_rest(V,S,T,Ec) :- enzymeS(V,S,Ec,T) ; not match4(V,S,Ec,T) ; match3(V,S,Ec,T). pourquoi il geule pas??   !!!!!!!!!!!
-
-
 %visiblement le not marche pas comme je voudrais...=>ca marche par ensemble de variables...
-%%%%%%%%%%%%%%%%%%%%%%%% FAUDRA faire gaffe quand on voudra regarder plusieurs souches etc..%%%%%%%%%%
-match_rest(V,S,T,EcV,EcSS) :- matched(V,S,T,EcV,EcSS) ; not full_match(V,S,_,EcV) .
+%%%%%%%%%%%%%%%%%%%%%%%% FAUDRA faire gaffe quand on voudra regarder plusieurs souches etc.=> pas l'air de poser pb
+match_rest(V,S,T,EcV,EcSS) :- matched(V,S,T,EcV,EcSS) ; not matched(V,S,_,EcV,EcV) .
 
 %mappeur d'EC
 map(ec(X,Y,Z,T),ec(X,Y,Z,T),t(4,4)) :- enzymeV(V,ec(X,Y,Z,T)).
@@ -182,6 +172,11 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %#show enzymeV/2. %montre les ec du pathway: 10
 %#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773".
 %#show matched(V,S,T,EcV,EcS) : matched(V,S,T,EcV,EcS) , S="FN806773".  % c'est logique quil yen ai une de +1 2.5.1'
-%#show match_final(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS) , S="FN806773". % plus qua additioner full match
-#show full_match(V,S,Ec) : full_match(V,S,_,Ec) , S="FN806773". %888avec ca j'obtiens ce que jattend'
+%#show match_final(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS) , S="FN806773". % plus qua additioner full match, donne 2
+%#show full_match(V,S,T,Ec,Ec) : matched(V,S,T,Ec,Ec) , S="FN806773". %888avec ca j'obtiens ce que jattend', donne 5
 % ok il me reste a faire une fonction pour dire que 2 ec commencant par le mm prefixe sont le mm... en qq sorte
+
+ %* Tableau croisé: pr une vitamine *%
+#show enzymeV/2.
+%#show match_resid(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS) .
+#show full_match(V,S,T,Ec,Ec) : matched(V,S,T,Ec,Ec) .

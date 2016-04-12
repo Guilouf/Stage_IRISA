@@ -68,7 +68,8 @@ class Recup_EC :
         """
         access_prim = None
         if comm is not None and comm[0:18] == "REFSEQ INFORMATION":
-            access_prim = comm[60:68]  # todo parfois le num est plus long.. ya un point à la fin qui peut servir..
+            access_prim = comm.split('.')[0][60:]
+            #  parfois le num est plus long.. ya un point à la fin.. [60:68]
 
         for cle in gbk.annotations:  # permet de tester si le fichier est un master record
             if cle == "wgs":

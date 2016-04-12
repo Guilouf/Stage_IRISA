@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from pyasp.asp import *
 from io import StringIO
+import csv
 
 # TODO ya des numeros Gi qui se balladent en tant que uniprot..=> voir le todo pr abruti ds recup ec..
 
@@ -51,17 +52,21 @@ metagdb = 'ASP/ec_uni.lp'
 # Solver
 result = solver.run([hidden, base, test, metagdb], collapseTerms=True, collapseAtoms=False)
 
+# impression de sortie ASP
 for term in result[0]:
     print(term)
 
-# Impression du tableau
-
+# Impression du nombre d'élément en sortie
 print("Nombre: ", len(result[0]))
 
-list_souches = ["LEKW00000000.1", "NZ_CM003439.1", "NZ_CP010528.1", "NZ_CP009236.1", "NC_021514.1", "NC_020229.1",
-                "NC_014554.1", "NC_021224.2", "NC_012984.1", "AL935263.2", "FN806773"]
 
-for souche in list_souches:  # parcourt les souches
+def tableau_1(souche):
+
+    """
+    A utiliser avec statS du ASP
+    :param souche:
+    :return:
+    """
 
     if souche not in str(result[0]):
         print("0 ; 0", end='')
@@ -74,7 +79,7 @@ for souche in list_souches:  # parcourt les souches
             # print(split_term[1], split_term[2][2:], split_term[3][0], split_term[4][0], end='; ')
             print(split_term[4].replace(')', ''), end=';')
 
-    for term in result[0]:  # parcourt les resultats (aléatoire..)
+    for term in result[0]:  # parcourt les resultats (t=3..)
         split_term = str(term).split(",")
 
         if split_term[1].replace("\"", '') == souche and int(split_term[3][0]) == 3 \
@@ -84,4 +89,47 @@ for souche in list_souches:  # parcourt les souches
 
     print('')
 
+# todo ce srait bien d'avoir un parseur csv..
 
+
+# le header
+ligne_ec = []
+# parcourt les enzymeV, pour tracer la ligne des EC
+# faut l'exécuter qu'une seule fois, pas à chaque souche..
+for term in result[0]:
+    split_term = str(term).split(",")
+    if split_term[0][0:7] == "enzymeV":
+        num_ec = [i for i in ''.join(split_term[1:]) if i.isdigit()]
+        num_ec = ''.join(num_ec)
+        ligne_ec.append(num_ec)
+        print(num_ec, end=' ; ')
+print('')
+
+def tableau_2(souche):
+
+    colone_souche = []
+    print(souche, end=' ;')
+    for ec_header in ligne_ec:  # parcourt les ec du header, cad du pathway de la vitamin, les colones
+
+        # parcourt les ???
+        boobool = True
+        for termS in result[0]:  # fait défiler les matchs
+            split_term_s = str(termS).split(",")
+            if split_term_s[0][0:10] == "full_match" and split_term_s[1].replace('"', '') == souche:  # si le match correspond
+                num_ecS = [i for i in ''.join(split_term_s[8:]) if i.isdigit()]
+                num_ecS = ''.join(num_ecS)
+                if num_ecS == ec_header:
+                    # print(split_term_s)
+                    print(num_ecS, end=' ; ')
+                    boobool = False
+        if boobool == True:
+            print('X', end=' ; ')
+    print('')
+
+    pass
+
+with open('exemple/ListeAccess', mode='r') as list_souches:
+    for numacc in list_souches:  # itère la liste des accessions à regarder
+        # tableau_1(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
+        tableau_2(numacc.strip())
+        pass

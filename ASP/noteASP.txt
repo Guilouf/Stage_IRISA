@@ -38,4 +38,4 @@ enzymeV(k2_7,ec(2,5,1,74)) 43 !
 3 aucun match (*)
 2 match 43
 
-attendu: 7 ?
+attendu: 7 ? c'est bon
