@@ -96,6 +96,8 @@ def tableau_1(souche):
 ligne_ec = []
 # parcourt les enzymeV, pour tracer la ligne des EC
 # faut l'exécuter qu'une seule fois, pas à chaque souche..
+# pour b9 c normal qu'il y ai 2* 3.6.1, et ils ne sont pas tjr dans l'ordre a cause d'ASP
+print("Num_Ec: ", end=' ; ')
 for term in result[0]:
     split_term = str(term).split(",")
     if split_term[0][0:7] == "enzymeV":
@@ -114,10 +116,12 @@ def tableau_2(souche):
         # parcourt les ???
         boobool = True
         for termS in result[0]:  # fait défiler les matchs
-            split_term_s = str(termS).split(",")
-            if split_term_s[0][0:10] == "full_match" and split_term_s[1].replace('"', '') == souche:  # si le match correspond
-                num_ecS = [i for i in ''.join(split_term_s[8:]) if i.isdigit()]
+            split_term_s = str(termS).split(",")  # todo attention ca va varier pour les ec de talle différentes.. genre 2* 3.6.1..
+            # todo faut donc enlever un num ec
+            if split_term_s[0][0:11] == "final_match" and split_term_s[1].replace('"', '') == souche:  # si le match correspond
+                num_ecS = [i for i in ''.join(split_term_s[4:]) if i.isdigit()]
                 num_ecS = ''.join(num_ecS)
+                # print(num_ecS)
                 if num_ecS == ec_header:
                     # print(split_term_s)
                     print(num_ecS, end=' ; ')
@@ -133,3 +137,17 @@ with open('exemple/ListeAccess', mode='r') as list_souches:
         # tableau_1(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
         tableau_2(numacc.strip())
         pass
+
+"""
+LEKW00000000.1
+NZ_CM003439.1
+NZ_CP010528.1
+NZ_CP009236.1
+NC_021514.1
+NC_020229.1
+NC_014554.1
+NC_021224.2
+NC_012984.1
+AL935263.2
+FN806773
+"""

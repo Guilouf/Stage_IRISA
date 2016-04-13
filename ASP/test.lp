@@ -174,9 +174,15 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 %#show matched(V,S,T,EcV,EcS) : matched(V,S,T,EcV,EcS) , S="FN806773".  % c'est logique quil yen ai une de +1 2.5.1'
 %#show match_final(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS) , S="FN806773". % plus qua additioner full match, donne 2
 %#show full_match(V,S,T,Ec,Ec) : matched(V,S,T,Ec,Ec) , S="FN806773". %888avec ca j'obtiens ce que jattend', donne 5
-% ok il me reste a faire une fonction pour dire que 2 ec commencant par le mm prefixe sont le mm... en qq sorte
+
+%Pour reunir les deux c une technique..
+%#show match_final(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS) , S="FN806773".
+%#show match_final(V,S,T,Ec,Ec) : matched(V,S,T,Ec,Ec) , S="FN806773".
+
+
+
 
  %* Tableau croisé: pr une vitamine *%
 #show enzymeV/2.
-%#show match_resid(V,S,T,EcS,EcSS) : match_rest(V,S,T,EcS,EcSS) .
-#show full_match(V,S,T,Ec,Ec) : matched(V,S,T,Ec,Ec) .
+#show final_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec).
+#show final_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) .

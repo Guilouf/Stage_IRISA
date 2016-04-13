@@ -182,9 +182,10 @@ class Recup_EC :
 
         def gener_access(paramrangeaccess):
             start = paramrangeaccess[0]
-            stop = paramrangeaccess[1]  # faire un try à la con
-            # todo pour CBUJ010000062 il y a un pb, nb trop grand 9 zero au lieu de 8, ordures..
-            # todo pour AZSI01000243 ya des inster master vides partout..
+            try:
+                stop = paramrangeaccess[1]
+            except:  # pr NZ_JNLP00000000.1 ya un start mais pas de stop...
+                return start
             locus = start[0:5]  # on rajoute le 0 qui se trouve devant le 1
             nombre_sta = int(start[5:])  # on garde le 1 du début pour que ca affiche les 0 tout en étant un int
             nombre_sto = int(stop[5:])  # yavait 12 à la fin avant
