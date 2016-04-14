@@ -106,7 +106,9 @@ enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
 
 %comptage des occurences de enzymesS
 %N=#count {enzymeS(V,S,Ec,T): enzymeS(V,S,Ec,T)}. equivalent: %N={enzymeS(_,_,_,_)}. %ce qui a a la place des _ n'est definit qu'entre les {}
-statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(V,S,_,T)}.
+
+%statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(V,S,_,T)}.
+
 %statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(_,_,_,_)}.
 
 %comptage des occurences de enzymesV
@@ -116,7 +118,7 @@ statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): enzymeV(V,Ec),s
 matched(V,S,T,EcV,EcS) :-
                         enzymeV(V,EcV) ;
                         uniprot(EcS,Uniref);
-                        num_access(S,Uniref,_);
+                        num_access(S,Uniref,"PRIMAIRE"); %888 changer ici pour refseq
                         map(EcV,EcS,T).
 
 
@@ -184,5 +186,13 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
  %* Tableau croisé: pr une vitamine *%
 #show enzymeV/2.
-#show final_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec).
-#show final_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) .
+#show final_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec), Ec!=ec(3,6,1,o).
+#show final_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) , EcS!=ec(3,6,1,o) .
+
+ %* Vieux tableau nouveau.. *%
+
+%statS(V,S,N) :- vitamin(V), strain(S), N={matched(V,S,T,Ec,Ec)}. %888 match complet
+%statS(V,S,N) :- vitamin(V), strain(S), N={match_rest(V,S,T,EcS,EcC)}. %888 match restant
+
+%statS(V,S,N,NM) :- vitamin(V), strain(S), N={matched(V,S,T,Ec,Ec)}, NM={match_rest(V,S,T,EcS,EcC)}. %88 fait les 2
+%#show statS/3.

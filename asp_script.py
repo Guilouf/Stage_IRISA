@@ -63,7 +63,7 @@ print("Nombre: ", len(result[0]))
 def tableau_1(souche):
 
     """
-    A utiliser avec statS du ASP
+    A utiliser avec statS(V,S,T,N) du ASP
     :param souche:
     :return:
     """
@@ -92,6 +92,18 @@ def tableau_1(souche):
 # todo ce srait bien d'avoir un parseur csv..
 
 
+def tableau_1bis(souche):
+
+    if souche not in str(result[0]):
+        print('X')
+
+    for term_bis in result[0]:
+        split_term_bis = str(term_bis).split(",")
+        if split_term_bis[1].replace("\"", '') == souche:
+            # print(term_bis)
+            print(split_term_bis[2].replace(")", ''))
+
+
 # le header
 ligne_ec = []
 # parcourt les enzymeV, pour tracer la ligne des EC
@@ -106,7 +118,8 @@ for term in result[0]:
         ligne_ec.append(num_ec)
         print(num_ec, end=' ; ')
 print('')
-
+ligne_ec = set(ligne_ec)
+# 3.6.1.o qui fait chier..
 def tableau_2(souche):
 
     colone_souche = []
@@ -124,7 +137,7 @@ def tableau_2(souche):
                 # print(num_ecS)
                 if num_ecS == ec_header:
                     # print(split_term_s)
-                    print(num_ecS, end=' ; ')
+                    print('', end=' ; ')
                     boobool = False
         if boobool == True:
             print('X', end=' ; ')
@@ -135,6 +148,7 @@ def tableau_2(souche):
 with open('exemple/ListeAccess', mode='r') as list_souches:
     for numacc in list_souches:  # itère la liste des accessions à regarder
         # tableau_1(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
+        # tableau_1bis(numacc.strip())
         tableau_2(numacc.strip())
         pass
 
