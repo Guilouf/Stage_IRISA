@@ -24,6 +24,9 @@ Scripts et BDD sur la reconstruction des metagénomes
 
 #TODO:
 - 154146A : matricule INRA LOG: gulebreton MD: j'arrive pas à me connecter..
+- Cirm 2.7.7.62 B12 pb
+- IL1403 PRJNA 572 à ajouter
+- mettre les 3 questions
 - Nouveau comptage des match en ASP
 - Tester les variations pour la K
 - [X] Différencier en ASP les annotations primaires et refseq OK
