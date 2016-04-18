@@ -118,26 +118,26 @@ for term in result[0]:
         ligne_ec.append(num_ec)
         print(num_ec, end=' ; ')
 print('')
-ligne_ec = set(ligne_ec)
-# 3.6.1.o qui fait chier..
-def tableau_2(souche):
+# ligne_ec = set(ligne_ec)  # TODO le set n'est pas ordonné..
+# 3.6.1.o qui pose pb..
 
+
+def tableau_2(souche):
     colone_souche = []
     print(souche, end=' ;')
     for ec_header in ligne_ec:  # parcourt les ec du header, cad du pathway de la vitamin, les colones
 
-        # parcourt les ???
         boobool = True
-        for termS in result[0]:  # fait défiler les matchs
+        for termS in result[0]:  # fait défiler les facts ASP
             split_term_s = str(termS).split(",")  # todo attention ca va varier pour les ec de talle différentes.. genre 2* 3.6.1..
             # todo faut donc enlever un num ec
-            if split_term_s[0][0:11] == "final_match" and split_term_s[1].replace('"', '') == souche:  # si le match correspond
+            if split_term_s[0][0:11] == "final_match" and split_term_s[1].replace('"', '') == souche:  # si la ligne correspond à la souche
                 num_ecS = [i for i in ''.join(split_term_s[4:]) if i.isdigit()]
                 num_ecS = ''.join(num_ecS)
                 # print(num_ecS)
-                if num_ecS == ec_header:
+                if num_ecS == ec_header:  # si le num dans la souche corespond à celui de header §§§ il est là le pb!!
                     # print(split_term_s)
-                    print('', end=' ; ')
+                    print(num_ecS, end=' ; ')
                     boobool = False
         if boobool == True:
             print('X', end=' ; ')
@@ -151,6 +151,10 @@ with open('exemple/ListeAccess', mode='r') as list_souches:
         # tableau_1bis(numacc.strip())
         tableau_2(numacc.strip())
         pass
+
+with open('ASP/tableauSortie.csv', 'w') as sortie_csv:
+    writer = csv.writer(sortie_csv, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL)  # quote tout les entrées
+
 
 """
 LEKW00000000.1

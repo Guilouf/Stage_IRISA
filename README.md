@@ -24,7 +24,9 @@ Scripts et BDD sur la reconstruction des metagénomes
 
 #TODO:
 - 154146A : matricule INRA LOG: gulebreton MD: j'arrive pas à me connecter..
-- Cirm 2.7.7.62 B12 pb
+- Cirm 2.7.7.62 B12 pb !!! il est en trois exemplaires dans la souche..
+- Faire l'état de l'art de mon sujet ac les publis
+- Definir la position ou ca bloque sur la voie
 - IL1403 PRJNA 572 à ajouter
 - mettre les 3 questions
 - Nouveau comptage des match en ASP
