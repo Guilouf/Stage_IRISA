@@ -89,9 +89,9 @@ niveau(I,Hier_inf) :- is_a(Hier_inf, Hier_sup) ; niveau(I-1,Hier_sup).
 pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
 strain(S) :- num_access(S,_,_).
-%superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
-%superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
-superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
+superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
+superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
+%superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
 
 %les enzymes appartenants aux vitamines
 enzymeV(V,Ec) :-    in_pathway(R,P) ;
@@ -186,8 +186,8 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
  %* Tableau croisé: pr une vitamine *%
 #show enzymeV/2.
-#show final_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec), Ec!=ec(3,6,1,o) , S="FN806773".
-#show final_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) , EcS!=ec(3,6,1,o) , S="FN806773".
+#show final_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec), Ec!=ec(3,6,1,o).% , S="FN806773".
+#show final_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) , EcS!=ec(3,6,1,o).% , S="FN806773".
 
  %* Vieux tableau nouveau.. *%
 

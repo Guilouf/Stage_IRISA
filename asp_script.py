@@ -53,107 +53,42 @@ metagdb = 'ASP/ec_uni.lp'
 result = solver.run([hidden, base, test, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # impression de sortie ASP
-for term in result[0]:
-    print(term)
+# for termm in result[0]:
+#     print(termm.arguments)
+#     print(termm.predicate)
 
 # Impression du nombre d'élément en sortie
 print("Nombre: ", len(result[0]))
 
 
-def tableau_1(souche):
+class Resultats:
 
-    """
-    A utiliser avec statS(V,S,T,N) du ASP
-    :param souche:
-    :return:
-    """
+    def __init__(self, m_result, m_list_acc):
+        self.result = m_result[0]
+        self.list_access = m_list_acc
+        self.dico_vit = {}
 
-    if souche not in str(result[0]):
-        print("0 ; 0", end='')
-
-    for term in result[0]:  # parcourt les resultats (aléatoire..)
-        split_term = str(term).split(",")
-
-        if split_term[1].replace("\"", '') == souche and int(split_term[3][0]) == 4 \
-                and split_term[0][0:5] == "statS":
-            # print(split_term[1], split_term[2][2:], split_term[3][0], split_term[4][0], end='; ')
-            print(split_term[4].replace(')', ''), end=';')
-
-    for term in result[0]:  # parcourt les resultats (t=3..)
-        split_term = str(term).split(",")
-
-        if split_term[1].replace("\"", '') == souche and int(split_term[3][0]) == 3 \
-                and split_term[0][0:5] == "statS":
-            # print(split_term[1], split_term[2][2:], split_term[3][0], split_term[4][0], end=' ')
-            print(split_term[4].replace(')', ''), end='')
-
-    print('')
-
-# todo ce srait bien d'avoir un parseur csv..
+    def list_ec_vit(self):
+        for term in self.result:  # itère les termes
+            if term.predicate == "enzymeV":  # ne retient que les terms enzymeV
+                # print(term)
+                # print(term.arguments[1])
+                if term.arguments[0] not in self.dico_vit:  # on ajoute les numéros ec associés à une clé de dico par vit
+                    self.dico_vit[term.arguments[0]] = [term.arguments[1]]
+                else:
+                    self.dico_vit[term.arguments[0]] += [term.arguments[1]]
+        print(self.dico_vit)
 
 
-def tableau_1bis(souche):
-
-    if souche not in str(result[0]):
-        print('X')
-
-    for term_bis in result[0]:
-        split_term_bis = str(term_bis).split(",")
-        if split_term_bis[1].replace("\"", '') == souche:
-            # print(term_bis)
-            print(split_term_bis[2].replace(")", ''))
-
-
-# le header
-ligne_ec = []
-# parcourt les enzymeV, pour tracer la ligne des EC
-# faut l'exécuter qu'une seule fois, pas à chaque souche..
-# pour b9 c normal qu'il y ai 2* 3.6.1, et ils ne sont pas tjr dans l'ordre a cause d'ASP
-print("Num_Ec: ", end=' ; ')
-for term in result[0]:
-    split_term = str(term).split(",")
-    if split_term[0][0:7] == "enzymeV":
-        num_ec = [i for i in ''.join(split_term[1:]) if i.isdigit()]
-        num_ec = ''.join(num_ec)
-        ligne_ec.append(num_ec)
-        print(num_ec, end=' ; ')
-print('')
-# ligne_ec = set(ligne_ec)  # TODO le set n'est pas ordonné..
-# 3.6.1.o qui pose pb..
-
-
-def tableau_2(souche):
-    colone_souche = []
-    print(souche, end=' ;')
-    for ec_header in ligne_ec:  # parcourt les ec du header, cad du pathway de la vitamin, les colones
-
-        boobool = True
-        for termS in result[0]:  # fait défiler les facts ASP
-            split_term_s = str(termS).split(",")  # todo attention ca va varier pour les ec de talle différentes.. genre 2* 3.6.1..
-            # todo faut donc enlever un num ec
-            if split_term_s[0][0:11] == "final_match" and split_term_s[1].replace('"', '') == souche:  # si la ligne correspond à la souche
-                num_ecS = [i for i in ''.join(split_term_s[4:]) if i.isdigit()]
-                num_ecS = ''.join(num_ecS)
-                # print(num_ecS)
-                if num_ecS == ec_header:  # si le num dans la souche corespond à celui de header §§§ il est là le pb!!
-                    # print(split_term_s)
-                    print(num_ecS, end=' ; ')
-                    boobool = False
-        if boobool == True:
-            print('X', end=' ; ')
-    print('')
-
-    pass
-
-with open('exemple/ListeAccess', mode='r') as list_souches:
-    for numacc in list_souches:  # itère la liste des accessions à regarder
-        # tableau_1(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
-        # tableau_1bis(numacc.strip())
-        tableau_2(numacc.strip())
+    def tab_effectifs(self):
         pass
 
-with open('ASP/tableauSortie.csv', 'w') as sortie_csv:
-    writer = csv.writer(sortie_csv, delimiter=';', quotechar='"', quoting=csv.QUOTE_ALL)  # quote tout les entrées
+
+
+with open('exemple/ListeAccess', mode='r') as fichaccess:
+    listacc = [i.strip() for i in fichaccess]
+    inst_resul = Resultats(result, listacc)
+    inst_resul.list_ec_vit()
 
 
 """
