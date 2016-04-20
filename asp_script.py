@@ -61,6 +61,8 @@ result = solver.run([hidden, base, test, metagdb], collapseTerms=True, collapseA
 # Impression du nombre d'élément en sortie
 print("Nombre: ", len(result[0]))
 
+from matplotlib import pyplot as plt
+import numpy as np
 
 class Resultats:
 
@@ -80,11 +82,8 @@ class Resultats:
         """
         for term in self.result:  # itère les termes
             if term.predicate == "enzymeV":  # ne retient que les terms enzymeV
-                if term.arguments[0] not in self.dico_vit:  # on ajoute les numéros ec associés à une clé de dico par vit
-                    # on est au niveau de la valeur de la clé vit
-                    self.dico_vit[term.arguments[0]] = [term.arguments[1]]
-                else:
-                    self.dico_vit[term.arguments[0]] += [term.arguments[1]]
+                self.dico_vit[term.arguments[0]] = self.dico_vit.get(term.arguments[0], []) + [term.arguments[1]]
+                # si la cle n'existe pas, le get initialise une liste vide
         print(self.dico_vit)
 
     def bdd_temp(self):
@@ -95,41 +94,86 @@ class Resultats:
         """
         for term in self.result:  # itère les termes
             if term.predicate == "full_match":  # ne retient que les terms full_match !!
-                if term.arguments[0] not in self.dico_souche:  # ajout clé vitamine
-                    self.dico_souche[term.arguments[0]] = {}  # initialise la cle du dico
-                    if term.arguments[1] not in self.dico_souche[term.arguments[0]]:  # si ya pas la clef souche
-                        self.dico_souche[term.arguments[0]][term.arguments[1]] = [[term.arguments[3]], []]
-                        #                  vitamin              souche             num_ec_full        part_match
-                    else:  # si ya la cle de souche
-                        self.dico_souche[term.arguments[0]][term.arguments[1]][0] += [term.arguments[3]]
-                        #                                                      | pos full
+                self.dico_souche[term.arguments[0]] = self.dico_souche.get(term.arguments[0], {})
 
-                else:  # si ya la cle vitamine
-                    if term.arguments[1] not in self.dico_souche[term.arguments[0]]:  # si ya pas la clef souche
-                        self.dico_souche[term.arguments[0]][term.arguments[1]] = [[], [term.arguments[3]]]
-                        #                  vitamin              souche                  num_ec_part
-                    else:  # si ya la cle de souche
-                        self.dico_souche[term.arguments[0]][term.arguments[1]][1] += [term.arguments[3]]
-
+                self.dico_souche[term.arguments[0]][term.arguments[1]] = \
+                    l = self.dico_souche[term.arguments[0]].get(term.arguments[1], [[], []])
+                l[0] += [term.arguments[3]]
 
             if term.predicate == "rest_match":
-                # todo c'est ici crétin!!
-                pass
+                self.dico_souche[term.arguments[0]] = self.dico_souche.get(term.arguments[0], {})
+                # initialisation de la clef vit
+                self.dico_souche[term.arguments[0]][term.arguments[1]] = \
+                    l = self.dico_souche[term.arguments[0]].get(term.arguments[1], [[], []])
+                l[1] += [term.arguments[3]]
         print(self.dico_souche)
 
     def tab_comptage(self, vitamin=None):
         if vitamin is None:
-            for key_vit in self.dico_souche.keys():  # itère les vitamines
-                for key_souche in self.dico_souche[key_vit].keys():
-                    # print(self.dico_souche[key_vit][key_souche])
+            for key_vit in sorted(self.dico_souche.keys()):  # itère les vitamines, sorted pr eviter l'aleatoire
+                for key_souche in sorted(self.dico_souche[key_vit].keys()):
                     print(key_vit, key_souche)
                     print("Nb_full", len(self.dico_souche[key_vit][key_souche][0]))
                     print("Nb_rest", len(self.dico_souche[key_vit][key_souche][1]))
+        else:
+            for key_souche in sorted(self.dico_souche[vitamin].keys()):
+                    print(vitamin, key_souche)
+                    print("Nb_full", len(self.dico_souche[vitamin][key_souche][0]))
+                    print("Nb_rest", len(self.dico_souche[vitamin][key_souche][1]))
+
+    def tab_qualit(self):
+
+        for vit in sorted(self.dico_souche.keys()):
+            list_souches = []
+            for souche in sorted(self.dico_souche[vit].keys()):
+                list_ec = []
+                for ec_vit in self.dico_vit[vit]:
+                    if ec_vit in self.dico_souche[vit][souche][0]:
+                        # print("full")
+                        list_ec.append(100)
+                    elif ec_vit in self.dico_souche[vit][souche][1]:
+                        # print("part")
+                        list_ec.append(50)
+                    else:
+                        # print("non")
+                        list_ec.append(0)
+                list_souches.append(list_ec)
+            print(list_souches)
+            self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            # return list_souches
+
+    def heatmap(self, p_list_souches, p_head_col, p_head_ligne):
+        """
+        tester add subplot pour avoir les trois plots en mm temps
+        """
+        matrice = np.array(p_list_souches)  # transforme une liste de liste en matrice
+        # plt.figure(figsize=(5, 5))
+        fig, ax = plt.subplots()
+        heatmap = ax.pcolor(matrice, vmin=0, vmax=200)  # intialisation + echelle de couleur
+
+
+        # cax = plt.axes([0.9, 0.13, 0.04, 0.7]) #position colormap
+        # plt.colorbar(cax=cax)
+
+        # on met les petits traits des légendes
+        ax.set_xticks(np.arange(matrice.shape[1])+0.5, minor=False)
+        ax.set_yticks(np.arange(matrice.shape[0])+0.5, minor=False)
+        # on ajoute les labels
+        ax.set_xticklabels(p_head_col, minor=False)
+        ax.set_yticklabels(p_head_ligne, minor=False)
+
+        # on met les axes en mode tableau
+        # todo les ec de la colone ne sont pas triés=> ils sont pas tjr dans le mm ordre mais pas d'incohérence
+        ax.invert_yaxis()
+        ax.xaxis.tick_top()
+        # (print(dir(plt.figure())))
+        plt.show()
 
 with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
     listacc = [i.strip() for i in fichaccess]
     inst_resul = Resultats(result, listacc)
-    inst_resul.tab_comptage()
+    # inst_resul.tab_comptage()
+    inst_resul.tab_qualit()
 
 
 

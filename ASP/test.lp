@@ -185,7 +185,7 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 
  %* Tableau croisé: pr une vitamine *%
-#show enzymeV/2.
+#show enzymeV/2.  %enlever 3.6.1.o
 #show full_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec), Ec!=ec(3,6,1,o).% , S="FN806773".
 #show rest_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) , EcS!=ec(3,6,1,o).% , S="FN806773".
 
