@@ -139,18 +139,52 @@ class Resultats:
                         list_ec.append(0)
                 list_souches.append(list_ec)
             print(list_souches)
-            self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
-            # return list_souches
+            self.out_csv(vit, list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            # self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            # yield list_souches
+
+    def correspondance_souche(self):
+        pass
+
+    def out_csv(self, vit, p_listsouche, p_headcol, p_headligne):
+        """
+        bon au final passer par numpy emmerde plus qu'autre chose..mais ca marche
+        :param vit:
+        :param p_listsouche:
+        :param p_headcol:
+        :param p_headligne:
+        :return:
+        """
+        matrice = np.array(p_listsouche, dtype='U24')  # passe en unicode
+        headcol = ';'.join(p_headcol)  # header de num ec en string
+        rows = np.array(p_headligne, dtype='U24')[:, np.newaxis]  # les coms de souche en array s20
+
+        np.savetxt(
+            'ASP/tab_csv_'+vit+'.csv',           # file name, ac nom vit
+            np.hstack((rows, matrice)),           # ajoute les row tiles
+            fmt='%s',             # formatattage  %.2f
+            header=headcol,         # le header
+            delimiter=';',          # column delimiter
+            newline='\n',           # new line character
+            footer='',   # fin fichier
+            comments='#; ',          # le ; permet de décaller le header
+            )
 
     def heatmap(self, p_list_souches, p_head_col, p_head_ligne):
         """
-        tester add subplot pour avoir les trois plots en mm temps
+        A améliorer, sauvegarder les images, mettre plusieurs map sur une seule fenetre, ajouter un titre,
+        mettre de meilleures couleurs et un quadrillage
+        :param p_list_souches:
+        :param p_head_col:
+        :param p_head_ligne:
+        :return:
         """
+        # tester add subplot pour avoir les trois plots en mm temps
+
         matrice = np.array(p_list_souches)  # transforme une liste de liste en matrice
         # plt.figure(figsize=(5, 5))
         fig, ax = plt.subplots()
         heatmap = ax.pcolor(matrice, vmin=0, vmax=200)  # intialisation + echelle de couleur
-
 
         # cax = plt.axes([0.9, 0.13, 0.04, 0.7]) #position colormap
         # plt.colorbar(cax=cax)
@@ -163,11 +197,14 @@ class Resultats:
         ax.set_yticklabels(p_head_ligne, minor=False)
 
         # on met les axes en mode tableau
-        # todo les ec de la colone ne sont pas triés=> ils sont pas tjr dans le mm ordre mais pas d'incohérence
+        # les ec de la colone ne sont pas triés=> ils sont pas tjr dans le mm ordre mais pas d'incohérence
         ax.invert_yaxis()
         ax.xaxis.tick_top()
         # (print(dir(plt.figure())))
         plt.show()
+
+
+
 
 with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
     listacc = [i.strip() for i in fichaccess]
