@@ -109,6 +109,11 @@ class Resultats:
         print(self.dico_souche)
 
     def tab_comptage(self, vitamin=None):
+        """
+        Faut le sortir en csv maintenant...
+        :param vitamin:
+        :return:
+        """
         if vitamin is None:
             for key_vit in sorted(self.dico_souche.keys()):  # itère les vitamines, sorted pr eviter l'aleatoire
                 for key_souche in sorted(self.dico_souche[key_vit].keys()):
@@ -140,7 +145,7 @@ class Resultats:
                 list_souches.append(list_ec)
             print(list_souches)
             self.out_csv(vit, list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
-            # self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
             # yield list_souches
 
     def correspondance_souche(self):
