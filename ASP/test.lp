@@ -142,7 +142,37 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 
 
+
+#const maxstrain = 5.
+
+ %* 1 strain having all enzyme of a vitamin pathway *%
+%0 résultats.. ce qui est pe normal?
+completeStrainV(S,V) :- enzymeS(V,S,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S).  %V unsafe...
+
+
+
+% %* 2 minimal set of strains having enzymes of all vitamins *%
+%1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix
+%
+%:- minCompletS(S) ; not completeStrainV(S,_) %88 ca filtre le choix,
+%
+%coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V).
+%:- not coveredVitamin(V) ; vitamin(V).
+%#minimize {minCompletS(S)}.
+%
+% %* 3 minimal set of strains having enzymes of all vitamins *%
+% 1{minStrain(S): strain(S)}maxstrain.  %88 choix
+%
+% coveredEnzyme(Vitamin,Enzyme) :- enzymeStrainVitamin(S,V,Ec) ; minStrain(S) .
+% :- not coveredEnzyme(V,Ec ; enzymeV(V,Ec) .
+% #minimize {minStrain(S)}.
+
+
+
  %* PARTIE SHOW*%
+
+ %*Les 3 télés  *%
+ #show completeStrainV/2.
 
  %*Les show enzyme:  *%
 %#show enzymeV/2.
@@ -185,9 +215,9 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 
  %* Tableau croisé: pr une vitamine *%
-#show enzymeV/2.  %enlever 3.6.1.o
-#show full_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec), Ec!=ec(3,6,1,o).% , S="FN806773".
-#show rest_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) , EcS!=ec(3,6,1,o).% , S="FN806773".
+%#show enzymeV/2.  %enlever 3.6.1.o
+%#show full_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec), Ec!=ec(3,6,1,o).% , S="FN806773".
+%#show rest_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) , EcS!=ec(3,6,1,o).% , S="FN806773".
 
  %* Vieux tableau nouveau.. *%
 

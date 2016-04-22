@@ -53,8 +53,8 @@ metagdb = 'ASP/ec_uni.lp'
 result = solver.run([hidden, base, test, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # impression de sortie ASP
-# for termm in result[0]:
-#     print(termm)
+for termm in result[0]:
+    print(termm)
 #     print(termm.arguments)
 #     print(termm.predicate)
 
@@ -211,11 +211,11 @@ class Resultats:
 
 
 
-with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
-    listacc = [i.strip() for i in fichaccess]
-    inst_resul = Resultats(result, listacc)
-    # inst_resul.tab_comptage()
-    inst_resul.tab_qualit()
+# with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
+#     listacc = [i.strip() for i in fichaccess]
+#     inst_resul = Resultats(result, listacc)
+#     # inst_resul.tab_comptage()
+#     inst_resul.tab_qualit()
 
 
 
