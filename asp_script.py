@@ -47,10 +47,11 @@ base = 'ASP/metacyc_18.5.lp'
 query = 'ASP/explore.lp'
 test = 'ASP/test.lp'
 metagdb = 'ASP/ec_uni.lp'
+prog = 'ASP/programmeASP.lp'
 
 
 # Solver
-result = solver.run([hidden, base, test, metagdb], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # impression de sortie ASP
 for termm in result[0]:
@@ -211,12 +212,13 @@ class Resultats:
 
 
 
-# with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
-#     listacc = [i.strip() for i in fichaccess]
-#     inst_resul = Resultats(result, listacc)
-#     # inst_resul.tab_comptage()
-#     inst_resul.tab_qualit()
+with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
+    listacc = [i.strip() for i in fichaccess]
+    inst_resul = Resultats(result, listacc)
+    # inst_resul.tab_comptage()
+    inst_resul.tab_qualit()
 
+# todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.;
 
 
 """
