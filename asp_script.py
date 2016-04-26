@@ -53,6 +53,7 @@ prog = 'ASP/programmeASP.lp'
 # Solver
 result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
+# todo pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
 # impression de sortie ASP
 for termm in result[0]:
     print(termm)
@@ -208,8 +209,6 @@ class Resultats:
         ax.xaxis.tick_top()
         # (print(dir(plt.figure())))
         plt.show()
-
-
 
 
 with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout

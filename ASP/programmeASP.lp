@@ -16,14 +16,11 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 
 *%
 
-%"superpathway of menaquinol-7 biosynthesis"
-%"superpathway of tetrahydrofolate biosynthesis"
-%"adenosylcobalamin biosynthesis I (early cobalt insertion)"
-
 %définition du pathway, des vitamines et souches
 pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
 strain(S) :- num_access(S,_,_).
+
 superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
 superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
 %superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
@@ -38,13 +35,6 @@ enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
                      uniprot(EcS,Uniref);
                      num_access(S,Uniref,_); %888 changer ici pour refseq
                      map(EcV,EcS,T).
-
-%comptage des occurences de enzymesS
-%N=#count {enzymeS(V,S,Ec,T): enzymeS(V,S,Ec,T)}. equivalent: %N={enzymeS(_,_,_,_)}. %ce qui a a la place des _ n'est definit qu'entre les {}
-
-%statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(V,S,_,T)}.
-
-%statS(V,S,T,N) :- vitamin(V) ; strain(S) ; type(T) ; N={enzymeS(_,_,_,_)}.
 
 %comptage des occurences de enzymesV
 statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): enzymeV(V,Ec),size_ec(Ec,T)}.
@@ -71,41 +61,48 @@ type(t(4,4)). type(t(4,3)). type(t(3,4)). type(t(3,3)).
 size_ec(ec(X,Y,Z,T),4) :- enzymeV(V,ec(X,Y,Z,T)).
 size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
+%le système de matchs
+full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec); Ec!=ec(3,6,1,o).   % , S="FN806773".
+rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC) ; EcS!=ec(3,6,1,o).   % , S="FN806773".
+total_match(V,S,T,EcS) :- full_match(V,S,T,EcS).
+total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).
 
-% todo mettre les bons matchs(full + rest)
+
+% todo Partie 3 questions
 
 #const maxstrain = 5.
 
  %* 1 strain having all enzyme of a vitamin pathway *%
-%0 résultats.. ce qui est pe normal?
-%completeStrainV(S,V) :- enzymeS(V,S,EcS,T) : enzymeV(V,EcV) ; vitamin(V) ; strain(S) , map(EcV,EcS,T).  %V unsafe...
+% total vrai si vrai pour tout enzymeV
 completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) .
 
-%#show enzymeV(V,Ec) : enzymeV(V,Ec), V=k2_7.
-%#show enzymeS(V,S,EcS,T) : enzymeS(V,S,EcS,T) , V=k2_7 , S="AGHX00000000.1".
 
-% %* 2 minimal set of strains having enzymes of all vitamins *%
-%1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix
+ %* 2 minimal set of strains having enzymes of all vitamins *%
+%1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix: min est max 5souches parmi d'autres..
 %
-%:- minCompletS(S) ; not completeStrainV(S,_) %88 ca filtre le choix,
+%:- minCompletS(S) ; not completeStrainV(S,_).  %88 ca filtre le choix, n est pas complet si n est pas completstrainV
 %
-%coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V).
-%:- not coveredVitamin(V) ; vitamin(V).
-%#minimize {minCompletS(S)}.
+%coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %88 une vit est couverte si elle est completeStrainV
+%:- not coveredVitamin(V) ; vitamin(V). %88
 %
-% %* 3 minimal set of strains having enzymes of all vitamins *%
-% 1{minStrain(S): strain(S)}maxstrain.  %88 choix
-%
-% coveredEnzyme(Vitamin,Enzyme) :- enzymeStrainVitamin(S,V,Ec) ; minStrain(S) .
-% :- not coveredEnzyme(V,Ec ; enzymeV(V,Ec) .
-% #minimize {minStrain(S)}.
+%#minimize {minCompletS(S): strain(S)}.
+
+%score(N) :- N={minCompletS(_)}.
+%#minimize {N@1,N: score(N)}.  %88 S unsafe.., pas de result[0] qd commenté
+
+ %* 3 minimal set of strains having enzymes of all vitamins *%
+ 1{minStrain(S): strain(S)}maxstrain.  %88' choix
+
+ coveredEnzyme(V,Ec) :- enzymeStrainVitamin(S,V,Ec) ; minStrain(S) . %88
+% :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %88'il nexiste pas denzyme non couverte?
+ #minimize {minStrain(S): minStrain(S), strain(S)}.
 
 
 
  %* PARTIE SHOW*%
-
+#show.
  %*Les 3 télés  *%
- #show completeStrainV/2.
+% #show completeStrainV/2.
 
  %*Les show enzyme:  *%
 %#show enzymeV/2.
@@ -115,27 +112,9 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
 
  %* Tableau croisé: pr une vitamine *%
 
-full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec); Ec!=ec(3,6,1,o).   % , S="FN806773".
-rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC) ; EcS!=ec(3,6,1,o).   % , S="FN806773".
-total_match(V,S,T,EcS) :- full_match(V,S,T,EcS).
-total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).
 
-#show enzymeV/2.
-#show full_match/4.
-#show rest_match/4.
+
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
 %#show total_match/4.
-
-%#show enzymeV/2.  %enlever 3.6.1.o
-%#show full_match(V,S,T,Ec) : matched(V,S,T,Ec,Ec), Ec!=ec(3,6,1,o).% , S="FN806773".
-%#show rest_match(V,S,T,EcS) : match_rest(V,S,T,EcS,EcC) , EcS!=ec(3,6,1,o).% , S="FN806773".
-
-
-
-
- %* Vieux tableau nouveau.. *%
-
-%statS(V,S,N) :- vitamin(V), strain(S), N={matched(V,S,T,Ec,Ec)}. %888 match complet
-%statS(V,S,N) :- vitamin(V), strain(S), N={match_rest(V,S,T,EcS,EcC)}. %888 match restant
-
-%statS(V,S,N,NM) :- vitamin(V), strain(S), N={matched(V,S,T,Ec,Ec)}, NM={match_rest(V,S,T,EcS,EcC)}. %88 fait les 2
-%#show statS/3.
