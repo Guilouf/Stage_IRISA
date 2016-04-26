@@ -23,7 +23,7 @@ strain(S) :- num_access(S,_,_).
 
 superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
 superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
-%superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
+superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
 
 %les enzymes appartenants aux vitamines
 enzymeV(V,Ec) :-    in_pathway(R,P) ;
@@ -88,33 +88,36 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
 %#minimize {minCompletS(S): strain(S)}.
 
 %score(N) :- N={minCompletS(_)}.
-%#minimize {N@1,N: score(N)}.  %88 S unsafe.., pas de result[0] qd commenté
+%#minimize {N@1,N: score(N)}.  %88 S unsafe..
 
- %* 3 minimal set of strains having enzymes of all vitamins *%
- 1{minStrain(S): strain(S)}maxstrain.  %88' choix
+ %* 3 minimal set of strains having enzymes of all vitamins *% %'eh cest la mm prob..
+% 1{minStrain(S): strain(S)}maxstrain.  %88' choix
 
- coveredEnzyme(V,Ec) :- enzymeStrainVitamin(S,V,Ec) ; minStrain(S) . %88
+% coveredEnzyme(V,Ec) :- enzymeStrainVitamin(S,V,Ec) ; minStrain(S) . %88
 % :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %88'il nexiste pas denzyme non couverte?
- #minimize {minStrain(S): minStrain(S), strain(S)}.
+% #minimize {minStrain(S): minStrain(S), strain(S)}.
 
 
+
+ %* Mon essai des 3 questions*%
+%2eme Q souches qui ont des enzymes dans ttes les vits
+strainAllPartV(S) :- total_match(V,S,T,Ec) : vitamin(V) ; strain(S).
+
+%3eme
 
  %* PARTIE SHOW*%
 #show.
- %*Les 3 télés  *%
-% #show completeStrainV/2.
 
- %*Les show enzyme:  *%
-%#show enzymeV/2.
-%#show enzymeV(V,Ec): enzymeV(V,Ec), Ec=ec(X,Y,Z,T).
-%#show enzymeS(V,S,EcS,T): enzymeS(V,S,EcS,T) , S="FN806773". %888 combine les match 3 et 4..je devrais partir de là pr le match
-%#show enzymeS/4.
+ %*Mes questions  *%
+#show strainAllPartV/1.  %'marche, mm si chez moi peut pas verif
+
+ %*Les 3 télés  *%
+#show completeStrainV/2.
+
+
 
  %* Tableau croisé: pr une vitamine *%
-
-
-
-%#show enzymeV/2.
-%#show full_match/4.
-%#show rest_match/4.
-%#show total_match/4.
+#show enzymeV/2.
+#show full_match/4.
+#show rest_match/4.
+#show total_match/4.

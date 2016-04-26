@@ -9,6 +9,8 @@ from uniprot import Uniprot
 
 """
 Installation des modules(en -user si pas root):
+récupérer les num GI, yen a ds le tgdb en tant que "entrez"
+septembre 2016 plus de numero GI sur le NCBI..
 """
 """
 Questions:
@@ -18,9 +20,6 @@ Questions:
 
 Révélations: le générateur est composé d'un record, donc renovyer juste un next serait pas mal
 """
-# TODO récupérer les num GI, yen a ds le tgdb en tant que "entrez"
-# TODO septembre 2016 plus de numero GI sur le NCBI..
-
 # TODO regarder comment ca se passe pour une prot associée à plusieurs EC..
 
 
@@ -47,9 +46,12 @@ class Recup_EC :
         handle.close()
         gbk = SeqIO.parse(gbkIO, 'genbank')  # essayer de faire un next pour prendre
         # fermer gbkIO? ben on peut pas sinon c op sur closed file..
-        return next(gbk)
-
-        # self.detection()
+        # todo parfois ya stop itération, pb de connexion? très chiant, faire un try comme ac uniprot?
+        try:
+            return next(gbk)
+        except:
+            print("petit problème...du NCBI")
+            return self.telecharge(accession)  # TODO je sais pas vraiment ce que ca fait en fait..nrmlt c bon
 
     def detection(self, gbk=None):
         """

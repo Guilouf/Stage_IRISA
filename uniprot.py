@@ -25,6 +25,7 @@ class Uniprot:
         request = Request(url, data)
 
         # un beau try except recursif..
+        # todo ouais ben pas si beau que ca refait..
         try:
             response = urlopen(request, timeout=50)
         except:

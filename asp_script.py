@@ -217,7 +217,7 @@ with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fou
     # inst_resul.tab_comptage()
     inst_resul.tab_qualit()
 
-# todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.;
+# todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)
 
 
 """
