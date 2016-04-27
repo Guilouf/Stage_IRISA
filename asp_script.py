@@ -187,7 +187,8 @@ class Resultats:
         :return:
         """
         # tester add subplot pour avoir les trois plots en mm temps
-
+        print("nb_souches: ", len(p_list_souches))
+        # todo ya le mm nombre de souches pour chaque vit.. coincidence?
         matrice = np.array(p_list_souches)  # transforme une liste de liste en matrice
         # plt.figure(figsize=(5, 5))
         fig, ax = plt.subplots()
@@ -218,7 +219,7 @@ with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fou
     inst_resul.tab_qualit()
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)
-
+# todo au niveau des souches de la heatmap, elle n'affiche pas les souches vides
 
 """
 en gros, ce qu'il faut:

@@ -65,7 +65,7 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec); Ec!=ec(3,6,1,o).   % , S="FN806773".
 rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC) ; EcS!=ec(3,6,1,o).   % , S="FN806773".
 total_match(V,S,T,EcS) :- full_match(V,S,T,EcS).
-total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).
+total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de substrat
 
 
 % todo Partie 3 questions
@@ -90,7 +90,7 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
 %score(N) :- N={minCompletS(_)}.
 %#minimize {N@1,N: score(N)}.  %88 S unsafe..
 
- %* 3 minimal set of strains having enzymes of all vitamins *% %'eh cest la mm prob..
+ %* 3 minimal set of COMPLETE strains having enzymes of all vitamins *%
 % 1{minStrain(S): strain(S)}maxstrain.  %88' choix
 
 % coveredEnzyme(V,Ec) :- enzymeStrainVitamin(S,V,Ec) ; minStrain(S) . %88
@@ -100,24 +100,28 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
 
 
  %* Mon essai des 3 questions*%
-%2eme Q souches qui ont des enzymes dans ttes les vits
+% souches qui ont des enzymes dans ttes les vits
 strainAllPartV(S) :- total_match(V,S,T,Ec) : vitamin(V) ; strain(S).
 
-%3eme
+%souches qui peuvent coopérer pour faire une vitamine (genre K)
+strainCoop(S) :- not completeStrainV(S,V) ; vitamin(V) ; strain(S) ; total_match(V,S,T,Ec) : enzymeV(_,Ec) .  %'S et V unsafe..'
 
  %* PARTIE SHOW*%
 #show.
 
  %*Mes questions  *%
-#show strainAllPartV/1.  %'marche, mm si chez moi peut pas verif
+%faire des tests en retirant la spé du substrat
+%#show strainAllPartV/1.  %'marche
+#show strainCoop/1.  %'aucun résultat..'
 
  %*Les 3 télés  *%
-#show completeStrainV/2.
+%#show completeStrainV/2.
 
 
 
  %* Tableau croisé: pr une vitamine *%
-#show enzymeV/2.
-#show full_match/4.
-#show rest_match/4.
-#show total_match/4.
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
+
+%#show total_match/4.
