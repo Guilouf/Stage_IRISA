@@ -66,53 +66,61 @@ full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec); Ec!=ec(3,6,1,o).   % , S="FN806773
 rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC) ; EcS!=ec(3,6,1,o).   % , S="FN806773".
 total_match(V,S,T,EcS) :- full_match(V,S,T,EcS).
 total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de substrat
-
+ %'renomer ecs en ec v..
 
 % todo Partie 3 questions
 
-#const maxstrain = 5.
+#const maxstrain = 10.
 
  %* 1 strain having all enzyme of a vitamin pathway *%
 % total vrai si vrai pour tout enzymeV
 completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) .
 
 
- %* 2 minimal set of strains having enzymes of all vitamins *%
-%1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix: min est max 5souches parmi d'autres..
-%
-%:- minCompletS(S) ; not completeStrainV(S,_).  %88 ca filtre le choix, n est pas complet si n est pas completstrainV
-%
-%coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %88 une vit est couverte si elle est completeStrainV
+ %* 2 minimal set of COMPLETE strains having enzymes of all vitamins *%
+1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix: min est max 5souches parmi d'autres..
+
+:- minCompletS(S) ; not completeStrainV(S,_).  %88 ca filtre le choix, n est pas complet si n est pas completstrainV
+
+coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %88 une vit est couverte si elle est completeStrainV
 %:- not coveredVitamin(V) ; vitamin(V). %88
-%
-%#minimize {minCompletS(S): strain(S)}.
+
+%#minimize {1@1,S:minCompletS(S)}.
+#maximize {1@1,V:coveredVitamin(V)}.
 
 %score(N) :- N={minCompletS(_)}.
 %#minimize {N@1,N: score(N)}.  %88 S unsafe..
 
- %* 3 minimal set of COMPLETE strains having enzymes of all vitamins *%
-% 1{minStrain(S): strain(S)}maxstrain.  %88' choix
+ %* 3 minimal set of strains having enzymes of all vitamins *%
+ 1{minStrain(S): strain(S)} maxstrain.  %88' choix
 
-% coveredEnzyme(V,Ec) :- enzymeStrainVitamin(S,V,Ec) ; minStrain(S) . %88
+ coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S) . %88
 % :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %88'il nexiste pas denzyme non couverte?
-% #minimize {minStrain(S): minStrain(S), strain(S)}.
+uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) .
+% #minimize {1@1,S:minStrain(S)}.
+ #maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
 
 
 
  %* Mon essai des 3 questions*%
 % souches qui ont des enzymes dans ttes les vits
-strainAllPartV(S) :- total_match(V,S,T,Ec) : vitamin(V) ; strain(S).
+%strainAllPartV(S) :- total_match(V,S,T,Ec) : vitamin(V) ; strain(S).
 
 %souches qui peuvent coopérer pour faire une vitamine (genre K)
-strainCoop(S) :- not completeStrainV(S,V) ; vitamin(V) ; strain(S) ; total_match(V,S,T,Ec) : enzymeV(_,Ec) .  %'S et V unsafe..'
+%strainCoop(S) :- not completeStrainV(S,V) ; vitamin(V) ; strain(S) ; total_match(V,S,T,Ec) : enzymeV(_,Ec) .  %'S et V unsafe..'
 
  %* PARTIE SHOW*%
 #show.
+#show coveredVitamin/1.
+%#show coveredEnzyme/2.
+%#show minStrain/1.
+%#show total_match/4.
+%#show uncovered/2.
 
  %*Mes questions  *%
 %faire des tests en retirant la spé du substrat
 %#show strainAllPartV/1.  %'marche
-#show strainCoop/1.  %'aucun résultat..'
+%#show strainCoop/1.  %'aucun résultat..'
 
  %*Les 3 télés  *%
 %#show completeStrainV/2.
