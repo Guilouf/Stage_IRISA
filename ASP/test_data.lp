@@ -40,3 +40,14 @@ uniprot( ec(1,1,1,17),"Uni17").
 uniprot( ec(1,1,1,18),"Uni18").
 uniprot( ec(1,1,1,19),"Uni19").
 uniprot( ec(1,1,1,20),"Uni20").
+uniprot( ec(1,1,1,21),"Uni21").
+uniprot( ec(1,1,1,22),"Uni22").
+uniprot( ec(1,1,1,23),"Uni23").
+uniprot( ec(1,1,1,24),"Uni24").
+uniprot( ec(1,1,1,25),"Uni25").
+uniprot( ec(1,1,1,26),"Uni26").
+uniprot( ec(1,1,1,27),"Uni27").
+uniprot( ec(1,1,1,28),"Uni28").
+uniprot( ec(1,1,1,29),"Uni29").
+uniprot( ec(1,1,1,30),"Uni30").
+
