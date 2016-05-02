@@ -1,3 +1,4 @@
+ %*
 #const maxstrain = 10.
 
  %* 1 strain having all enzyme of a vitamin pathway *%
@@ -27,3 +28,5 @@ coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %88 une vit est couv
 uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) .
 % #minimize {1@1,S:minStrain(S)}.
  #maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
+
+*%
