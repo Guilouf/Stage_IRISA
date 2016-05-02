@@ -37,7 +37,7 @@ enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
                      map(EcV,EcS,T).
 
 %comptage des occurences de enzymesV
-statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): enzymeV(V,Ec),size_ec(Ec,T)}.
+statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): size_ec(Ec,T)}.
 
 %Pareil que enzyme S mais avec plus d'args. Pour faire full_match, EcV = EcS..
 matched(V,S,T,EcV,EcS) :-

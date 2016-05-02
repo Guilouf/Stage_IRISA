@@ -36,6 +36,7 @@ goptions = ''  # soluce max gringo
 soptions = ''  # solutions max solveur
 solver = Gringo4Clasp(gringo_options=goptions, clasp_options=soptions)
 
+
 #le test ASP en fichier virtuel..
 testo = """
 """
@@ -48,10 +49,11 @@ query = 'ASP/explore.lp'
 test = 'ASP/test.lp'
 metagdb = 'ASP/ec_uni.lp'
 prog = 'ASP/programmeASP.lp'
+questions = 'ASP/questions.lp'
 
 
 # Solver
-result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
 
 # todo pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
 # impression de sortie ASP
