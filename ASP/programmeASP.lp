@@ -16,8 +16,8 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 
 *%
 
-%définition du pathway, des vitamines et souches
-pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
+%définition du pathway, des vitamines et souches ## A commenter en test: vitamin et pathway (pas necessaire en fait)
+pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SoP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
 strain(S) :- num_access(S,_,_).
 
@@ -30,75 +30,40 @@ enzymeV(V,Ec) :-    in_pathway(R,P) ;
                     ec_number(R,Ec) ;
                     pathwayV(V,P).
 
-%les enzymes appartenants aux souches, et correspondant aux enzymes du pathway
-enzymeS(V,S,EcS,T) :- enzymeV(V,EcV);
-                     uniprot(EcS,Uniref);
-                     num_access(S,Uniref,_); %888 changer ici pour refseq
-                     map(EcV,EcS,T).
-
-%comptage des occurences de enzymesV
-statV(V,T,N) :- vitamin(V) ; T=(3..4) ; N=#count {enzymeV(V,Ec): size_ec(Ec,T)}.
-
-%Pareil que enzyme S mais avec plus d'args. Pour faire full_match, EcV = EcS..
+%les enzymes des souches qui matchent avec celles des vits, ac possib de matchs asymétriques. peut changer primaire/ref
 matched(V,S,T,EcV,EcS) :-
                         enzymeV(V,EcV) ;
                         uniprot(EcS,Uniref);
-                        num_access(S,Uniref,"PRIMAIRE"); %888 changer ici pour refseq
+                        num_access(S,Uniref,_); %888 changer ici pour refseq
                         map(EcV,EcS,T).
 
+%les enzymes appartenants aux souches, et correspondant aux enzymes du pathway(pareil que matched, - d'args.
+enzymeS(V,S,EcS,T) :- matched(V,S,T,EcV,EcS).
+
+%matchs asymétriques, avec exclusion des nums déja matchés en full
 match_rest(V,S,T,EcV,EcSS) :- matched(V,S,T,EcV,EcSS) ; not matched(V,S,_,EcV,EcV) .
 
-%mappeur d'EC
+%mappeur d'EC, définit les types de relations, symétriques/asymétriques
 map(ec(X,Y,Z,T),ec(X,Y,Z,T),t(4,4)) :- enzymeV(V,ec(X,Y,Z,T)).
 map(ec(X,Y,Z,T),ec(X,Y,Z),t(4,3)) :- enzymeV(V,ec(X,Y,Z,T)).
 
 map(ec(X,Y,Z),ec(X,Y,Z,T),t(3,4)) :- enzymeV(V,ec(X,Y,Z)) ; uniprot(ec(X,Y,Z,T),_).
 map(ec(X,Y,Z),ec(X,Y,Z),t(3,3)) :- enzymeV(V,ec(X,Y,Z)).
 
-%type de correspondance
+%initialisation des types de correspondances et des tailles d'ec
 type(t(4,4)). type(t(4,3)). type(t(3,4)). type(t(3,3)).
-
 size_ec(ec(X,Y,Z,T),4) :- enzymeV(V,ec(X,Y,Z,T)).
 size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 %le système de matchs
+% todo faire les exclusions ailleurs?
 full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec); Ec!=ec(3,6,1,o).   % , S="FN806773".
 rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC) ; EcS!=ec(3,6,1,o).   % , S="FN806773".
 total_match(V,S,T,EcS) :- full_match(V,S,T,EcS).
 total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de substrat
- %'renomer ecs en ec v..
-
-% todo Partie 3 questions
-
-#const maxstrain = 10.
-
- %* 1 strain having all enzyme of a vitamin pathway *%
-% total vrai si vrai pour tout enzymeV
-completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) .
+% todo renomer ecs en ec v..
 
 
- %* 2 minimal set of COMPLETE strains having enzymes of all vitamins *%
-1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix: min est max 5souches parmi d'autres..
-
-:- minCompletS(S) ; not completeStrainV(S,_).  %88 ca filtre le choix, n est pas complet si n est pas completstrainV
-
-coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %88 une vit est couverte si elle est completeStrainV
-%:- not coveredVitamin(V) ; vitamin(V). %88
-
-%#minimize {1@1,S:minCompletS(S)}.
-#maximize {1@1,V:coveredVitamin(V)}.
-
-%score(N) :- N={minCompletS(_)}.
-%#minimize {N@1,N: score(N)}.  %88 S unsafe..
-
- %* 3 minimal set of strains having enzymes of all vitamins *%
- 1{minStrain(S): strain(S)} maxstrain.  %88' choix
-
- coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S) . %88
-% :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %88'il nexiste pas denzyme non couverte?
-uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) .
-% #minimize {1@1,S:minStrain(S)}.
- #maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
 
 
 
@@ -111,7 +76,8 @@ uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) .
 
  %* PARTIE SHOW*%
 #show.
-#show coveredVitamin/1.
+#show completeStrainV/2.
+#show coveredVitamin/1.  %'WHAT?'
 %#show coveredEnzyme/2.
 %#show minStrain/1.
 %#show total_match/4.

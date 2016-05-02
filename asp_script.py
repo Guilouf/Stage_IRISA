@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from pyasp.asp import *
-from io import StringIO
+from matplotlib import pyplot as plt
+import numpy as np
 import csv
 
 # TODO ya des numeros Gi qui se balladent en tant que uniprot..=> voir le todo pr abruti ds recup ec..
@@ -29,33 +30,30 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # memmo ASP
 ###########
 """
-Mettre des Maj aux noms de variables..
+Mettre des Maj aux noms de variables.. ??
 """
 
 goptions = ''  # soluce max gringo
 soptions = ''  # solutions max solveur
 solver = Gringo4Clasp(gringo_options=goptions, clasp_options=soptions)
 
-
-#le test ASP en fichier virtuel..
-testo = """
-"""
-test_io = StringIO(testo)
-
 # Liste des fichiers asp
 hidden = 'ASP/hidden.lp'
 base = 'ASP/metacyc_18.5.lp'
 query = 'ASP/explore.lp'
-test = 'ASP/test.lp'
+test = 'ASP/test_data.lp'
 metagdb = 'ASP/ec_uni.lp'
 prog = 'ASP/programmeASP.lp'
 questions = 'ASP/questions.lp'
 
 
 # Solver
-result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
 
-# todo pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
+# Solver de test:
+result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
+
+#  pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
 # impression de sortie ASP
 for termm in result[0]:
     print(termm)
@@ -65,8 +63,6 @@ for termm in result[0]:
 # Impression du nombre d'élément en sortie
 print("Nombre: ", len(result[0]))
 
-from matplotlib import pyplot as plt
-import numpy as np
 
 class Resultats:
 
@@ -169,7 +165,7 @@ class Resultats:
         rows = np.array(p_headligne, dtype='U24')[:, np.newaxis]  # les coms de souche en array s20
 
         np.savetxt(
-            'ASP/tab_csv_'+vit+'.csv',           # file name, ac nom vit
+            'ASP/Output/tab_csv_'+vit.replace('"', '')+'.csv',           # file name, ac nom vit, et sans ""
             np.hstack((rows, matrice)),           # ajoute les row tiles
             fmt='%s',             # formatattage  %.2f
             header=headcol,         # le header

@@ -51,3 +51,31 @@ uniprot( ec(1,1,1,28),"Uni28").
 uniprot( ec(1,1,1,29),"Uni29").
 uniprot( ec(1,1,1,30),"Uni30").
 
+%on simplifie le coté metacyc hein...
+enzymeV("vit1", ec(1,1,1,1)).
+enzymeV("vit1", ec(1,1,1,2)).
+enzymeV("vit1", ec(1,1,1,3)).
+enzymeV("vit1", ec(1,1,1,4)).
+enzymeV("vit1", ec(1,1,1,5)).
+enzymeV("vit1", ec(1,1,1,6)).
+enzymeV("vit1", ec(1,1,1,7)).
+enzymeV("vit1", ec(1,1,1,8)).
+enzymeV("vit1", ec(1,1,1,9)).
+enzymeV("vit1", ec(1,1,1,10)).
+enzymeV("vit1", ec(1,1,1,11)).
+enzymeV("vit1", ec(1,1,1,12)).
+enzymeV("vit1", ec(1,1,1,13)).
+enzymeV("vit2", ec(1,1,1,14)).
+enzymeV("vit2", ec(1,1,1,15)).
+enzymeV("vit2", ec(1,1,1,16)).
+enzymeV("vit2", ec(1,1,1,17)).
+enzymeV("vit2", ec(1,1,1,18)).
+enzymeV("vit2", ec(1,1,1,19)).
+enzymeV("vit2", ec(1,1,1,20)).
+enzymeV("vit2", ec(1,1,1,21)).
+
+% définition des vitamines
+vitamin("vit1").
+vitamin("vit2").
+
+% définition des souches => pas besoin c'est ds prog

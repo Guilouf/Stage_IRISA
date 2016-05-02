@@ -1,10 +1,10 @@
- %*
+
 #const maxstrain = 10.
 
  %* 1 strain having all enzyme of a vitamin pathway *%
 % total vrai si vrai pour tout enzymeV
 completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) .
-
+% todo là ya un gros problème...
 
  %* 2 minimal set of COMPLETE strains having enzymes of all vitamins *%
 1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix: min est max 5souches parmi d'autres..
@@ -29,4 +29,3 @@ uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) .
 % #minimize {1@1,S:minStrain(S)}.
  #maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
 
-*%
