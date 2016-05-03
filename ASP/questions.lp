@@ -1,46 +1,60 @@
 
 #const maxstrain = 10.
 
- %* 1 strain having all enzyme of a vitamin pathway *%
-%completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec); vitamin(V) ; strain(S) .
+ %* ###############################################
+ 1 strain having all enzyme of a vitamin pathway
+################################################ *%
 % total vrai si vrai pour tout enzymeV
 completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) ; enzymeV(V,_).
-% todo là ya un gros problème... ya pas d'enzyme pr b9 ect, donc avec le truc vide ca dit vrai...
-%completeStrainV(S,V,Ec) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; enzymeV(V,Ec) ;  strain(S) . %'ec unsafe..'
 
-%completeStrainV(S,V) :- completeStrainV(S,V,_).
+ %* ################################################################
+ 2 minimal set of COMPLETE strains having enzymes of all vitamins
+################################################################## *%
+1{minCompletS(S) : strain(S)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
 
+:- minCompletS(S) ; not completeStrainV(S,_).  %'ca filtre le choix, n est pas complet si n est pas completstrainV
 
+coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %'une vit est couverte si elle est completeStrainV
+%:- not coveredVitamin(V) ; vitamin(V). %'il n existe pas de vit v non couverte, pas compris a quoi ca sert..
 
- %* 2 minimal set of COMPLETE strains having enzymes of all vitamins *%
-1{minCompletS(S) : strain(S)} maxstrain .    %88 definition du choix: min est max 5souches parmi d'autres..
-
-:- minCompletS(S) ; not completeStrainV(S,_).  %88 ca filtre le choix, n est pas complet si n est pas completstrainV
-
-coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %88 une vit est couverte si elle est completeStrainV
-%:- not coveredVitamin(V) ; vitamin(V). %88
-
-%#minimize {1@1,S:minCompletS(S)}.
+#minimize {1@1,S:minCompletS(S)}.
 #maximize {1@1,V:coveredVitamin(V)}.
 
-%score(N) :- N={minCompletS(_)}.
-%#minimize {N@1,N: score(N)}.  %88 S unsafe..
 
- %* 3 minimal set of strains having enzymes of all vitamins *%
- 1{minStrain(S): strain(S)} maxstrain.  %88' choix
 
- coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S) . %88
- :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %88'il nexiste pas denzyme non couverte?
-uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) .
- #minimize {1@1,S:minStrain(S)}.
-% #maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
+ %* #######################################################
+ 3 minimal set of strains having enzymes of all vitamins REFAIRE PAS CLAIR
+ ####################################################### *%
+ 1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
+
+coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S) . %'enzymeV couverte si présente ds une souche de l ensmbl
+
+% heu le commenter enlève des enzymes: vit1 1..10, celle de la souche1... (vit3 com, sinon insat..)
+% pk qd c com, les vit1 1..10 se retrouvent en uncovered alr qu'ils sont en total match?? a cause de min strain?
+% ouais c'est a cause de la minimisation, du coup il me sort que ceux de la souche 2..
+
+% :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'il nexiste pas denzyme non couverte?(ni de vit du coup?)
+% faut trouver un moyen de refaire ca..
+uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathway pas présente ds les bactéries
+
+
+
+
+#minimize {1@1,S:minStrain(S)}.
+%#maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
 
 %todo Partie show:
 
+ %* 1 Question OK *%
+%#show completeStrainV/2.
 
-#show completeStrainV/2.
-#show coveredVitamin/1.
-#show minStrain/1.
+ %* 2 Question *%
+%#show coveredVitamin/1.
+
+ %* 3 Question *%
+#show coveredEnzyme/2.
+#show uncovered/2.
+%#show minStrain/1.
 
 
 
@@ -51,3 +65,9 @@ uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) .
 
 %#show enzymeV/2.
 %#show total_match/4.
+
+
+%* Tableau croisé: pr une vitamine *%
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
