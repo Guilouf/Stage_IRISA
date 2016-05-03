@@ -17,13 +17,17 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 *%
 
 %définition du pathway, des vitamines et souches ## A commenter en test: vitamin et pathway (pas necessaire en fait)
-pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SoP,SPN) ; is_a(P,SP).
+%pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SoP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
 strain(S) :- num_access(S,_,_).
 
 superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
 superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
 superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
+
+vitamin(k2_7).
+vitamin(b9).
+vitamin(b12).
 
 %les enzymes appartenants aux vitamines
 enzymeV(V,Ec) :-    in_pathway(R,P) ;
@@ -76,12 +80,7 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 
  %* PARTIE SHOW*%
 #show.
-#show completeStrainV/2.
-#show coveredVitamin/1.  %'WHAT?'
-%#show coveredEnzyme/2.
-%#show minStrain/1.
-%#show total_match/4.
-%#show uncovered/2.
+
 
  %*Mes questions  *%
 %faire des tests en retirant la spé du substrat

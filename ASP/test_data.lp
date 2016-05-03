@@ -18,7 +18,16 @@ num_access("Souche2","Uni16", "REFSEQ").
 num_access("Souche2","Uni17", "REFSEQ").
 num_access("Souche2","Uni18", "REFSEQ").
 num_access("Souche2","Uni19", "REFSEQ").
-num_access("Souche2","Uni10", "REFSEQ").
+num_access("Souche2","Uni20", "REFSEQ").
+
+num_access("Souche2","Uni21", "REFSEQ").
+
+
+num_access("Souche3","Uni6", "REFSEQ").
+num_access("Souche3","Uni7", "REFSEQ").
+num_access("Souche3","Uni8", "REFSEQ").
+num_access("Souche3","Uni9", "REFSEQ").
+num_access("Souche3","Uni10", "REFSEQ").
 
 uniprot( ec(1,1,1,1),"Uni1").
 uniprot( ec(1,1,1,2),"Uni2").
