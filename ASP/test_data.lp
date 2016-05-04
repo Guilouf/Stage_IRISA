@@ -97,11 +97,11 @@ enzymeV("vit2", ec(1,1,1,20)).
 enzymeV("vit2", ec(1,1,1,21)).
 
 
-%Vitamine 3, ec 27..30 enzymes pas présentes chez les bacts => insatifiable..
-%enzymeV("vit3", ec(1,1,1,27)).
-%enzymeV("vit3", ec(1,1,1,28)).
-%enzymeV("vit3", ec(1,1,1,29)).
-%enzymeV("vit3", ec(1,1,1,30)).
+%Vitamine 3, ec 27..30 enzymes pas présentes chez les bacts => insatifiable si ya le :- faux de la 3=>reglé
+enzymeV("vit3", ec(1,1,1,27)).
+enzymeV("vit3", ec(1,1,1,28)).
+enzymeV("vit3", ec(1,1,1,29)).
+enzymeV("vit3", ec(1,1,1,30)).
 
 % définition des vitamines
 vitamin("vit1").
