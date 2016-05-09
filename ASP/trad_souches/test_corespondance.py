@@ -7,8 +7,8 @@ with open("correspondance_souches.csv", 'r') as fich_dico:
     # for i in reader:
     #     print(i)
 
-    for i in reader:
-        dico_cor[i[1]] = i[0]
+    for i in reader:  # création dico: clé: num_acc; valeur: le nom (complet) de la bact
+        dico_cor[i[2]] = [i[0], i[1]]
 
 with open("list_traduction.txt", 'r') as source:
     # reader2 = csv.reader(source, delimiter=';')
