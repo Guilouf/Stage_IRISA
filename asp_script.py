@@ -46,12 +46,16 @@ metagdb = 'ASP/ec_uni.lp'
 prog = 'ASP/programmeASP.lp'
 questions = 'ASP/questions.lp'
 
+# todo itertools product, pour les listes intent imbriquées
+# todo ya des '"' autour des num_acc..
+# faire les initia des dico avec des = et des methodes statiques
 
 # Solver
 # result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
-result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
 
 #  pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
 # impression de sortie ASP
@@ -67,12 +71,15 @@ print("Nombre: ", len(result[0]))
 class Resultats:
 
     def __init__(self, m_result, m_list_acc):
-        self.result = m_result[0]
+        self.result = m_result[0]  # la sortie ASP
         self.list_access = m_list_acc  # osef au final
-        self.dico_vit = {}
-        self.list_ec_vit()
-        self.dico_souche = {}
-        self.bdd_temp()
+        self.dico_vit = {}  # init dico_vit
+        self.list_ec_vit()  # remplissage dico_vit(clé:vit ; val: num_ec de la vit)
+        self.dico_souche = {}  # init dico_souche
+        self.bdd_temp()  # remplissage dico_souche
+        self.dico_trad = {}  # init dico de corespondance de souches
+        self.correspondance_souche()  # pas oublier le remplissage
+
 
     def list_ec_vit(self):
         """
@@ -110,6 +117,10 @@ class Resultats:
 
     def tab_comptage(self, vitamin=None):
         """
+        Sort une table avec les vitamines, et pr chaque vit les souches ac le nb de full et de rest match.
+        On peut sortir le tableau avec une vitamine spécifique
+
+
         Faut le sortir en csv maintenant...
         :param vitamin:
         :return:
@@ -127,7 +138,14 @@ class Resultats:
                     print("Nb_rest", len(self.dico_souche[vitamin][key_souche][1]))
 
     def tab_qualit(self):
+        """
+        Permet de mettre en forme les données pour faire un tableau de présence/abs d'enzymes
 
+        UTILISE:
+        - out_csv()
+        - heatmap()
+        :return:
+        """
         for vit in sorted(self.dico_souche.keys()):
             list_souches = []
             for souche in sorted(self.dico_souche[vit].keys()):
@@ -144,15 +162,27 @@ class Resultats:
                         list_ec.append(0)
                 list_souches.append(list_ec)
             print(list_souches)
-            self.out_csv(vit, list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
-            self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
-            # yield list_souches
+            headcol = [';'.join(self.dico_trad[sch.replace('"', '')]) for sch in sorted(self.dico_souche[vit].keys())]
+            # je met le sorted car c aussi sorted dans "list_souches"
+            # ; "matrice" ; header colones ; header lignes
+            self.out_csv(vit, list_souches, self.dico_vit[vit], headcol)
+            self.heatmap(list_souches, self.dico_vit[vit], headcol)
 
     def correspondance_souche(self):
-        pass
+        """
+        Remplit dico trad (clé: num_acc ; valeur: [espèce,souche] )
+        Utilise un fichier csv pour se charger
+        :return:
+        """
+        with open("ASP/trad_souches/correspondance_souches.csv", 'r') as fich_dico:
+            reader = csv.reader(fich_dico, delimiter=';')
+            for i in reader:
+                self.dico_trad[i[2]] = [i[0], i[1]]
+
 
     def out_csv(self, vit, p_listsouche, p_headcol, p_headligne):
         """
+        Enregistre via numpy les data de tab_qualit en csv, et l'enregistre dans un fichier ac le nom de la bact
         bon au final passer par numpy emmerde plus qu'autre chose..mais ca marche
         :param vit:
         :param p_listsouche:
@@ -160,9 +190,10 @@ class Resultats:
         :param p_headligne:
         :return:
         """
-        matrice = np.array(p_listsouche, dtype='U24')  # passe en unicode
+
+        matrice = np.array(p_listsouche, dtype='U128')  # passe en unicode (att, limite 128 carac...)
         headcol = ';'.join(p_headcol)  # header de num ec en string
-        rows = np.array(p_headligne, dtype='U24')[:, np.newaxis]  # les coms de souche en array s20
+        rows = np.array(p_headligne, dtype='U128')[:, np.newaxis]  # les coms de souche en array s20
 
         np.savetxt(
             'ASP/Output/tab_csv_'+vit.replace('"', '')+'.csv',           # file name, ac nom vit, et sans ""
@@ -172,7 +203,7 @@ class Resultats:
             delimiter=';',          # column delimiter
             newline='\n',           # new line character
             footer='',   # fin fichier
-            comments='#; ',          # le ; permet de décaller le header
+            comments='Genre/especes; Souche ; ',          # le ; permet de décaller le header
             )
 
     def heatmap(self, p_list_souches, p_head_col, p_head_ligne):
