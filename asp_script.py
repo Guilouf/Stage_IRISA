@@ -32,7 +32,8 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # regarder l'ordre de croissance des bactéries ?
 # HMM des enzymes de metacyc (jeane got)
 # regarder les positions sur le génome des enzymes?
-# regarder pour les ec qui manquent si c'est unpb de classe (FMNH2..
+# regarder pour les ec qui manquent si c'est unpb de classe (FMNH2..)
+# chopper des publis sur les tas de lards
 
 
 goptions = ''  # soluce max gringo
