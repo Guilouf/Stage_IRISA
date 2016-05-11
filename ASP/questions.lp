@@ -64,17 +64,18 @@ uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathwa
  %* Utilitaires *%
 %#show impossibleV/1.
 
+
  %* 1 Question OK *%
 %#show completeStrainV/2.
 
  %* 2 Question *%
-#show coveredVitamin/1.
-#show minCompletS/1.
+%#show coveredVitamin/1.
+%#show minCompletS/1.
 
  %* 3 Question *%
 %#show coveredEnzyme/2.
-%#show uncovered/2.
-%#show minStrain/2.
+#show uncovered/2.
+#show minStrain/2.
 
 
 %#show enzymeV/2.

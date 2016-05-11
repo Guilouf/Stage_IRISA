@@ -27,11 +27,13 @@ uniprot( ec(2,1,1,72),"A0A0L7Y7H5").
 num_access("NC_020229.1","A0A0L7Y7H5").
 """
 ###########
-# memmo ASP
-###########
-"""
-Mettre des Maj aux noms de variables.. ??
-"""
+# Les tod-o
+# - Convertir les sbml en ASP (powergrasp converter in_sbml
+# regarder l'ordre de croissance des bactéries ?
+# HMM des enzymes de metacyc (jeane got)
+# regarder les positions sur le génome des enzymes?
+# regarder pour les ec qui manquent si c'est unpb de classe (FMNH2..
+
 
 goptions = ''  # soluce max gringo
 soptions = ''  # solutions max solveur
@@ -46,13 +48,13 @@ metagdb = 'ASP/ec_uni.lp'
 prog = 'ASP/programmeASP.lp'
 questions = 'ASP/questions.lp'
 
-# todo itertools product, pour les listes intent imbriquées
+# itertools product, pour les listes intent imbriquées
 # todo ya des '"' autour des num_acc..
-# faire les initia des dico avec des = et des methodes statiques
+# todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
-result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
 # result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
@@ -162,11 +164,20 @@ class Resultats:
                         list_ec.append(0)
                 list_souches.append(list_ec)
             print(list_souches)
-            headcol = [';'.join(self.dico_trad[sch.replace('"', '')]) for sch in sorted(self.dico_souche[vit].keys())]
-            # je met le sorted car c aussi sorted dans "list_souches"
-            # ; "matrice" ; header colones ; header lignes
-            self.out_csv(vit, list_souches, self.dico_vit[vit], headcol)
-            self.heatmap(list_souches, self.dico_vit[vit], headcol)
+            # try:
+            #     headcol = [';'.join(self.dico_trad[sch.replace('"', '')]) for sch in sorted(self.dico_souche[vit].keys())]
+            #     # je met le sorted car c aussi sorted dans "list_souches"
+            #     # ; "matrice" ; header colones ; header lignes
+            #     self.out_csv(vit, list_souches, self.dico_vit[vit], headcol)
+            #     self.heatmap(list_souches, self.dico_vit[vit], headcol)
+            # except:
+            #     self.out_csv(vit, list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            #     self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            #     print("\033[95m Problem dico trad! \033[0m")  # petite coloration..
+
+            # pour l'instant c plus pratique.
+            self.out_csv(vit, list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
 
     def correspondance_souche(self):
         """

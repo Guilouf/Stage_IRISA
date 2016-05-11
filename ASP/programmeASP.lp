@@ -38,7 +38,12 @@ superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
 %les enzymes appartenants aux vitamines
 enzymeV(V,Ec) :-    in_pathway(R,P) ;
                     ec_number(R,Ec) ;
+                    not impEc(Ec) ; %'retire des enzymes selectionnées
+% Ec doit être présent dans au moins une souche..boh, au final..
                     pathwayV(V,P).
+
+
+
 
 %les enzymes des souches qui matchent avec celles des vits, ac possib de matchs asymétriques. peut changer primaire/ref
 matched(V,S,T,EcV,EcS) :-
@@ -67,12 +72,14 @@ size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 %le système de matchs
 % todo faire les exclusions ailleurs?
-full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec); Ec!=ec(3,6,1,o).   % , S="FN806773".
-rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC) ; EcS!=ec(3,6,1,o).   % , S="FN806773".
+full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec).   % , S="FN806773".
+rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC).   % , S="FN806773".
 total_match(V,S,T,EcS) :- full_match(V,S,T,EcS).
 total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de substrat
 % todo renomer ecs en ec v..
 
+%Les numéros Ec exclus (heu ya peut être un autre méthode..
+impEc(ec(3,7,1,12);ec(3,6,1,o);ec(1,5,1,39)).
 
 
 
@@ -99,8 +106,8 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 
 
  %* Tableau croisé: pr une vitamine *%
-#show enzymeV/2.   %'heu 4000 enz V c unpeu beaucoup...
-#show full_match/4.
-#show rest_match/4.
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
 
 %#show total_match/4.
