@@ -28,12 +28,13 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 """
 ###########
 # Les tod-o
-# - Convertir les sbml en ASP (powergrasp converter in_sbml
+# - Convertir les sbml en ASP (powergrasp converter in_sbml)
 # regarder l'ordre de croissance des bactéries ?
 # HMM des enzymes de metacyc (jeane got)
 # regarder les positions sur le génome des enzymes?
 # regarder pour les ec qui manquent si c'est unpb de classe (FMNH2..)
 # chopper des publis sur les tas de lards
+# affichache des voies metabo avec cytoscape (regarder le mail et la publi)
 
 
 goptions = ''  # soluce max gringo
@@ -186,6 +187,7 @@ class Resultats:
         Utilise un fichier csv pour se charger
         :return:
         """
+        # todo elle veut plus de colones
         with open("ASP/trad_souches/correspondance_souches.csv", 'r') as fich_dico:
             reader = csv.reader(fich_dico, delimiter=';')
             for i in reader:
