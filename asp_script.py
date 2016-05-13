@@ -38,7 +38,7 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 
 
 goptions = ''  # soluce max gringo
-soptions = ''  # solutions max solveur
+soptions = ''  # solutions max solveur todo faut itérer les modèle, mon resul ne prend q'un seul...
 solver = Gringo4Clasp(gringo_options=goptions, clasp_options=soptions)
 
 # Liste des fichiers asp

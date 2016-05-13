@@ -2,7 +2,10 @@
  %* ###############################################
 Utilitaires
 ################################################ *%
-#const maxstrain = 10. %'max de souches recherchées'
+#const maxstrain = 2. %'max de souches recherchées ok alors maintenant qd on en met - de 10 ca foire..
+%ok le maxstrain à l'air pour la totalité des vits
+%qd on met 10 on a un ensemble de 5 souches
+
 
 % Une vitamine pour laquelle il y a des Ec présents ds aucune souches
 impossibleV(V) :- not enzymeV(V,Ec) : total_match(V,S,T,Ec) ; vitamin(V).
@@ -16,7 +19,8 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
 
  %* ################################################################
  2 minimal set of COMPLETE strains having enzymes of all vitamins
- Quel ensemble de souches peut faire toutes les vitamines ?
+ Quel ensemble de souches peut faire toutes les vitamines ? non c'est pas ca..
+ Quel ensemble de souches completes peut faire la totalité des vitamines ?
 ################################################################## *%
 1{minCompletS(S) : strain(S)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
 
@@ -33,31 +37,31 @@ coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %'une vit est couver
  3 minimal set of strains having enzymes of all vitamins
  Quel ensemble de souche peuvent se completer pour faire une vitamine
  ####################################################### *%
-% 1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
- 1{minStrain(S,V): strain(S), vitamin(V)} maxstrain.  %' choix de souches
+ 1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
+ 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)}.  %' choix de souches
 
-coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S,V) . %'enzymeV couverte si présente ds une souche de l ensmbl
 
-% heu le commenter enlève des enzymes: vit1 1..10, celle de la souche1... (vit3 com, sinon insat..)
-% pk qd c com, les vit1 1..10 se retrouvent en uncovered alr qu'ils sont en total match?? a cause de min strain?
-% ouais c'est a cause de la minimisation, du coup il me sort que ceux de la souche 2..
+coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S,V,Ec) . %'enzymeV couverte si présente ds une souche de l ensmbl
+
 
 :- not coveredEnzyme(V,Ec) ; not impossibleV(V) ; enzymeV(V,Ec) . %'il nexiste pas denzyme non couverte?(ni de vit du coup?) qui ne soit pas en impossibleV
+
 
 uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathway pas présente ds les bactéries
 
 
-#minimize {1@1,S:minStrain(S,V)}.
+#minimize {1@3,S:minStrain(S)}.
+#minimize {1@2,S,V:minStrain(S,V,Ec)}.
+#maximize {1@1,S,V,Ec:minStrain(S,V,Ec)}. %'maximiser la superposition des voies'
 %#maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
 
-
-% essai lucas
-%2 { choosen(S): souche(S)} maxstrain.
-%1 { target(V): vitamin(V) } 1.
-%choosen_enzymes(E) :- choosen(S) ; produce(S,E). %'ensembl des enzymes d un ensembl de souches
-%:- target(V) ; need(V,E) ; not choosen_enzymes(E). %'elimine le enz qui ne completent pas
-
-
+%todo exclusions
+%:- minCompletS("NC_017486.1").
+%:- minCompletS("CDAG00000000.1").
+%:- minCompletS("NC_017486.1") ; minCompletS("CDAG00000000.1").
+%:- minStrain("CDAG00000000.1",_).
+%:- minStrain("NC_017486.1",_).
+%:- minStrain("CDAG00000000.1",_) ; minStrain("NC_017486.1",_).
 
 %todo Partie show:
 
@@ -70,13 +74,16 @@ uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathwa
 
  %* 2 Question *%
 %#show coveredVitamin/1.
+%#show vitnon_couv(V): not coveredVitamin(V), vitamin(V). %'b12 pas couverte, besoin de collaboration'
 %#show minCompletS/1.
 
  %* 3 Question *%
 %#show coveredEnzyme/2.
-#show uncovered/2.
-#show minStrain/2.
+%#show uncovered/2.
+%#show minStrain/1.
+#show minStrain/3.
 
+%#show minSV(S,V) : minStrain(S,V,_).
 
 %#show enzymeV/2.
 %#show total_match/4.
