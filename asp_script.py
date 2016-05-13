@@ -35,6 +35,8 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # regarder pour les ec qui manquent si c'est unpb de classe (FMNH2..)
 # chopper des publis sur les tas de lards
 # affichache des voies metabo avec cytoscape (regarder le mail et la publi)
+# todo integrer le noms des souches dans la bdd
+# remonter les voies metabo via asp, trouver des voies alternatives
 
 
 goptions = ''  # soluce max gringo
