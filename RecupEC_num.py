@@ -98,11 +98,16 @@ class Recup_EC :
         list_access_has_primaire = []
         list_ec_has_xref = []
 
-
+        # detection refseq
         refseq = False
         for motcle in gbk.annotations["keywords"]:
             if motcle == "RefSeq":
                 refseq = True
+
+        # chargement organisme (seulement genre/ espèces, donne une liste.
+        # j'attend pour les strain, plus compliqué (pas forcément necessaire d'ailleurs)
+        # faut le lier avec le numero d'acc . barre
+        organism = gbk.annotations["organism"].split()
 
         for donne in gbk.features:  # parcourt les features du fichier gbk(les prots en gros
             if donne.type == "CDS":
@@ -133,22 +138,36 @@ class Recup_EC :
                     # self.inst_rempl.ec_has_xref(num_ec_from_web, [next(Uniprot(num_gi_from_web).gener_id())], num_access)  # pb qd géné vide, ok
                     # # TODO faire gaffe ya plusieurs accession uniprot associées parfois.. bon ca prend la première qui est pas mal généralement
 
-        return list_access_has_refeseq, list_access_has_primaire, list_ec_has_xref
+
+
+        return list_access_has_refeseq, list_access_has_primaire, list_ec_has_xref, organism
 
     def insertion_bdd(self, datarefseq):
+        """
+        Repartit les données à inserer ds la bdd
+        :param datarefseq:
+        :return:
+        """
         list_access_has_refeseq = datarefseq[0]
         list_access_has_primaire = datarefseq[1]
         list_ec_has_xref = datarefseq[2]
+        # apparement c chaud de mettre des liste en sqlite, dc=>string
+        organi = ';'.join(datarefseq[3])
+
+        num_access = None  # en fait il est contenu et répété dans les listes, ce qui est assez débile mais devait être
+        # pratique pr le debug
 
         if len(list_access_has_refeseq) != 0:  # si c'est un refseq, la liste n'est pas vide
             for prot in list_access_has_refeseq:
                 self.inst_rempl.access_has_refeseq(prot[0], prot[1])  # le tuple des bonnes donnée..
                 # print("ajoutRefseq_insertion_bdd: ", prot[0], prot[1])
+                num_access = prot[0]  # faire + propre en ne faisant pas 10000 affectations..
 
         else:
             for prot_pri in list_access_has_primaire:
                 self.inst_rempl.access_has_primaire(prot_pri[0], prot_pri[1])
                 # print("ajoutPrimaire_insertion_bdd: ", prot_pri[0], prot_pri[1])
+                num_access = prot_pri[0]
 
 
         # /!\/!\/!\ hashtag degeulasse
@@ -168,6 +187,12 @@ class Recup_EC :
             self.inst_rempl.ec_has_xref(list_ec_has_xref[i][0], [ref_uni], list_ec_has_xref[i][2])
             # print("ajoutXrefUniprot_insertion_bdd: ", list_ec_has_xref[i][0], [ref_uni],
             #       vielle_ref[i], i, list_ec_has_xref[i][2])
+
+        # insertion de la relation orga/acc
+        print('orga=', organi)
+        print('num_acc/orga=', num_access)
+        if num_access is not None:  # cas des master record ac fichiers vides etc..
+            self.inst_rempl.acces_has_orga(organi, num_access)
 
 
     ###########################################################################

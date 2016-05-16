@@ -28,15 +28,17 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 """
 ###########
 # Les tod-o
-# - Convertir les sbml en ASP (powergrasp converter in_sbml)
+# - Convertir les sbml en ASP
 # regarder l'ordre de croissance des bactéries ?
 # HMM des enzymes de metacyc (jeane got)
 # regarder les positions sur le génome des enzymes?
-# regarder pour les ec qui manquent si c'est unpb de classe (FMNH2..)
 # chopper des publis sur les tas de lards
 # affichache des voies metabo avec cytoscape (regarder le mail et la publi)
 # todo integrer le noms des souches dans la bdd
 # remonter les voies metabo via asp, trouver des voies alternatives
+# todo Et si au lieu de prendre des numéros ec séparément, on changeait d'échelle pour faire le calcul sur des petites
+# portions de pathways? et que pour chaque bacteries, on représente sur différentes lignes ces bouts de patways,
+# comme pr les coop de bactéries des coop de pathways?
 
 
 goptions = ''  # soluce max gringo
@@ -57,8 +59,8 @@ questions = 'ASP/questions.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
-# result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
 # result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)

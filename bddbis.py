@@ -21,6 +21,8 @@ association_table_primaire = Table('association_primaire', Base.metadata,
     Column('Accessions_tab_id', String, ForeignKey('Accessions_tab.Id_access')),
     Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
 )
+
+# c'est quoi ces deux là?? quelle diff??
 association_table_xref = Table('association_xref', Base.metadata,
     Column('Xref_tab_id', String, ForeignKey('Xref_tab.Id_xref')),
     Column('EC_numbers_tab_id', String, ForeignKey('EC_numbers_tab.Id_ec'))
@@ -30,6 +32,10 @@ association_table_xref_acc = Table('association_xref_acc', Base.metadata,
     Column('Xref_tab_id', String, ForeignKey('Xref_tab.Id_xref'))
 )
 
+association_table_orga_acc = Table('association_orga_acc', Base.metadata,
+    Column('Accessions_tab_id', String, ForeignKey('Accessions_tab.Id_access')),
+    Column('Orga_tab_id', String, ForeignKey('Orga_tab.Id_orga'))
+)
 
 ####################################################################
 "Objets de la BDD"
@@ -49,6 +55,7 @@ class Accessions(Base):  # le truc (Base) c'est l'héritage
     hasPrimaire = relationship("EC_numbers", secondary=association_table_primaire, back_populates="hasAccesByPrimaire")
     uniHasAccess = relationship("Xref", secondary=association_table_xref_acc, back_populates="xrefHasAccess")
     # le nom est nul, ce serait plutot accessHasUni
+    accHasOrga = relationship("Orga", secondary=association_table_orga_acc, back_populates="orgaHasAccess")
 
 class EC_numbers(Base):  # mettre en camelCase
 
@@ -70,12 +77,21 @@ class Xref(Base):
     xrefHasAccess = relationship("Accessions", secondary=association_table_xref_acc, back_populates="uniHasAccess")
     # on met hasprimaire, mais en fait vaut mieux recreer un autre truc
 
+class Orga(Base):
+    # todo faudrait 1 to many.. many to 1? bref sait pas cmt faire
+    __tablename__ = "Orga_tab"
+
+    Id_orga = Column(String, primary_key=True)
+
+    orgaHasAccess = relationship("Accessions", secondary=association_table_orga_acc, back_populates="accHasOrga")
+
+
 # Ne pas mettre au dessus...
 Base.metadata.bind = eng
 Base.metadata.create_all()
 
 Session = sessionmaker(bind=eng)
-ses = Session()
+ses = Session()  # c'est bof de le laisser en implicite
 ####################################################################
 "Remplissages des tables"
 ####################################################################
@@ -84,6 +100,7 @@ ses = Session()
 class Remplissage:
 
     def __init__(self):
+        # todo passer ses en argument
         pass
 
     @staticmethod
@@ -102,6 +119,12 @@ class Remplissage:
     def ajout_xref(param_xref):
         if ses.query(Xref).filter(Xref.Id_xref == param_xref).first() is None:
             ses.add(Xref(Id_xref=param_xref))
+            ses.commit()
+
+    @staticmethod
+    def ajout_orga(param_org):
+        if ses.query(Orga).filter(Orga.Id_orga == param_org).first() is None:
+            ses.add(Orga(Id_orga=param_org))
             ses.commit()
 
     def access_has_refeseq(self, param_id_access, param_list_ec):  #faudra test les exeptions aussi qd mm  §§§§CORRIGER LE TYPO!!!!
@@ -161,6 +184,18 @@ class Remplissage:
         ses.add(selec)
         ses.commit()
 
+    def acces_has_orga(self, param_orga, param_acc):
+        self.ajout_orga(param_orga)  # ajoute l'orga si absent de la bdd            =>BUG!
+        selec_orga = ses.query(Orga).filter(Orga.Id_orga == param_orga).first()
+
+        self.ajout_access(param_acc)
+        selec_acc = ses.query(Accessions).filter(Accessions.Id_access == param_acc).first()
+
+        selec_acc.accHasOrga = [selec_orga]  # pas de += car normalement un acc = 1 orga(ma contrainte integ perso quoi)
+        ses.add(selec_acc)
+        ses.commit()
+
+
 ####################################################################
 "Test de remplissage"
 ####################################################################
@@ -188,12 +223,16 @@ class Requetes:
     def print_table_access():
         resulAcc = ses.query(Accessions).all()
         for laccessin in resulAcc:
+            print('###############################################')
             print("ID de l'accession: ", laccessin.Id_access, sep=" ")
             for obj in laccessin.hasRefSeq:
                 print(" Id du num EC de RefSeq:", obj.Id_ec, "/", end="", sep=" ")
             print("\n")
             for obj in laccessin.hasPrimaire:
                 print(" Id du num EC de Primaire:", obj.Id_ec, "/", end="", sep=" ")
+            print("\n")
+            for obj in laccessin.accHasOrga:
+                print(" Id de l'orga de acc:", obj.Id_orga, "/", end="", sep=" ")
             print("\n")
             pass
 
@@ -239,6 +278,7 @@ class Requetes:
     def write_asp():
         with open("ASP/test_asp.lp", "w") as asp_file:
             resul_ec = ses.query(EC_numbers).all()
+            resul_acc = ses.query(Accessions).all()
             for num in resul_ec:  # num correspond au numero ec
                 list_xref = num.hasXref  # la liste des xref du num_ec
 
@@ -251,6 +291,11 @@ class Requetes:
 
                     for acc in list_access_primaire:
                         yield "num_access(\""+acc.Id_access+"\",\""+xref.Id_xref+"\", \"PRIMAIRE\")."
+
+            for acc in resul_acc:  # défile les acc pour trouver les orgas
+                taxo = acc.accHasOrga[0].Id_orga  # liste de 1 element
+                taxo = ','.join(['\"'+tax+'\"' for tax in taxo.split(';')])
+                yield "taxonomy(\""+acc.Id_access+"\","+taxo+")."
 
     @staticmethod
     def statistiques_par_access():
@@ -293,10 +338,10 @@ requetes = Requetes()  # instance de la classe requetes
 #     print(i)
 
 
-"""
+""
 with open('ASP/ec_uni.lp', 'w') as fich_asp:
     for i in requetes.write_asp():
         print(i)
         fich_asp.write(i+"\n")
-"""
+""
 
