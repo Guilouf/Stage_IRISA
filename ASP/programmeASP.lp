@@ -79,10 +79,10 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 % todo renomer ecs en ec v..
 
 %Les numéros Ec exclus (heu ya peut être un autre méthode..
-impEc(ec(3,7,1,12);ec(3,6,1,o);ec(1,5,1,39)).
+%impEc(ec(3,7,1,12);ec(3,6,1,o);ec(1,5,1,39)).
 
 % Données metacyc supplémentaires
-enzymeV(b12, ec(2,1,1,131)).%'relativement présent'
+%enzymeV(b12, ec(2,1,1,131)).%'relativement présent'
 %enzymeV(b12, ec(1,16,1,3)). %'pas présent                  !!!!!A commenter ca fait bugger sinon..
 
  %* Mon essai des 3 questions*%
@@ -112,3 +112,4 @@ enzymeV(b12, ec(2,1,1,131)).%'relativement présent'
 %#show rest_match/4.
 
 %#show total_match/4.
+

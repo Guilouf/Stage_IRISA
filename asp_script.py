@@ -61,11 +61,11 @@ questions = 'ASP/questions.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
-# result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
+result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
 
 #  pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
 # impression de sortie ASP

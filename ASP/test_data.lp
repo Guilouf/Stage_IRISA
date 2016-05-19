@@ -36,6 +36,11 @@ num_access("Souche3","Uni8", "REFSEQ").
 num_access("Souche3","Uni9", "REFSEQ").
 num_access("Souche3","Uni10", "REFSEQ").
 
+%taxonomie
+taxonomy("Souche1","Propionibacterium","freudenreichii").
+taxonomy("Souche2","Propionibacterium","fred").
+taxonomy("Souche3","Prop","freudenreichii").
+
 %Num EC des souches, 1..30
 uniprot( ec(1,1,1,1),"Uni1").
 uniprot( ec(1,1,1,2),"Uni2").
