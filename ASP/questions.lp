@@ -50,9 +50,16 @@ coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S,V,Ec) . %'enzymeV co
 uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathway pas présente ds les bactéries
 
 
+minStrain(S,V) :- minStrain(S,V,Ec).
+
+twoStrains(V) :- minStrain(S1,V) ; minStrain(S2,V) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
+
+vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
+
 #minimize {1@3,S:minStrain(S)}.
 #minimize {1@2,S,V:minStrain(S,V,Ec)}.
 #maximize {1@1,S,V,Ec:minStrain(S,V,Ec)}. %'maximiser la superposition des voies'
+#minimize {1@0,V,T:vitaminTaxon(V,T)}.
 %#maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
 
 %todo exclusions
@@ -81,7 +88,10 @@ uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathwa
 %#show coveredEnzyme/2.
 %#show uncovered/2.
 %#show minStrain/1.
-#show minStrain/3.
+%#show minStrain/3.
+%#show minStrain/2.
+%#show vitaminTaxon/2.
+%#show twoStrains/1.
 
 %#show minSV(S,V) : minStrain(S,V,_).
 

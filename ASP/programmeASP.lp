@@ -30,6 +30,7 @@ pathwayV(V,P) :- superpathwayV(V,SPN) ; common_name(SP,SPN) ; is_a(P,SP).
 vitamin(V) :- superpathwayV(V,_).
 strain(S) :- num_access(S,_,_).
 
+
 superpathwayV(k2_7,"superpathway of menaquinol-7 biosynthesis").
 superpathwayV(b9,"superpathway of tetrahydrofolate biosynthesis").
 superpathwayV(b12,"adenosylcobalamin biosynthesis I (early cobalt insertion)").
@@ -41,6 +42,20 @@ enzymeV(V,Ec) :-    in_pathway(R,P) ;
                     not impEc(Ec) ; %'retire des enzymes selectionnées
 % Ec doit être présent dans au moins une souche..boh, au final..
                     pathwayV(V,P).
+
+%alterP(V,P_bis,R_bis)
+alterP(V,P_bis,R_bis) :- in_pathway(R,P) ;
+                in_pathway(R_bis,P_bis) ;
+                ec_number(R,Ec) ;
+                product(R, Product, _) ;
+                product(R_bis, Product, _) ;
+                not hidden(Product) ;
+                reactant(R_bis, Reactant, _) ;
+                R!=R_bis ;
+                impEc(Ec) ;
+                pathwayV(V,P) .
+
+
 
 
 
@@ -80,10 +95,17 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 
 %Les numéros Ec exclus (heu ya peut être un autre méthode..
 %impEc(ec(3,7,1,12);ec(3,6,1,o);ec(1,5,1,39)).
+impEc(ec(1,5,1,39)).
+%impEc(ec(3,6,1,o)).
+%impEc(ec(3,7,1,12)).
 
 % Données metacyc supplémentaires
 %enzymeV(b12, ec(2,1,1,131)).%'relativement présent'
 %enzymeV(b12, ec(1,16,1,3)). %'pas présent                  !!!!!A commenter ca fait bugger sinon..
+
+
+
+
 
  %* Mon essai des 3 questions*%
 % souches qui ont des enzymes dans ttes les vits
@@ -94,6 +116,8 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 
  %* PARTIE SHOW*%
 #show.
+
+#show alterP/3.
 
 
  %*Mes questions  *%
@@ -112,4 +136,5 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 %#show rest_match/4.
 
 %#show total_match/4.
+%#show strain/1.
 

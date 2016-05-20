@@ -38,7 +38,7 @@ num_access("Souche3","Uni10", "REFSEQ").
 
 %taxonomie
 taxonomy("Souche1","Propionibacterium","freudenreichii").
-taxonomy("Souche2","Propionibacterium","fred").
+taxonomy("Souche2","lactococcus","lactis").
 taxonomy("Souche3","Prop","freudenreichii").
 
 %Num EC des souches, 1..30
