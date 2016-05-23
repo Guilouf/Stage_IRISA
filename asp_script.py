@@ -41,7 +41,7 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # todo Et si au lieu de prendre des numéros ec séparément, on changeait d'échelle pour faire le calcul sur des petites
 # portions de pathways? et que pour chaque bacteries, on représente sur différentes lignes ces bouts de patways,
 # comme pr les coop de bactéries des coop de pathways?
-
+# todo pouvoir inserer des limites de diffusion
 
 goptions = ''  # soluce max gringo
 soptions = ''  # solutions max solveur todo faut itérer les modèle, mon resul ne prend q'un seul...
