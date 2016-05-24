@@ -21,7 +21,12 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
  2 minimal set of COMPLETE strains having enzymes of all vitamins
  Quel ensemble de souches peut faire toutes les vitamines ? non c'est pas ca..
  Quel ensemble de souches completes peut faire la totalité des vitamines ?
+=> quelles ensemble de souches peut produire UNE vitamine ?
+    - la question 3 repond à cette question du coup
 ################################################################## *%
+
+
+ %*
 1{minCompletS(S) : strain(S)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
 
 :- minCompletS(S) ; not completeStrainV(S,_).  %'ca filtre le choix, n est pas complet si n est pas completstrainV
@@ -32,6 +37,7 @@ coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %'une vit est couver
 #minimize {1@1,S:minCompletS(S)}.
 #maximize {1@1,V:coveredVitamin(V)}.
 
+*%
 
  %* #######################################################
  3 minimal set of strains having enzymes of all vitamins
