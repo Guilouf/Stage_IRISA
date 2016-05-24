@@ -108,6 +108,8 @@ class Resultats:
         full_match(V,S,T,Ec)
         Fait en gros une petite bdd temporaire
         dico_souche: {'b9':{LEKW00000000.1: [[list_ec_full], [list_ec_part]] ,... }, ...}
+
+        faut mieux commenter le code car j'y comprend plus rien là
         """
         for term in self.result:  # itère les termes
             if term.predicate == "full_match":  # ne retient que les terms full_match !!
