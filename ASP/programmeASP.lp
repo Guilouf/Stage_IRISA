@@ -96,8 +96,8 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 %Les numéros Ec exclus (heu ya peut être un autre méthode..
 %impEc(ec(3,7,1,12);ec(3,6,1,o);ec(1,5,1,39)).
 impEc(ec(1,5,1,39)).
-%impEc(ec(3,6,1,o)).
-%impEc(ec(3,7,1,12)).
+impEc(ec(3,6,1,o)).
+impEc(ec(3,7,1,12)).
 
 % Données metacyc supplémentaires
 %enzymeV(b12, ec(2,1,1,131)).%'relativement présent'
@@ -117,7 +117,7 @@ impEc(ec(1,5,1,39)).
  %* PARTIE SHOW*%
 #show.
 
-#show alterP/3.
+%#show alterP/3.
 
 
  %*Mes questions  *%

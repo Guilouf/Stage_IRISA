@@ -1,4 +1,5 @@
 import csv
+from Bio import SeqIO
 
 # essayer de formatter les ec pareil que ds ma bdd... ou que le fichier ASP
 
@@ -29,7 +30,7 @@ with open('HMM/EC_reactions_interet_meta18.5.txt', 'r') as ec_to_react:
 
 
 
-print(vit_ec_reac_dico)
+# print(vit_ec_reac_dico)
 
 """
 Associe un nom de souches à son accession
@@ -43,11 +44,12 @@ with open('ASP/trad_souches/correspondance_souches-CP.csv', 'r') as corres_souch
         dico_souche_to_acc[nom] = ligne[2]
 
 
-print(dico_souche_to_acc)
+# print(dico_souche_to_acc)
 
 
 """
 fait des choses..
+associe des reactions à des noms de proteines
 """
 list_vit = ['b9', 'k2_7', 'b12']
 dico_reac_prot = {}
@@ -56,10 +58,39 @@ for vit in list_vit:
         assoc_reader = csv.reader(assoc_vit_fich, delimiter='\t')
         for liligne in assoc_reader:
             # print(liligne)
-            dico_reac_prot[vit] = dico_reac_prot[vit].get()
+
+            dico_reac_prot[vit] = dico_reac_prot.get(vit, {})
+            dico_reac_prot[vit][liligne[1]] = liligne[1]
             pass
 
 
 """
-Lis les coms du fasta d'uniprot (jeanne?)
+Associe une souche (cle) à des valeurs, les prots
 """
+def parse_fasta_com(seq_param):
+    seq = seq_param.split('=')[1]  # trouve le nom de la souche
+    return seq[:-2]  # pour supprimer le GN
+dico_souche_prot = {}
+seq_fasta = SeqIO.parse(open('HMM/prot.fasta'), 'fasta')
+for fasta in seq_fasta:
+    nom_prot = fasta.id.split('|')[2]
+    # print(nom_prot)
+    nom_souche = parse_fasta_com(fasta.description)
+    # print(nom_souche)
+    dico_souche_prot[nom_souche] = dico_souche_prot.get(nom_souche, []) + [nom_prot]
+
+# print(dico_souche_prot)
+
+
+"""
+on veut des num acc de souches, associées à des numéros ec
+"""
+def hmm_to_asp(p_vit_ec_reac_dico, p_dico_souche_to_acc, p_dico_reac_prot, p_dico_souche_prot):
+    for vit_ in p_vit_ec_reac_dico.keys():
+        for num_ec in p_vit_ec_reac_dico[vit_].keys():
+            list_nomreaction = p_vit_ec_reac_dico[vit_][num_ec]
+            for reac in list_nomreaction:
+
+
+
+hmm_to_asp(vit_ec_reac_dico, dico_souche_to_acc, dico_reac_prot, dico_souche_prot)

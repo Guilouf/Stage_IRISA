@@ -25,19 +25,27 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
     - la question 3 repond à cette question du coup
 ################################################################## *%
 
+1{minStrainVitamin(S,V) : strain(S)} maxstrain :- vitamin(V).    %definition du choix: min est max n souches parmi d autres..
 
- %*
-1{minCompletS(S) : strain(S)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
+1{minStrainVitamin(S,V,Ec): minStrainVitamin(S,V), enzymeV(V,Ec)}.  % choix des enzymes
 
-:- minCompletS(S) ; not completeStrainV(S,_).  %'ca filtre le choix, n est pas complet si n est pas completstrainV
 
-coveredVitamin(V) :- minCompletS(S) ; completeStrainV(S,V). %'une vit est couverte si elle est completeStrainV
-%:- not coveredVitamin(V) ; not impossibleV(V) ; vitamin(V). %'il n existe pas de vit v non couverte, qui n est pas une vit imposs
+coveredEnzymeVitamin(V,Ec) :- total_match(V,S,_,Ec) ;  minStrainVitamin(S,V,Ec) . % enzymeV présente ds une souche choisie pour cette vitamine
 
-#minimize {1@1,S:minCompletS(S)}.
-#maximize {1@1,V:coveredVitamin(V)}.
 
-*%
+:- not coveredEnzyme(V,Ec) ; not impossibleV(V) ; enzymeV(V,Ec) . %'il nexiste pas d'enzyme non couverte qui ne soit pas en impossibleV
+
+
+minStrain(S,V) :- minStrain(S,V,Ec).
+
+twoStrainsVitamin(V) :- minStrainVitamin(S1,V) ; minStrainVitamin(S2,V) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
+
+vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
+
+#minimize {1@3,S:minStrainVitamin(S,V)}.
+#maximize {1@2,S,V,Ec:minStrainVitamin(S,V,Ec)}. %'maximiser la superposition des voies'
+#minimize {1@1,V,T:vitaminTaxon_one(V,T)}.
+
 
  %* #######################################################
  3 minimal set of strains having enzymes of all vitamins
@@ -86,9 +94,7 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 %#show completeStrainV/2.
 
  %* 2 Question *%
-%#show coveredVitamin/1.
-%#show vitnon_couv(V): not coveredVitamin(V), vitamin(V). %'b12 pas couverte, besoin de collaboration'
-%#show minCompletS/1.
+#show minStrainVitamin/3.
 
  %* 3 Question *%
 %#show coveredEnzyme/2.

@@ -61,8 +61,8 @@ questions = 'ASP/questions.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
-result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
 # result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
@@ -110,6 +110,7 @@ class Resultats:
         dico_souche: {'b9':{LEKW00000000.1: [[list_ec_full], [list_ec_part]] ,... }, ...}
 
         faut mieux commenter le code car j'y comprend plus rien là
+        defaultdict a regarder
         """
         for term in self.result:  # itère les termes
             if term.predicate == "full_match":  # ne retient que les terms full_match !!
