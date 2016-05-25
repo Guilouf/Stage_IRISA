@@ -3,6 +3,7 @@ from pyasp.asp import *
 from matplotlib import pyplot as plt
 import numpy as np
 import csv
+import itertools
 
 # TODO ya des numeros Gi qui se balladent en tant que uniprot..=> voir le todo pr abruti ds recup ec..
 
@@ -44,7 +45,7 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # todo pouvoir inserer des limites de diffusion
 
 goptions = ''  # soluce max gringo
-soptions = ''  # solutions max solveur todo faut itérer les modèle, mon resul ne prend q'un seul...
+soptions = '--opt-mode=optN'  # solutions max solveur todo faut itérer les modèle, mon resul ne prend q'un seul...
 solver = Gringo4Clasp(gringo_options=goptions, clasp_options=soptions)
 
 # Liste des fichiers asp
@@ -81,7 +82,8 @@ print("Nombre: ", len(result[0]))
 class Resultats:
 
     def __init__(self, m_result, m_list_acc):
-        self.result = m_result[0]  # la sortie ASP
+        self.result = m_result[0]  # la sortie ASP (seulement 1 modèle)
+        self.models = m_result  # les différents modèles
         self.list_access = m_list_acc  # osef au final
         self.dico_vit = {}  # init dico_vit
         self.list_ec_vit()  # remplissage dico_vit(clé:vit ; val: num_ec de la vit)
@@ -264,11 +266,91 @@ class Resultats:
         plt.show()
 
 
+
+
+    """
+    faut que je trouve le minimum, puis que je filtre selon ce minimum=> pas besoin au final ya que des minis..
+    par contre faut imprimer enzymV, pour avoir self.dico_vit
+    """
+    # todo traduire le nom des souches..
+    def tableau_q2(self):
+        list_vit = ['b9', 'b12', 'k2_7']
+
+        for vit in list_vit:  # on itère les vitamines
+            print('#########################'+vit+'##################################################')
+            yield vit
+            for model in self.models:  # on itère les modèles
+                # print(dir(model))
+                # print(model.score)  # bizare, j'ai dit bizare ils ont tous le mm score.. tant mieux du coup
+                list_ec_model = []
+                for ec in sorted(self.dico_vit[vit]):  # itère ecV
+                    list_souche_ec = []
+
+                    for atom in model:  # défile les prédicats du modèle
+
+                        if atom.predicate == 'minStrainVitamin' and atom.arguments[1] == vit:  # si bon predicat et bne vit
+
+                            if ec == atom.arguments[2]:  # si ecV == ecS
+                                print(atom)
+                                list_souche_ec.append(atom.arguments[0])  # on ajoute le nom de la souche
+                    list_ec_model.append(list_souche_ec)
+                print('\n Fin modèle')
+                # print(list_ec_model)
+                yield list_ec_model
+
+
+
+    # todo faudra faire un set pour éliminer les doublons.. pk yen a d'ailleurs?
+    """
+    necessite  total match etc (j'ai désactivé les heatmaps)
+    minstrainvit/2.
+    """
+    def tableau_q2_bis(self):
+        list_vit = ['b9', 'b12', 'k2_7']
+        for vit in list_vit:
+            print('#########################'+vit+'##################################################')
+            yield vit
+            yield list(sorted(self.dico_vit[vit]))
+            list_model = []
+            for model in self.models:
+                # print('##########Modèle')
+                list_ec_model = []
+                for ecc in sorted(self.dico_vit[vit]):
+                    list_souche_ec = []
+                    for atom in model:
+                         if atom.predicate == 'minStrainVitamin' and atom.arguments[1] == vit:  # si bon predicat et bne vit
+                            # print(atom)
+                            list_ec_souche = list(itertools.chain.from_iterable([ec for ec in self.dico_souche[vit][atom.arguments[0]]]))
+                            # et encore du bourrin..
+                            # print(list_ec_souche)
+                            if ecc in list_ec_souche:
+                                # print(atom, ecc)
+                                list_souche_ec.append(atom.arguments[0])
+                    list_ec_model.append(list_souche_ec)
+                # print(list_ec_model)
+                # yield [''.join(str([self.dico_trad[souche.replace('"', '')] for souche in listsouche])) for listsouche in list_ec_model]
+                list_model.append(tuple([''.join(str([self.dico_trad[souche.replace('"', '')] for souche in listsouche])) for listsouche in list_ec_model]))
+                # jamais rien vu de plus beau..
+            for mod in list(set(list_model)):
+                yield mod
+
 with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
     listacc = [i.strip() for i in fichaccess]
     inst_resul = Resultats(result, listacc)
     # inst_resul.tab_comptage()
-    inst_resul.tab_qualit()
+    # inst_resul.tab_qualit()
+
+
+
+    inst_resul.tableau_q2_bis()
+
+
+    with open('ASP/Output/tab_Q2.csv', 'w') as sortie_q2:
+
+        writter = csv.writer(sortie_q2, delimiter=';')
+
+        for ligne in inst_resul.tableau_q2_bis():
+            writter.writerow(ligne)
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)
 # todo au niveau des souches de la heatmap, elle n'affiche pas les souches vides

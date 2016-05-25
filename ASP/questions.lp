@@ -25,15 +25,18 @@ completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; str
     - la question 3 repond à cette question du coup
 ################################################################## *%
 
-1{minStrainVitamin(S,V) : strain(S)} maxstrain :- vitamin(V).    %definition du choix: min est max n souches parmi d autres..
+ %*
+1{minStrainVitamin(S,V) : strain(S)} maxstrain :- vitamin(V).    %'definition du choix: min est max n souches parmi d autres..
 
-1{minStrainVitamin(S,V,Ec): minStrainVitamin(S,V), enzymeV(V,Ec)}.  % choix des enzymes
+1{minStrainVitamin(S,V,Ec): minStrainVitamin(S,V), enzymeV(V,Ec)}.  %' choix des enzymes
+
+%!!!!! faire gaffe, ce sont les enzymeV dc pas forcément ceux qui sont dans la souche.. les modèles ont l'air bon
+% on dirait que ca n'a pas fixé la vitamine..
+
+coveredEnzymeVitamin(V,Ec) :- total_match(V,S,_,Ec) ;  minStrainVitamin(S,V,Ec) . %' enzymeV présente ds une souche choisie pour cette vitamine
 
 
-coveredEnzymeVitamin(V,Ec) :- total_match(V,S,_,Ec) ;  minStrainVitamin(S,V,Ec) . % enzymeV présente ds une souche choisie pour cette vitamine
-
-
-:- not coveredEnzyme(V,Ec) ; not impossibleV(V) ; enzymeV(V,Ec) . %'il nexiste pas d'enzyme non couverte qui ne soit pas en impossibleV
+:- not coveredEnzyme(V,Ec) ; not impossibleV(V) ; enzymeV(V,Ec) . %'il nexiste pas denzyme non couverte qui ne soit pas en impossibleV
 
 
 minStrain(S,V) :- minStrain(S,V,Ec).
@@ -45,6 +48,31 @@ vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
 #minimize {1@3,S:minStrainVitamin(S,V)}.
 #maximize {1@2,S,V,Ec:minStrainVitamin(S,V,Ec)}. %'maximiser la superposition des voies'
 #minimize {1@1,V,T:vitaminTaxon_one(V,T)}.
+
+*%
+
+1{minStrainVitamin(S,V) : strain(S)} maxstrain :- vitamin(V).    %'definition du choix: min est max n souches parmi d autres..
+
+1{minStrainVitamin(S,V,Ec): minStrainVitamin(S,V), enzymeV(V,Ec)}.  %' choix des enzymes
+
+
+coveredEnzymeVitamin(V,Ec) :- total_match(V,S,_,Ec) ;  minStrainVitamin(S,V,Ec) . %' enzymeV présente ds une souche choisie pour cette vitamine
+
+
+:- not coveredEnzyme(V,Ec) ; not impossibleV(V) ; enzymeV(V,Ec) . %'il nexiste pas denzyme non couverte qui ne soit pas en impossibleV
+
+
+minStrain(S,V) :- minStrain(S,V,Ec).
+
+twoStrainsVitamin(V) :- minStrainVitamin(S1,V) ; minStrainVitamin(S2,V) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
+
+vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
+
+#minimize {1@3,S:minStrainVitamin(S,V)}.
+#maximize {1@2,S,V,Ec:minStrainVitamin(S,V,Ec)}. %'maximiser la superposition des voies'
+#minimize {1@1,V,T:vitaminTaxon_one(V,T)}.
+
+
 
 
  %* #######################################################
@@ -94,7 +122,8 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 %#show completeStrainV/2.
 
  %* 2 Question *%
-#show minStrainVitamin/3.
+%#show enzymeV/2.
+#show minStrainVitamin/2.
 
  %* 3 Question *%
 %#show coveredEnzyme/2.
