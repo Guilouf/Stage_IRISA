@@ -15,7 +15,7 @@ impossibleV(V) :- not enzymeV(V,Ec) : total_match(V,S,T,Ec) ; vitamin(V).
  1 strain having all enzyme of a vitamin pathway OK
 ################################################ *%
 % total vrai si vrai pour tout enzymeV
-completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) ; enzymeV(V,_).
+%completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) ; enzymeV(V,_).
 
  %* ################################################################
  2 minimal set of COMPLETE strains having enzymes of all vitamins
@@ -51,26 +51,28 @@ vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
 
 *%
 
-1{minStrainVitamin(S,V) : strain(S)} maxstrain :- vitamin(V).    %'definition du choix: min est max n souches parmi d autres..
+#const vitamin = b12.  %'permet en plus d'é"viter les doublons"
 
-1{minStrainVitamin(S,V,Ec): minStrainVitamin(S,V), enzymeV(V,Ec)}.  %' choix des enzymes
+1{minStrainVitamin(S,vitamin) : strain(S)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
 
-
-coveredEnzymeVitamin(V,Ec) :- total_match(V,S,_,Ec) ;  minStrainVitamin(S,V,Ec) . %' enzymeV présente ds une souche choisie pour cette vitamine
-
-
-:- not coveredEnzyme(V,Ec) ; not impossibleV(V) ; enzymeV(V,Ec) . %'il nexiste pas denzyme non couverte qui ne soit pas en impossibleV
+1{minStrainVitamin(S,vitamin,Ec): minStrainVitamin(S,vitamin), enzymeV(vitamin,Ec)}.  %' choix des enzymes
 
 
-minStrain(S,V) :- minStrain(S,V,Ec).
+coveredEnzymeVitamin(vitamin,Ec) :- total_match(vitamin,S,_,Ec) ;  minStrainVitamin(S,vitamin,Ec) . %' enzymeV présente ds une souche choisie pour cette vitamine
 
-twoStrainsVitamin(V) :- minStrainVitamin(S1,V) ; minStrainVitamin(S2,V) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
 
-vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
+:- not coveredEnzymeVitamin(vitamin,Ec) ; not impossibleV(vitamin) ; enzymeV(vitamin,Ec) . %'il nexiste pas denzyme non couverte qui ne soit pas en impossibleV
 
-#minimize {1@3,S:minStrainVitamin(S,V)}.
-#maximize {1@2,S,V,Ec:minStrainVitamin(S,V,Ec)}. %'maximiser la superposition des voies'
-#minimize {1@1,V,T:vitaminTaxon_one(V,T)}.
+
+minStrainVitamin(S,vitamin) :- minStrainVitamin(S,vitamin,Ec).
+
+twoStrainsVitamin(vitamin) :- minStrainVitamin(S1,vitamin) ; minStrainVitamin(S2,vitamin) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
+
+vitaminTaxon_one(vitamin,(T,U)) :- minStrainVitamin(S,vitamin) ; taxonomy(S,T,U).
+
+#minimize {1@3,S:minStrainVitamin(S,vitamin)}.
+#maximize {1@2,S,Ec:minStrainVitamin(S,vitamin,Ec)}. %'maximiser la superposition des voies'
+#minimize {1@1,T:vitaminTaxon_one(vitamin,T)}.
 
 
 
@@ -79,6 +81,9 @@ vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
  3 minimal set of strains having enzymes of all vitamins
  Quel ensemble de souche peuvent se completer pour faire une vitamine
  ####################################################### *%
+
+
+  %*
  1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
  1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)}.  %' choix de souches
 
@@ -103,6 +108,8 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 #maximize {1@1,S,V,Ec:minStrain(S,V,Ec)}. %'maximiser la superposition des voies'
 #minimize {1@0,V,T:vitaminTaxon(V,T)}.
 %#maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
+
+*%
 
 %todo exclusions
 %:- minCompletS("NC_017486.1").

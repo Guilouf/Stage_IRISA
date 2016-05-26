@@ -329,10 +329,37 @@ class Resultats:
                     list_ec_model.append(list_souche_ec)
                 # print(list_ec_model)
                 # yield [''.join(str([self.dico_trad[souche.replace('"', '')] for souche in listsouche])) for listsouche in list_ec_model]
-                list_model.append(tuple([''.join(str([self.dico_trad[souche.replace('"', '')] for souche in listsouche])) for listsouche in list_ec_model]))
+
+                # list_model.append(tuple([''.join(str([self.dico_trad[souche.replace('"', '')] for souche in listsouche])) for listsouche in list_ec_model]))
+
+                list_model.append([''.join([self.dico_trad[souche.replace('"', '')] for souche in listsouche]) for listsouche in list_ec_model])
+
                 # jamais rien vu de plus beau..
-            for mod in list(set(list_model)):
-                yield mod
+            # yield from (mod for mod in list_model)
+            for mod in list_model:
+                yield self.affichage_legende(mod)
+
+
+
+    def affichage_legende(self, mod):
+        list_union_souche = {}
+        for ec in mod:
+            for souche, idd in enumerate(ec):
+                if souche not in list_union_souche:
+                    list_union_souche[souche] = idd
+        print(list_union_souche)
+        list_return = []
+        list_return.append(list_union_souche)
+        for ec in mod:
+            ls_numsouche = []
+
+            if list_union_souche.get(i, 'biz') in ec:
+                ls_numsouche.append(i)
+            list_return.append(ls_numsouche)
+
+        return list_return
+
+
 
 with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
     listacc = [i.strip() for i in fichaccess]
