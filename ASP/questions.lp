@@ -15,7 +15,7 @@ impossibleV(V) :- not enzymeV(V,Ec) : total_match(V,S,T,Ec) ; vitamin(V).
  1 strain having all enzyme of a vitamin pathway OK
 ################################################ *%
 % total vrai si vrai pour tout enzymeV
-%completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) ; enzymeV(V,_).
+completeStrainV(S,V) :- total_match(V,S,T,Ec) : enzymeV(V,Ec) ; vitamin(V) ; strain(S) ; enzymeV(V,_).
 
  %* ################################################################
  2 minimal set of COMPLETE strains having enzymes of all vitamins
@@ -51,9 +51,9 @@ vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
 
 *%
 
-#const vitamin = b12.  %'permet en plus d'é"viter les doublons"
+#const vitamin = b9.  %'permet en plus d'é"viter les doublons"
 
-1{minStrainVitamin(S,vitamin) : strain(S)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
+1{minStrainVitamin(S,vitamin) : strain(S), not completeStrainV(S,vitamin)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
 
 1{minStrainVitamin(S,vitamin,Ec): minStrainVitamin(S,vitamin), enzymeV(vitamin,Ec)}.  %' choix des enzymes
 

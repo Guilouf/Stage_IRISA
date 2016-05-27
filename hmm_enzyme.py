@@ -86,10 +86,11 @@ for fasta in seq_fasta:
 on veut des num acc de souches, associées à des numéros ec
 """
 def hmm_to_asp(p_vit_ec_reac_dico, p_dico_souche_to_acc, p_dico_reac_prot, p_dico_souche_prot):
-    for vit_ in p_vit_ec_reac_dico.keys():
-        for num_ec in p_vit_ec_reac_dico[vit_].keys():
+    for vit_ in p_vit_ec_reac_dico.keys():  #itère les vitamines
+        for num_ec in p_vit_ec_reac_dico[vit_].keys():  # itère les nums ec
             list_nomreaction = p_vit_ec_reac_dico[vit_][num_ec]
-            for reac in list_nomreaction:
+            for reac in list_nomreaction:  # itère les reactions
+                pass
 
 
 

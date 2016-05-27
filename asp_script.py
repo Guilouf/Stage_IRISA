@@ -45,7 +45,7 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # todo pouvoir inserer des limites de diffusion
 
 goptions = ''  # soluce max gringo
-soptions = '--opt-mode=optN'  # solutions max solveur todo faut itérer les modèle, mon resul ne prend q'un seul...
+soptions = '--opt-mode=optN'  # solutions max solveur todo -cc vitamin=b12 pour ecraser la constante
 solver = Gringo4Clasp(gringo_options=goptions, clasp_options=soptions)
 
 # Liste des fichiers asp
