@@ -39,10 +39,11 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # regarder les positions sur le génome des enzymes?
 # chopper des publis sur les tas de lards
 # affichache des voies metabo avec cytoscape (regarder le mail et la publi)
-# todo Et si au lieu de prendre des numéros ec séparément, on changeait d'échelle pour faire le calcul sur des petites
+# Et si au lieu de prendre des numéros ec séparément, on changeait d'échelle pour faire le calcul sur des petites
 # portions de pathways? et que pour chaque bacteries, on représente sur différentes lignes ces bouts de patways,
 # comme pr les coop de bactéries des coop de pathways?
-# todo pouvoir inserer des limites de diffusion
+# pouvoir inserer des limites de diffusion
+# faire l'affichage des résultats de la question 2
 
 goptions = ''  # soluce max gringo
 soptions = '--opt-mode=optN'  # solutions max solveur todo -cc vitamin=b12 pour ecraser la constante

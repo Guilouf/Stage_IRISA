@@ -1,15 +1,15 @@
-Lactococcus lactis; subsp. lactis S0   CP;NZ_CP010050.1
-Lactococcus lactis; AI06    CP;NZ_CP009472.1
-Lactococcus lactis; lactis KLDS 4.0325   CP;NC_022593.1
-Lactococcus lactis; cremoris KW2   CP;NC_022369.1
-Lactococcus lactis; lactis IO-1    CP;NC_020450.1
-Lactococcus lactis; cremoris UC509.9    CP;NC_019435.1
-Lactococcus lactis; cremoris A76    CP;NC_017492.1
-Lactococcus lactis; lactis CV56    CP;NC_017486.1
-Lactococcus lactis; cremoris NZ9000    CP;NC_017949.1
-Lactococcus lactis; lactis KF147   CP;NC_013656.1
-Lactococcus lactis; cremoris SK11   CP;NC_008527.1
-Lactococcus lactis; cremoris MG1363   CP;NC_009004.1
+Lactococcus lactis; subsp. lactis S0 ;NZ_CP010050.1
+Lactococcus lactis; AI06 ;NZ_CP009472.1
+Lactococcus lactis; lactis KLDS 4.0325 ;NC_022593.1
+Lactococcus lactis; cremoris KW2 ;NC_022369.1
+Lactococcus lactis; lactis IO-1 ;NC_020450.1
+Lactococcus lactis; cremoris UC509.9 ;NC_019435.1
+Lactococcus lactis; cremoris A76 ;NC_017492.1
+Lactococcus lactis; lactis CV56 ;NC_017486.1
+Lactococcus lactis; cremoris NZ9000 ;NC_017949.1
+Lactococcus lactis; lactis KF147 ;NC_013656.1
+Lactococcus lactis; cremoris SK11 ;NC_008527.1
+Lactococcus lactis; cremoris MG1363 ;NC_009004.1
 Lactococcus lactis; JCM 5805 ;BBSI00000000.1
 Lactococcus lactis; subsp. cremoris DPC6860 ;LAVX00000000.1
 Lactococcus lactis; subsp. cremoris DPC6856 ;LAVW00000000.1
@@ -40,16 +40,16 @@ Lactococcus lactis; lactis YF11 ;NZ_APAV00000000.1
 Lactococcus lactis; lactis A12 ;CBLU000000000.1
 Lactococcus lactis; lactis NCDO 2118 ;NZ_CP009054.1
 Lactococcus lactis; cremoris CNCM I-1631 ;AGHX00000000.1
-Lactobacillus plantarum; L31-1   CP;LEKW00000000.1
-Lactobacillus plantarum; subsp. plantarum CGMCC 1.557   CP;NZ_CM003439.1
-Lactobacillus plantarum; B21   CP;NZ_CP010528.1
-Lactobacillus plantarum; 5-2   CP;NZ_CP009236.1
-Lactobacillus plantarum; 16  CP;NC_021514.1
-Lactobacillus plantarum; ZJ316   CP;NC_020229.1
-Lactobacillus plantarum; plantarum ST-III   CP;NC_014554.1
-Lactobacillus plantarum; plantarum P8   CP;NC_021224.2
-Lactobacillus plantarum; JDM1   CP;NC_012984.1
-Lactobacillus plantarum; WCFS1   CP;AL935263.2
+Lactobacillus plantarum; L31-1 ;LEKW00000000.1
+Lactobacillus plantarum; subsp. plantarum CGMCC 1.557 ;NZ_CM003439.1
+Lactobacillus plantarum; B21 ;NZ_CP010528.1
+Lactobacillus plantarum; 5-2 ;NZ_CP009236.1
+Lactobacillus plantarum; 16 ;NC_021514.1
+Lactobacillus plantarum; ZJ316 ;NC_020229.1
+Lactobacillus plantarum; plantarum ST-III ;NC_014554.1
+Lactobacillus plantarum; plantarum P8 ;NC_021224.2
+Lactobacillus plantarum; JDM1 ;NC_012984.1
+Lactobacillus plantarum; WCFS1 ;AL935263.2
 Lactobacillus plantarum; PS128 ;LBHS00000000.1
 Lactobacillus plantarum; strain:AH 78 ;LC019721.2
 Lactobacillus plantarum; NL42 ;JZSB00000000.1
@@ -75,7 +75,7 @@ Lactobacillus plantarum; UCMA 3037 ;APHP01000012.1
 Lactobacillus plantarum; AG30 ;NZ_JHWA00000000.1
 Lactobacillus plantarum; plantarum NC8 ;AGRI00000000.1
 Lactobacillus plantarum; ATCC 14917 ;KT025937.1
-Propionibacterium freudenreichii; shermanii CIRM-BIA1  CP;FN806773
+Propionibacterium freudenreichii; shermanii CIRM-BIA1 ;FN806773
 Propionibacterium freudenreichii; DSM 20271; AF280075.1
 Propionibacterium freudenreichii; CIRM-BIA 118;CCYN00000000.1
 Propionibacterium freudenreichii; CIRM-BIA 119;CCYS00000000.1
