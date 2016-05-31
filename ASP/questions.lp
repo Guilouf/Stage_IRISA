@@ -51,9 +51,9 @@ vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
 
 *%
 
-#const vitamin = b12.  %'permet en plus d'é"viter les doublons"
+#const vitamin = b9.  %'permet en plus d'é"viter les doublons"
 
-1{minStrainVitamin(S,vitamin) : strain(S), not completeStrainV(S,vitamin)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
+1{minStrainVitamin(S,vitamin) : strain(S), not completeStrainV(S,vitamin)} maxstrain .    %'definition du choix: min est max n souches parmi d autres.., pas de complete strain
 
 1{minStrainVitamin(S,vitamin,Ec): minStrainVitamin(S,vitamin), enzymeV(vitamin,Ec)}.  %' choix des enzymes
 
@@ -84,47 +84,6 @@ enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vita
 #maximize {1@2,S,Ec1,Ec2:enzymeSuccStrain(vitamin,Ec1,Ec2,S) }.
 
 
- %* #######################################################
- 3 minimal set of strains having enzymes of all vitamins
- Quel ensemble de souche peuvent se completer pour faire une vitamine
- ####################################################### *%
-
-
-  %*
- 1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
- 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)}.  %' choix de souches
-
-
-coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S,V,Ec) . %'enzymeV couverte si présente ds une souche de l ensmbl
-
-
-:- not coveredEnzyme(V,Ec) ; not impossibleV(V) ; enzymeV(V,Ec) . %'il nexiste pas denzyme non couverte?(ni de vit du coup?) qui ne soit pas en impossibleV
-
-
-uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathway pas présente ds les bactéries
-
-
-minStrain(S,V) :- minStrain(S,V,Ec).
-
-twoStrains(V) :- minStrain(S1,V) ; minStrain(S2,V) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
-
-vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
-
-#minimize {1@3,S:minStrain(S)}.
-#minimize {1@2,S,V:minStrain(S,V,Ec)}.
-#maximize {1@1,S,V,Ec:minStrain(S,V,Ec)}. %'maximiser la superposition des voies'
-#minimize {1@0,V,T:vitaminTaxon(V,T)}.
-%#maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
-
-*%
-
-%todo exclusions
-%:- minCompletS("NC_017486.1").
-%:- minCompletS("CDAG00000000.1").
-%:- minCompletS("NC_017486.1") ; minCompletS("CDAG00000000.1").
-%:- minStrain("CDAG00000000.1",_).
-%:- minStrain("NC_017486.1",_).
-%:- minStrain("CDAG00000000.1",_) ; minStrain("NC_017486.1",_).
 
 %todo Partie show:
 
@@ -143,14 +102,7 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 #show oneStrainVitamin/3.
 %#show vitaminTaxon_one(T): vitaminTaxon_one(vitamin, (T,U)) .
 
- %* 3 Question *%
-%#show coveredEnzyme/2.
-%#show uncovered/2.
-%#show minStrain/1.
-%#show minStrain/3.
-%#show minStrain/2.
-%#show vitaminTaxon/2.
-%#show twoStrains/1.
+
 
 %#show minSV(S,V) : minStrain(S,V,_).
 

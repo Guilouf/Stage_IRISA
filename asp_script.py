@@ -35,7 +35,6 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # preparer les fichiers fasta ac proteines
 
 # regarder l'ordre de croissance des bactéries ?
-# HMM des enzymes de metacyc (jeane got)
 # regarder les positions sur le génome des enzymes?
 # chopper des publis sur les tas de lards
 # affichache des voies metabo avec cytoscape (regarder le mail et la publi)
@@ -44,6 +43,8 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # comme pr les coop de bactéries des coop de pathways?
 # pouvoir inserer des limites de diffusion
 # faire l'affichage des résultats de la question 2
+# HMM des enzymes de metacyc (jeane got) OK, pas vraiment de résultats todo qd mm regarder si ya des infos en plus..
+# reunion 7 ou 8 juin
 
 goptions = ''  # soluce max gringo
 soptions = '--opt-mode=optN'  # solutions max solveur todo -cc vitamin=b12 pour ecraser la constante
@@ -57,6 +58,7 @@ test = 'ASP/test_data.lp'
 metagdb = 'ASP/ec_uni.lp'
 prog = 'ASP/programmeASP.lp'
 questions = 'ASP/questions.lp'
+question3 = 'ASP/question3.lp'
 hmm = 'ASP/hmm.lp'
 
 # itertools product, pour les listes intent imbriquées
@@ -64,8 +66,8 @@ hmm = 'ASP/hmm.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
-# result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
 # result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
@@ -87,7 +89,7 @@ class Resultats:
 
     def __init__(self, m_result, m_list_acc):
         self.result = m_result[0]  # la sortie ASP (seulement 1 modèle)
-        self.models = m_result  # les différents modèles blabou
+        self.models = m_result  # les différents modèles
         self.list_access = m_list_acc  # osef au final
         self.dico_vit = {}  # init dico_vit
         self.list_ec_vit()  # remplissage dico_vit(clé:vit ; val: num_ec de la vit)
@@ -159,17 +161,17 @@ class Resultats:
     def tab_qualit(self):
         """
         Permet de mettre en forme les données pour faire un tableau de présence/abs d'enzymes
-
+        dico_souche: {'b9':{LEKW00000000.1: [[list_ec_full], [list_ec_part]] ,... }, ...}
         UTILISE:
         - out_csv()
         - heatmap()
         :return:
         """
-        for vit in sorted(self.dico_souche.keys()):
+        for vit in sorted(self.dico_souche.keys()):  # itère dans l'ordre les vitamines
             list_souches = []
-            for souche in sorted(self.dico_souche[vit].keys()):
+            for souche in sorted(self.dico_souche[vit].keys()):  # itère dans l'ordre les souches
                 list_ec = []
-                for ec_vit in self.dico_vit[vit]:
+                for ec_vit in sorted(self.dico_vit[vit]):  # dico_vit ici, liste des nums ec de la vit
                     if ec_vit in self.dico_souche[vit][souche][0]:
                         # print("full")
                         list_ec.append(100)
@@ -239,14 +241,19 @@ class Resultats:
         """
         A améliorer, sauvegarder les images, mettre plusieurs map sur une seule fenetre, ajouter un titre,
         mettre de meilleures couleurs et un quadrillage
-        :param p_list_souches:
-        :param p_head_col:
-        :param p_head_ligne:
+        :param p_list_souches:  # valeur de couleur de la heatmap
+        :param p_head_col:  # les noms des ec
+        :param p_head_ligne:  # les noms des souches
         :return:
         """
+        # todo faut trier les numeros ec.. c'est les ec en liste et non en dico qui sont en désordre dans asp..
+        # todo j'ai l'impression que les colones des ec ne correspondent plus..
         # tester add subplot pour avoir les trois plots en mm temps
         print("nb_souches: ", len(p_list_souches))
-        # todo ya le mm nombre de souches pour chaque vit.. coincidence?
+
+        # p_head_ligne = [self.dico_trad.get(souche.strip('"')) for souche in p_head_ligne]  # traduction nom souches
+
+        #  ya le mm nombre de souches pour chaque vit.. coincidence?
         matrice = np.array(p_list_souches)  # transforme une liste de liste en matrice
         # plt.figure(figsize=(5, 5))
         fig, ax = plt.subplots()
