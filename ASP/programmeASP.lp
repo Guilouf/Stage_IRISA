@@ -58,6 +58,20 @@ alterP(V,P_bis,R_bis) :- in_pathway(R,P) ;
 
 
 
+enzymeSucc(V,Ec1,Ec2) :-    in_pathway(R1,P1) ;
+                    ec_number(R1,Ec1) ;
+                    not impEc(Ec1) ; %'retire des enzymes selectionnées
+                    in_pathway(R2,P2) ;
+                    ec_number(R2,Ec2) ;
+                    not impEc(Ec2) ;
+                    product(R1, Product, _) ;
+                    reactant(R2, Product, _) ;
+                    not hidden(Product) ;
+                    pathwayV(V,P1) ;
+                    pathwayV(V,P2).
+
+
+
 
 
 %les enzymes des souches qui matchent avec celles des vits, ac possib de matchs asymétriques. peut changer primaire/ref
@@ -95,6 +109,7 @@ total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de sub
 
 %Les numéros Ec exclus (heu ya peut être un autre méthode..
 %impEc(ec(3,7,1,12);ec(3,6,1,o);ec(1,5,1,39)).
+
 impEc(ec(1,5,1,39)).
 impEc(ec(3,6,1,o)).
 impEc(ec(3,7,1,12)).
@@ -131,9 +146,12 @@ impEc(ec(3,7,1,12)).
 
 
  %* Tableau croisé: pr une vitamine *%
-#show enzymeV/2.
-#show full_match/4.
-#show rest_match/4.
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
+
+
+%#show enzymeSucc/3.
 
 %#show total_match/4.
 %#show strain/1.

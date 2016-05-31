@@ -57,6 +57,7 @@ test = 'ASP/test_data.lp'
 metagdb = 'ASP/ec_uni.lp'
 prog = 'ASP/programmeASP.lp'
 questions = 'ASP/questions.lp'
+hmm = 'ASP/hmm.lp'
 
 # itertools product, pour les listes intent imbriquées
 # todo ya des '"' autour des num_acc..
@@ -68,6 +69,8 @@ result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True
 
 # Solver de test:
 # result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, hmm, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, hmm], collapseTerms=True, collapseAtoms=False)
 
 #  pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
 # impression de sortie ASP
@@ -341,7 +344,7 @@ class Resultats:
                 yield self.affichage_legende(mod)
 
 
-
+    """
     def affichage_legende(self, mod):
         list_union_souche = {}
         for ec in mod:
@@ -359,26 +362,26 @@ class Resultats:
             list_return.append(ls_numsouche)
 
         return list_return
-
+    """
 
 
 with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
     listacc = [i.strip() for i in fichaccess]
     inst_resul = Resultats(result, listacc)
     # inst_resul.tab_comptage()
-    # inst_resul.tab_qualit()
+    inst_resul.tab_qualit()
 
 
 
     inst_resul.tableau_q2_bis()
 
 
-    with open('ASP/Output/tab_Q2.csv', 'w') as sortie_q2:
-
-        writter = csv.writer(sortie_q2, delimiter=';')
-
-        for ligne in inst_resul.tableau_q2_bis():
-            writter.writerow(ligne)
+    # with open('ASP/Output/tab_Q2.csv', 'w') as sortie_q2:
+    #
+    #     writter = csv.writer(sortie_q2, delimiter=';')
+    #
+    #     for ligne in inst_resul.tableau_q2_bis():
+    #         writter.writerow(ligne)
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)
 # todo au niveau des souches de la heatmap, elle n'affiche pas les souches vides

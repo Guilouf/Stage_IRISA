@@ -51,30 +51,37 @@ vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
 
 *%
 
-#const vitamin = b9.  %'permet en plus d'é"viter les doublons"
+#const vitamin = b12.  %'permet en plus d'é"viter les doublons"
 
 1{minStrainVitamin(S,vitamin) : strain(S), not completeStrainV(S,vitamin)} maxstrain .    %'definition du choix: min est max n souches parmi d autres..
 
 1{minStrainVitamin(S,vitamin,Ec): minStrainVitamin(S,vitamin), enzymeV(vitamin,Ec)}.  %' choix des enzymes
 
 
-coveredEnzymeVitamin(vitamin,Ec) :- total_match(vitamin,S,_,Ec) ;  minStrainVitamin(S,vitamin,Ec) . %' enzymeV présente ds une souche choisie pour cette vitamine
+coveredEnzymeVitamin(S,vitamin,Ec) :- total_match(vitamin,S,_,Ec) ;  minStrainVitamin(S,vitamin,Ec) . %' enzymeV présente ds une souche choisie pour cette vitamine
 
+coveredEnzymeVitamin(vitamin,Ec) :- coveredEnzymeVitamin(S,vitamin,Ec).
 
 :- not coveredEnzymeVitamin(vitamin,Ec) ; not impossibleV(vitamin) ; enzymeV(vitamin,Ec) . %'il nexiste pas denzyme non couverte qui ne soit pas en impossibleV
 
+:- minStrainVitamin(S,vitamin,Ec) ; not coveredEnzymeVitamin(S,vitamin,Ec).
 
 minStrainVitamin(S,vitamin) :- minStrainVitamin(S,vitamin,Ec).
 
-twoStrainsVitamin(vitamin) :- minStrainVitamin(S1,vitamin) ; minStrainVitamin(S2,vitamin) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
+twoStrainsVitamin(vitamin,Ec) :- minStrainVitamin(S1,vitamin,Ec) ; minStrainVitamin(S2,vitamin,Ec); S1!=S2. %; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
+
+oneStrainVitamin(vitamin,S1,Ec) :- minStrainVitamin(S1,vitamin,Ec) ; not twoStrainsVitamin(vitamin,Ec). %'represente les ec fait par une seul souche
+
 
 vitaminTaxon_one(vitamin,(T,U)) :- minStrainVitamin(S,vitamin) ; taxonomy(S,T,U).
 
-#minimize {1@3,S:minStrainVitamin(S,vitamin)}.
-#maximize {1@2,S,Ec:minStrainVitamin(S,vitamin,Ec)}. %'maximiser la superposition des voies'
-#minimize {1@1,T:vitaminTaxon_one(vitamin,T)}.
+enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vitamin,Ec1) ; minStrainVitamin(S,vitamin,Ec2).
 
 
+#minimize {1@4,S:minStrainVitamin(S,vitamin)}.
+#maximize {1@1,S,Ec:minStrainVitamin(S,vitamin,Ec)}. %'maximiser la superposition des voies'
+#minimize {1@3,T:vitaminTaxon_one(vitamin,T)}.
+#maximize {1@2,S,Ec1,Ec2:enzymeSuccStrain(vitamin,Ec1,Ec2,S) }.
 
 
  %* #######################################################
@@ -130,7 +137,11 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 
  %* 2 Question *%
 %#show enzymeV/2.
-#show minStrainVitamin/2.
+%#show minStrainVitamin/3.
+%#show twoStrainsVitamin/2.
+%#show enzymeSuccStrain/4.
+#show oneStrainVitamin/3.
+%#show vitaminTaxon_one(T): vitaminTaxon_one(vitamin, (T,U)) .
 
  %* 3 Question *%
 %#show coveredEnzyme/2.
