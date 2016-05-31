@@ -87,7 +87,7 @@ class Resultats:
 
     def __init__(self, m_result, m_list_acc):
         self.result = m_result[0]  # la sortie ASP (seulement 1 modèle)
-        self.models = m_result  # les différents modèles bla
+        self.models = m_result  # les différents modèles blabou
         self.list_access = m_list_acc  # osef au final
         self.dico_vit = {}  # init dico_vit
         self.list_ec_vit()  # remplissage dico_vit(clé:vit ; val: num_ec de la vit)
