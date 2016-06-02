@@ -92,14 +92,14 @@ enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vita
 
 
  %* 1 Question OK *%
-%#show completeStrainV/2.
+#show completeStrainV/2.
 
  %* 2 Question *%
 %#show enzymeV/2.
 %#show minStrainVitamin/3.
 %#show twoStrainsVitamin/2.
 %#show enzymeSuccStrain/4.
-#show oneStrainVitamin/3.
+%#show oneStrainVitamin/3.
 %#show vitaminTaxon_one(T): vitaminTaxon_one(vitamin, (T,U)) .
 
 

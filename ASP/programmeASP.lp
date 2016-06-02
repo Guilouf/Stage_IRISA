@@ -78,7 +78,7 @@ enzymeSucc(V,Ec1,Ec2) :-    in_pathway(R1,P1) ;
 matched(V,S,T,EcV,EcS) :-
                         enzymeV(V,EcV) ;
                         uniprot(EcS,Uniref);
-                        num_access(S,Uniref,_); %888 changer ici pour refseq
+                        num_access(S,Uniref,_); %888 'changer ici pour refseq !!!!!!!!
                         map(EcV,EcS,T).
 
 %les enzymes appartenants aux souches, et correspondant aux enzymes du pathway(pareil que matched, - d'args.
@@ -146,9 +146,9 @@ impEc(ec(3,7,1,12)).
 
 
  %* Tableau croisé: pr une vitamine *%
-#show enzymeV/2.
-#show full_match/4.
-#show rest_match/4.
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
 
 
 %#show enzymeSucc/3.
@@ -156,3 +156,19 @@ impEc(ec(3,7,1,12)).
 %#show total_match/4.
 %#show strain/1.
 
+ %* Stats de la BDD *%
+% le nombre total de souches dans la bdd (68)
+%#show souche(S) : num_access(S,_,_).
+
+% le nombre de souches dans le tableau (65)  64 pour la b9
+%#show souchetab(S) : matched(V,S,T,EcV,EcS).
+
+% les souches qui ne sont pas dans le tableau: (3) pour toutes, 4 pour b9 (NZ_LKLZ01000013.1)
+%#show notab(S) : strain(S) , not matched(_,S,_,_,_).
+
+% nombre de souches annotées d'un type ou l'autre
+%#show souche(S) : num_access(S,_,"PRIMAIRE").
+%#show souche(S) : num_access(S,_,"PRIMAIRE") , not num_access(S,_,"REFSEQ").
+
+% nombre d'ec retrouvés par l'une ou l'autre des annot, par vit (changer dans le code du dessus..)
+%#show typeannot(V,S,Ec) :  matched(V,S,_,Ec,_).

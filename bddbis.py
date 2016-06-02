@@ -237,6 +237,13 @@ class Requetes:
             pass
 
     @staticmethod
+    def print_nb_souches():
+        resul_nb_souches = ses.query(Accessions).all()
+        for une_souche in resul_nb_souches:
+            print(une_souche.Id_access)
+        print(len(resul_nb_souches))
+
+    @staticmethod
     def print_table_ecnum():
         resulEc = ses.query(EC_numbers).all()
         for laccessinBis in resulEc:
@@ -330,6 +337,7 @@ class Requetes:
     # print(association_table.c.Accessions_tab_id)
 
 requetes = Requetes()  # instance de la classe requetes
+requetes.print_nb_souches()
 # requetes.statistiques_par_access()
 # requetes.print_table_access()
 # requetes.print_table_ecnum()

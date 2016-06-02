@@ -66,8 +66,8 @@ hmm = 'ASP/hmm.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
-result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
 # result = solver.run([test, prog, questions], collapseTerms=True, collapseAtoms=False)
@@ -169,6 +169,7 @@ class Resultats:
         """
         for vit in sorted(self.dico_souche.keys()):  # itère dans l'ordre les vitamines
             list_souches = []
+            # print(len(self.dico_souche[vit].keys()))  # il manque une souche pour la b9..
             for souche in sorted(self.dico_souche[vit].keys()):  # itère dans l'ordre les souches
                 list_ec = []
                 for ec_vit in sorted(self.dico_vit[vit]):  # dico_vit ici, liste des nums ec de la vit
@@ -195,8 +196,9 @@ class Resultats:
             #     print("\033[95m Problem dico trad! \033[0m")  # petite coloration..
 
             # pour l'instant c plus pratique.
-            self.out_csv(vit, list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
-            self.heatmap(list_souches, self.dico_vit[vit], sorted(self.dico_souche[vit].keys()))
+            # faudra faire gaffe avec tous ces sorted..
+            self.out_csv(vit, list_souches, sorted(self.dico_vit[vit]), sorted(self.dico_souche[vit].keys()))
+            self.heatmap(list_souches, sorted(self.dico_vit[vit]), sorted(self.dico_souche[vit].keys()))
 
     def correspondance_souche(self):
         """
@@ -246,14 +248,12 @@ class Resultats:
         :param p_head_ligne:  # les noms des souches
         :return:
         """
-        # todo faut trier les numeros ec.. c'est les ec en liste et non en dico qui sont en désordre dans asp..
-        # todo j'ai l'impression que les colones des ec ne correspondent plus..
         # tester add subplot pour avoir les trois plots en mm temps
         print("nb_souches: ", len(p_list_souches))
 
         # p_head_ligne = [self.dico_trad.get(souche.strip('"')) for souche in p_head_ligne]  # traduction nom souches
 
-        #  ya le mm nombre de souches pour chaque vit.. coincidence?
+        # non ya pas le mm nombre de souches.. 64 pour b9, NZ_LKLZ01000013.1 manque
         matrice = np.array(p_list_souches)  # transforme une liste de liste en matrice
         # plt.figure(figsize=(5, 5))
         fig, ax = plt.subplots()
@@ -277,6 +277,20 @@ class Resultats:
         plt.show()
 
 
+    def tableau_q1(self):
+        dico_q1 = {}  # cle: vit ; valeurs: souches
+        for term in self.result:  # itère les termes du modèle
+            if term.predicate == "completeStrainV":
+                # dico_q1[term.arguments[1]] = dico_q1.get(term.arguments[1], []) + [term.arguments[0]]
+                # avec traduction des souches
+                dico_q1[term.arguments[1]] = dico_q1.get(term.arguments[1], []) + [self.dico_trad[term.arguments[0].strip('"')]]
+        print(dico_q1)
+        with open('ASP/Output/tab_q1.csv', 'w', newline='') as sortie_q1:  # éviter les lignes blanches
+            writter = csv.writer(sortie_q1)
+            for vit in dico_q1.keys():
+                writter.writerow(vit)
+                for souche in sorted(dico_q1[vit]):
+                    writter.writerow(souche)
 
 
     """
@@ -311,7 +325,7 @@ class Resultats:
 
 
 
-    # todo faudra faire un set pour éliminer les doublons.. pk yen a d'ailleurs?
+    # todo faudra faire un set pour éliminer les doublons.. pk yen a d'ailleurs? ya plus de doublons, tt a refaire
     """
     necessite  total match etc (j'ai désactivé les heatmaps)
     minstrainvit/2.
@@ -377,6 +391,7 @@ with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fou
     inst_resul = Resultats(result, listacc)
     # inst_resul.tab_comptage()
     inst_resul.tab_qualit()
+    inst_resul.tableau_q1()
 
 
 
