@@ -273,13 +273,13 @@ class Requetes:
     def print_rdf():
         resul_ec = ses.query(EC_numbers).all()
         for num in resul_ec:
-            accessions_refseq = num.hasAccesByRefSeq  # TODO enlever les "" pour les id access, et pr les ec ds le rdf
+            accessions_refseq = num.hasAccesByRefSeq  # enlever les "" pour les id access, et pr les ec ds le rdf
             for acc in accessions_refseq:
                 yield "metagdb:"+num.Id_ec+" metagdb:hasannot_refseq metagdb:"+acc.Id_access
             accessions_primaire = num.hasAccesByPrimaire
             for acc in accessions_primaire:
                 yield "metagdb:"+num.Id_ec+" metagdb:hasannot_primaire metagdb:"+acc.Id_access
-                # TODO je sais plus si ca marche a force..
+                # je sais plus si ca marche a force..
 
     @staticmethod
     def write_asp():
@@ -289,8 +289,12 @@ class Requetes:
             for num in resul_ec:  # num correspond au numero ec
                 list_xref = num.hasXref  # la liste des xref du num_ec
 
-                list_access_refseq = num.hasAccesByRefSeq  # liste de ses acc NCBI
+                list_access_refseq = num.hasAccesByRefSeq  # liste des acc NCBI du num
                 list_access_primaire = num.hasAccesByPrimaire
+                # todo que lie xref au type d'annot??
+                # defiler les xref ne fait que créer des doublons ac un uni différent, ca n'apporte pas d'info,
+                # et c'est mm faux car ca lie des uniprot qui ne sont pas présents ds les acc
+                # mais ca na pasde conséquence dans mon utilisation actuelle
                 for xref in list_xref:  # défile les xref d'un EC
                     yield "uniprot( ec("+num.Id_ec.replace(".", ',').replace(",-", "")+"),\""+xref.Id_xref+"\")."
                     for acc in list_access_refseq:  # défile les acc d'un ec, ecrit en fct de l'xref, type inférence
@@ -341,7 +345,7 @@ requetes.print_nb_souches()
 # requetes.statistiques_par_access()
 # requetes.print_table_access()
 # requetes.print_table_ecnum()
-# requetes.print_table_xref()
+requetes.print_table_xref()
 # for i in requetes.print_rdf():
 #     print(i)
 
