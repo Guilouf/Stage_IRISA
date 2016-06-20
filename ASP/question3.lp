@@ -34,7 +34,9 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 %#show coveredEnzyme/2.
 %#show uncovered/2.
 %#show minStrain/1.
-%#show minStrain/3.
+
+#show minStrain/3.
+
 %#show minStrain/2.
 %#show vitaminTaxon/2.
 %#show twoStrains/1.

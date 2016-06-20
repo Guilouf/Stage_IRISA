@@ -66,6 +66,7 @@ hmm = 'ASP/hmm.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
+# result = solver.run([hidden, base, prog, metagdb, question3], collapseTerms=True, collapseAtoms=False)
 result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
@@ -251,7 +252,7 @@ class Resultats:
         # tester add subplot pour avoir les trois plots en mm temps
         print("nb_souches: ", len(p_list_souches))
 
-        # p_head_ligne = [self.dico_trad.get(souche.strip('"')) for souche in p_head_ligne]  # traduction nom souches
+        p_head_ligne = [self.dico_trad.get(souche.strip('"')) for souche in p_head_ligne]  # traduction nom souches
 
         # non ya pas le mm nombre de souches.. 64 pour b9, NZ_LKLZ01000013.1 manque
         matrice = np.array(p_list_souches)  # transforme une liste de liste en matrice
@@ -332,6 +333,7 @@ class Resultats:
     """
     def tableau_q2_bis(self):
         list_vit = ['b9', 'b12', 'k2_7']
+        # todo trouver la variable (vitamine)
         for vit in list_vit:
             print('#########################'+vit+'##################################################')
             yield vit
@@ -339,6 +341,7 @@ class Resultats:
             list_model = []
             for model in self.models:
                 # print('##########Modèle')
+                print(dir(model))
                 list_ec_model = []
                 for ecc in sorted(self.dico_vit[vit]):
                     list_souche_ec = []
@@ -360,9 +363,45 @@ class Resultats:
                 list_model.append([''.join([self.dico_trad[souche.replace('"', '')] for souche in listsouche]) for listsouche in list_ec_model])
 
                 # jamais rien vu de plus beau..
-            # yield from (mod for mod in list_model)
-            for mod in list_model:
-                yield self.affichage_legende(mod)
+            yield from (mod for mod in list_model)
+            # for mod in list_model:
+            #     yield self.affichage_legende(mod)
+
+    def tableau_q2_final(self, question):
+        """
+        fait aussi la question 3..
+        faudra dire à clingo d'iérer les vitamines
+        """
+        print("#########Q2final")
+        list_ec = []
+        for atom in self.models[1]:  # remplit la liste d'ec de la vit
+                if atom.predicate == question:
+                    list_ec.append(atom.arguments[2])  # ajout l'ec
+        list_ec = sorted(set(list_ec))  # tri des ec, uniques
+
+        list_model = []
+        for model in self.models:
+            list_souches = {}
+            for ec in list_ec:
+                for atom in model:
+                    if atom.arguments[2] == ec:
+                        list_souches[ec] = list_souches.get(ec, []) + [atom.arguments[0]]
+            # print(list_souches)
+            list_model.append(list_souches)
+        # print(list_model)
+
+        # la sortie:
+        yield list_ec  # le header
+        for model in list_model:
+            sortie_model = []
+            for ec in list_ec:
+                trad = [self.dico_trad[sou.strip('"')] for sou in model[ec]]
+                sortie_model.append(trad)
+            yield sortie_model
+        # todo faire une sortie plus classe avec légende,
+
+
+
 
 
     """
@@ -393,17 +432,16 @@ with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fou
     inst_resul.tab_qualit()
     inst_resul.tableau_q1()
 
+    # inst_resul.tableau_q2_bis()
+    q2 = inst_resul.tableau_q2_final('minStrain')  # 'minStrainVitamin'
+    # [print(ligne) for ligne in q2]
 
+    # faudra le mettre dans la fonction
+    with open('ASP/Output/tab_Q2.csv', 'w', newline='') as sortie_q2:
+        writter = csv.writer(sortie_q2, delimiter=';')
+        for ligne in q2:
+            writter.writerow(ligne)
 
-    inst_resul.tableau_q2_bis()
-
-
-    # with open('ASP/Output/tab_Q2.csv', 'w') as sortie_q2:
-    #
-    #     writter = csv.writer(sortie_q2, delimiter=';')
-    #
-    #     for ligne in inst_resul.tableau_q2_bis():
-    #         writter.writerow(ligne)
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)
 # todo au niveau des souches de la heatmap, elle n'affiche pas les souches vides

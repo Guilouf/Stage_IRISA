@@ -146,9 +146,9 @@ impEc(ec(3,7,1,12)).
 
 
  %* Tableau croisé: pr une vitamine *%
-%#show enzymeV/2.
-%#show full_match/4.
-%#show rest_match/4.
+#show enzymeV/2.
+#show full_match/4.
+#show rest_match/4.
 
 
 %#show enzymeSucc/3.
@@ -169,6 +169,11 @@ impEc(ec(3,7,1,12)).
 % nombre de souches annotées d'un type ou l'autre
 %#show souche(S) : num_access(S,_,"PRIMAIRE").
 %#show souche(S) : num_access(S,_,"PRIMAIRE") , not num_access(S,_,"REFSEQ").
+%#show souche(S) : num_access(S,_,"REFSEQ").
+%#show souche(S) : num_access(S,_,"REFSEQ") , not num_access(S,_,"PRIMAIRE").
+
+%les deux
+%#show souche(S) : num_access(S,_,"PRIMAIRE") ,  num_access(S,_,"REFSEQ").
 
 % nombre d'ec retrouvés par l'une ou l'autre des annot, par vit (changer dans le code du dessus..)
 %#show typeannot(V,S,Ec) :  matched(V,S,_,Ec,_).

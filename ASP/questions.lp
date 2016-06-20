@@ -51,7 +51,7 @@ vitaminTaxon_one(V,(T,U)) :- minStrainVitamin(S,V) ; taxonomy(S,T,U).
 
 *%
 
-#const vitamin = b9.  %'permet en plus d'é"viter les doublons"
+#const vitamin = k2_7.  %'permet en plus d'é"viter les doublons"
 
 1{minStrainVitamin(S,vitamin) : strain(S), not completeStrainV(S,vitamin)} maxstrain .    %'definition du choix: min est max n souches parmi d autres.., pas de complete strain
 
@@ -64,7 +64,7 @@ coveredEnzymeVitamin(vitamin,Ec) :- coveredEnzymeVitamin(S,vitamin,Ec).
 
 :- not coveredEnzymeVitamin(vitamin,Ec) ; not impossibleV(vitamin) ; enzymeV(vitamin,Ec) . %'il nexiste pas denzyme non couverte qui ne soit pas en impossibleV
 
-:- minStrainVitamin(S,vitamin,Ec) ; not coveredEnzymeVitamin(S,vitamin,Ec).
+:- minStrainVitamin(S,vitamin,Ec) ; not coveredEnzymeVitamin(S,vitamin,Ec). %'il ny a pas dezyme non couverte dans minstrain
 
 minStrainVitamin(S,vitamin) :- minStrainVitamin(S,vitamin,Ec).
 
@@ -73,15 +73,15 @@ twoStrainsVitamin(vitamin,Ec) :- minStrainVitamin(S1,vitamin,Ec) ; minStrainVita
 oneStrainVitamin(vitamin,S1,Ec) :- minStrainVitamin(S1,vitamin,Ec) ; not twoStrainsVitamin(vitamin,Ec). %'represente les ec fait par une seul souche
 
 
-vitaminTaxon_one(vitamin,(T,U)) :- minStrainVitamin(S,vitamin) ; taxonomy(S,T,U).
+vitaminTaxon_one(vitamin,(T,U)) :- minStrainVitamin(S,vitamin) ; taxonomy(S,T,U). %'T:genre, U: espèce
 
 enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vitamin,Ec1) ; minStrainVitamin(S,vitamin,Ec2).
+%heu.. ouais si pas de problème en fait.
 
-
-#minimize {1@4,S:minStrainVitamin(S,vitamin)}.
-#maximize {1@1,S,Ec:minStrainVitamin(S,vitamin,Ec)}. %'maximiser la superposition des voies'
-#minimize {1@3,T:vitaminTaxon_one(vitamin,T)}.
-#maximize {1@2,S,Ec1,Ec2:enzymeSuccStrain(vitamin,Ec1,Ec2,S) }.
+#minimize {1@4,S:minStrainVitamin(S,vitamin)}. %'minimise le nombre de souches'
+%#maximize {1@1,S,Ec:minStrainVitamin(S,vitamin,Ec)}. %'maximiser la superposition des voies'
+#minimize {1@3,T:vitaminTaxon_one(vitamin,T)}. %'je me demande qd mm ca compte pas en double 2 mm taxons..
+#maximize {1@2,S,Ec1,Ec2:enzymeSuccStrain(vitamin,Ec1,Ec2,S) }. %'ya s qui est aussi maximisé
 
 
 
@@ -92,7 +92,10 @@ enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vita
 
 
  %* 1 Question OK *%
-#show completeStrainV/2.
+%#show completeStrainV/2.
+#show completeStrainV(S,V) : completeStrainV(S,V) , strain(S) , V=b9,k2_7.
+
+
 
  %* 2 Question *%
 %#show enzymeV/2.
