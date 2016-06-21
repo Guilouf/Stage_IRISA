@@ -66,7 +66,6 @@ hmm = 'ASP/hmm.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-# result = solver.run([hidden, base, prog, metagdb, question3], collapseTerms=True, collapseAtoms=False)
 result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
@@ -332,6 +331,7 @@ class Resultats:
     minstrainvit/2.
     """
     def tableau_q2_bis(self):
+        print("################Tableau Vitamin #################")
         list_vit = ['b9', 'b12', 'k2_7']
         # todo trouver la variable (vitamine)
         for vit in list_vit:
@@ -341,12 +341,11 @@ class Resultats:
             list_model = []
             for model in self.models:
                 # print('##########Modèle')
-                print(dir(model))
                 list_ec_model = []
                 for ecc in sorted(self.dico_vit[vit]):
                     list_souche_ec = []
                     for atom in model:
-                         if atom.predicate == 'minStrainVitamin' and atom.arguments[1] == vit:  # si bon predicat et bne vit
+                        if atom.predicate == 'minStrainVitamin' and atom.arguments[1] == vit:  # si bon predicat et bne vit
                             # print(atom)
                             list_ec_souche = list(itertools.chain.from_iterable([ec for ec in self.dico_souche[vit][atom.arguments[0]]]))
                             # et encore du bourrin..
