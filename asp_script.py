@@ -424,7 +424,7 @@ class Resultats:
     """
 
 
-with open('exemple/ListeAccess', mode='r') as fichaccess:  # ca aussi on sen fout
+with open('ListeAccess', mode='r') as fichaccess:  # todo ca aussi on sen fout, suppr
     listacc = [i.strip() for i in fichaccess]
     inst_resul = Resultats(result, listacc)
     # inst_resul.tab_comptage()
@@ -453,19 +453,4 @@ en gros, ce qu'il faut:
 ou
 
 {'b9':[ [LEKW00000000.1 , [list_ec_full], [list_ec_part]] ,...] }
-"""
-
-
-"""
-LEKW00000000.1
-NZ_CM003439.1
-NZ_CP010528.1
-NZ_CP009236.1
-NC_021514.1
-NC_020229.1
-NC_014554.1
-NC_021224.2
-NC_012984.1
-AL935263.2
-FN806773
 """

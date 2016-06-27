@@ -6,7 +6,7 @@
 
 
  1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
- 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)}.  %' choix de souches
+ 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)} .  %' choix de souches
 
 
 coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S,V,Ec) . %'enzymeV couverte si présente ds une souche de l ensmbl

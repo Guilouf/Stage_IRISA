@@ -270,7 +270,7 @@ if __name__ == "__main__":
         # gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
 
 
-    with open('exemple/ListeAccess', mode='r') as listaccess:
+    with open('ListeAccess', mode='r') as listaccess:
         for numacc in listaccess:  # itère la liste des accessions à regarder
             traitement(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
 
