@@ -39,9 +39,22 @@ coveredEnzymeVitamin(vitamin,Ec) :- coveredEnzymeVitamin(S,vitamin,Ec).
 :- not coveredEnzymeVitamin(vitamin,Ec) ; not impossibleV(vitamin) ; enzymeV(vitamin,Ec) . %'il nexiste pas denzyme non couverte qui ne soit pas en impossibleV
 
 
-vitaminTaxon_one(vitamin,(T,U)) :- minStrainVitamin(S,vitamin) ; taxonomy(S,T,U).
+%vitaminTaxon_one(vitamin,(T,U)) :- minStrainVitamin(S,vitamin) ; taxonomy(S,T,U).
 
 enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vitamin,Ec1) ; minStrainVitamin(S,vitamin,Ec2). %'ec successif pour la mm souche
+
+
+%il me faut l'ec pour la sortie du tableau...!!! => minStrainVitamin/3. modifié le show
+
+%pk la reaction et pas le produit?
+diffusion(R):- coveredEnzymeVitamin(S1,vitamin,Ec); %'EC que possède S1
+                not coveredEnzymeVitamin(S2,vitamin,Ec); %'et que S2 ne possède pas
+                minStrainVitamin(S2,vitamin); %'def S2? et S1?
+                pathwayV(vitamin,P) ; %'recup le pathway de la vit
+                in_pathway(R,P) ;
+                ec_number(R,Ec); %'recup la reaction du pathway de la vit associé a l ec
+                product(R, Product, _); %'recupére le produit de la réaction si not hidden
+                not hidden(Product).
 
 
 #minimize {1@4,S:minStrainVitamin(S,vitamin)}.
@@ -63,11 +76,13 @@ enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vita
 %#show completeStrainV/2.
 
  %* 2 Question *%
-%#show enzymeV/2.
-#show minStrainVitamin/2.
-%#show twoStrainsVitamin/2.
+%#show minStrainVitamin/2.
+
+#show minStrainVitamin(S,vitamin,Ec) : minStrainVitamin(S,vitamin) , coveredEnzymeVitamin(S,vitamin,Ec).
+
+#show diffusion/1.
 %#show enzymeSuccStrain/4.
-%#show oneStrainVitamin/3.
+
 %#show vitaminTaxon_one(T): vitaminTaxon_one(vitamin, (T,U)) .
 
 

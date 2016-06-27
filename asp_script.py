@@ -87,10 +87,9 @@ print("Nombre: ", len(result[0]))
 
 class Resultats:
 
-    def __init__(self, m_result, m_list_acc):
+    def __init__(self, m_result):
         self.result = m_result[0]  # la sortie ASP (seulement 1 modèle)
         self.models = m_result  # les différents modèles
-        self.list_access = m_list_acc  # osef au final
         self.dico_vit = {}  # init dico_vit
         self.list_ec_vit()  # remplissage dico_vit(clé:vit ; val: num_ec de la vit)
         self.dico_souche = {}  # init dico_souche
@@ -278,6 +277,9 @@ class Resultats:
 
 
     def tableau_q1(self):
+        """
+        Faut évidement activer le show "completeStrainV"
+        """
         dico_q1 = {}  # cle: vit ; valeurs: souches
         for term in self.result:  # itère les termes du modèle
             if term.predicate == "completeStrainV":
@@ -379,11 +381,12 @@ class Resultats:
         list_ec = sorted(set(list_ec))  # tri des ec, uniques
 
         list_model = []
-        for model in self.models:
+
+        for model in self.models:  # itère les diff solutions
             list_souches = {}
             for ec in list_ec:
                 for atom in model:
-                    if atom.arguments[2] == ec:
+                    if atom.predicate == question and atom.arguments[2] == ec:
                         list_souches[ec] = list_souches.get(ec, []) + [atom.arguments[0]]
             # print(list_souches)
             list_model.append(list_souches)
@@ -423,23 +426,27 @@ class Resultats:
         return list_return
     """
 
+####################################
+# MAIN
+####################################
 
-with open('ListeAccess', mode='r') as fichaccess:  # todo ca aussi on sen fout, suppr
-    listacc = [i.strip() for i in fichaccess]
-    inst_resul = Resultats(result, listacc)
-    # inst_resul.tab_comptage()
-    inst_resul.tab_qualit()
-    inst_resul.tableau_q1()
+# instanciation
+inst_resul = Resultats(result)
 
-    # inst_resul.tableau_q2_bis()
-    q2 = inst_resul.tableau_q2_final('minStrain')  # 'minStrainVitamin'
-    # [print(ligne) for ligne in q2]
+# inst_resul.tab_comptage()
+inst_resul.tab_qualit()
+inst_resul.tableau_q1()
 
-    # faudra le mettre dans la fonction
-    with open('ASP/Output/tab_Q2.csv', 'w', newline='') as sortie_q2:
-        writter = csv.writer(sortie_q2, delimiter=';')
-        for ligne in q2:
-            writter.writerow(ligne)
+# inst_resul.tableau_q2_bis()
+q2 = inst_resul.tableau_q2_final('minStrainVitamin')  # 'minStrainVitamin' ou minStrain pr q3..
+# [print(ligne) for ligne in q2]
+
+# faudra le mettre dans la fonction
+with open('ASP/Output/tab_Q2.csv', 'w', newline='') as sortie_q2:
+    writter = csv.writer(sortie_q2, delimiter=';')
+    for ligne in q2:
+        # print(ligne)
+        writter.writerow(ligne)
 
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)

@@ -146,9 +146,9 @@ impEc(ec(3,7,1,12)).
 
 
  %* Tableau croisé: pr une vitamine *%
-#show enzymeV/2.
-#show full_match/4.
-#show rest_match/4.
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
 
 
 %#show enzymeSucc/3.
