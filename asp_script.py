@@ -31,22 +31,9 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 """
 ###########
 # Les tod-o
-# - Convertir les sbml en ASP
-# integrer le noms des souches dans la bdd => OK
 # remonter les voies metabo via asp, trouver des voies alternatives
-# preparer les fichiers fasta ac proteines
-
-# regarder l'ordre de croissance des bactéries ?
-# regarder les positions sur le génome des enzymes?
-# chopper des publis sur les tas de lards
-# affichache des voies metabo avec cytoscape (regarder le mail et la publi)
-# Et si au lieu de prendre des numéros ec séparément, on changeait d'échelle pour faire le calcul sur des petites
-# portions de pathways? et que pour chaque bacteries, on représente sur différentes lignes ces bouts de patways,
-# comme pr les coop de bactéries des coop de pathways?
 # pouvoir inserer des limites de diffusion
 # faire l'affichage des résultats de la question 2
-# HMM des enzymes de metacyc (jeane got) OK, pas vraiment de résultats todo qd mm regarder si ya des infos en plus..
-# reunion 7 ou 8 juin
 
 goptions = ''  # soluce max gringo
 soptions = '--opt-mode=optN'  # solutions max solveur todo -cc vitamin=b12 pour ecraser la constante
@@ -68,7 +55,8 @@ hmm = 'ASP/hmm.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+result = solver.run([hidden, base, prog, metagdb, question3], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
@@ -76,7 +64,7 @@ result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True
 # result = solver.run([hidden, base, prog, hmm, questions], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, hmm], collapseTerms=True, collapseAtoms=False)
 
-#  pourquoi dans certains cas result 0 n'existe pas?? pour les cas ou pas de modèle
+#  pour les cas ou pas de modèle result 0 n'existe pas => erreur
 # impression de sortie ASP
 for termm in result[0]:
     print(termm)
@@ -92,12 +80,10 @@ class Resultats:
     def __init__(self, m_result):
         self.result = m_result[0]  # la sortie ASP (seulement 1 modèle)
         self.models = m_result  # les différents modèles
-        self.dico_vit = {}  # init dico_vit
-        self.list_ec_vit()  # remplissage dico_vit(clé:vit ; val: num_ec de la vit)
-        self.dico_souche = {}  # init dico_souche
-        self.bdd_temp()  # remplissage dico_souche
-        self.dico_trad = {}  # init dico de corespondance de souches
-        self.correspondance_souche()  # pas oublier le remplissage
+        self.dico_vit = self.list_ec_vit()  # remplissage dico_vit(clé:vit ; val: num_ec de la vit)
+        self.dico_souche = self.bdd_temp()  # init dico_souche
+        self.dico_trad = self.correspondance_souche()  # init dico de corespondance de souches
+
 
 
     def list_ec_vit(self):
@@ -106,11 +92,13 @@ class Resultats:
         Pour les ec des pathway de vitamine ( enzymeV(V,Ec) )
         :return:
         """
+        dico_vit = {}
         for term in self.result:  # itère les termes
             if term.predicate == "enzymeV":  # ne retient que les terms enzymeV
-                self.dico_vit[term.arguments[0]] = self.dico_vit.get(term.arguments[0], []) + [term.arguments[1]]
+                dico_vit[term.arguments[0]] = dico_vit.get(term.arguments[0], []) + [term.arguments[1]]
                 # si la cle n'existe pas, le get initialise une liste vide
-        print(self.dico_vit)
+        print(dico_vit)
+        return dico_vit
 
     def bdd_temp(self):
         """
@@ -121,21 +109,23 @@ class Resultats:
         faut mieux commenter le code car j'y comprend plus rien là
         defaultdict a regarder
         """
+        dico_souche = {}
         for term in self.result:  # itère les termes
             if term.predicate == "full_match":  # ne retient que les terms full_match !!
-                self.dico_souche[term.arguments[0]] = self.dico_souche.get(term.arguments[0], {})
+                dico_souche[term.arguments[0]] = dico_souche.get(term.arguments[0], {})
 
-                self.dico_souche[term.arguments[0]][term.arguments[1]] = \
-                    l = self.dico_souche[term.arguments[0]].get(term.arguments[1], [[], []])
+                dico_souche[term.arguments[0]][term.arguments[1]] = \
+                    l = dico_souche[term.arguments[0]].get(term.arguments[1], [[], []])
                 l[0] += [term.arguments[3]]
 
             if term.predicate == "rest_match":
-                self.dico_souche[term.arguments[0]] = self.dico_souche.get(term.arguments[0], {})
+                dico_souche[term.arguments[0]] = dico_souche.get(term.arguments[0], {})
                 # initialisation de la clef vit
-                self.dico_souche[term.arguments[0]][term.arguments[1]] = \
-                    l = self.dico_souche[term.arguments[0]].get(term.arguments[1], [[], []])
+                dico_souche[term.arguments[0]][term.arguments[1]] = \
+                    l = dico_souche[term.arguments[0]].get(term.arguments[1], [[], []])
                 l[1] += [term.arguments[3]]
-        print(self.dico_souche)
+        print(dico_souche)
+        return dico_souche
 
     def tab_comptage(self, vitamin=None):
         """
@@ -175,14 +165,11 @@ class Resultats:
                 list_ec = []
                 for ec_vit in sorted(self.dico_vit[vit]):  # dico_vit ici, liste des nums ec de la vit
                     if ec_vit in self.dico_souche[vit][souche][0]:
-                        # print("full")
-                        list_ec.append(100)
+                        list_ec.append(100)  # full match
                     elif ec_vit in self.dico_souche[vit][souche][1]:
-                        # print("part")
-                        list_ec.append(50)
+                        list_ec.append(50)  # asymetric match
                     else:
-                        # print("non")
-                        list_ec.append(0)
+                        list_ec.append(0)  # no match
                 list_souches.append(list_ec)
             print(list_souches)
             # try:
@@ -207,12 +194,13 @@ class Resultats:
         Utilise un fichier csv pour se charger
         :return:
         """
-        # todo elle veut plus de colones
+
+        dico_trad = {}
         with open("ASP/trad_souches/correspondance_souches.csv", 'r') as fich_dico:
             reader = csv.reader(fich_dico, delimiter=';')
             for i in reader:
-                self.dico_trad[i[2]] = [i[0], i[1]]
-
+                dico_trad[i[2]] = [i[0], i[1]]
+            return dico_trad
 
     def out_csv(self, vit, p_listsouche, p_headcol, p_headligne):
         """
@@ -271,7 +259,7 @@ class Resultats:
         ax.set_yticklabels(p_head_ligne, minor=False)
 
         # on met les axes en mode tableau
-        # les ec de la colone ne sont pas triés=> ils sont pas tjr dans le mm ordre mais pas d'incohérence
+        # les ec de la colone ne sont pas triés=> ils sont pas tjr dans le mm ordre mais pas d'incohérence tjr vrai?
         ax.invert_yaxis()
         ax.xaxis.tick_top()
         # (print(dir(plt.figure())))
@@ -280,7 +268,7 @@ class Resultats:
 
     def tableau_q1(self):
         """
-        Faut évidement activer le show "completeStrainV"
+        Faut évidement activer le show "completeStrainV" dans ASP
         """
         dico_q1 = {}  # cle: vit ; valeurs: souches
         for term in self.result:  # itère les termes du modèle
@@ -301,7 +289,7 @@ class Resultats:
     faut que je trouve le minimum, puis que je filtre selon ce minimum=> pas besoin au final ya que des minis..
     par contre faut imprimer enzymV, pour avoir self.dico_vit
     """
-    # todo traduire le nom des souches..
+    #  inutilisé!
     def tableau_q2(self):
         list_vit = ['b9', 'b12', 'k2_7']
 
@@ -334,6 +322,7 @@ class Resultats:
     necessite  total match etc (j'ai désactivé les heatmaps)
     minstrainvit/2.
     """
+    #  inutilisé!
     def tableau_q2_bis(self):
         print("################Tableau Vitamin #################")
         list_vit = ['b9', 'b12', 'k2_7']
@@ -392,40 +381,82 @@ class Resultats:
                         list_souches[ec] = list_souches.get(ec, []) + [atom.arguments[0]]
             # print(list_souches)
             list_model.append(list_souches)
-        # print(list_model)
 
         # la sortie:
-        yield list_ec  # le header
+        yield list_ec  # le header, avec affichage des ec
         for model in list_model:
             sortie_model = []
             for ec in list_ec:
-                trad = [self.dico_trad[sou.strip('"')] for sou in model[ec]]
+                trad = [''.join(self.dico_trad[sou.strip('"')]) for sou in model[ec]]  # traduit et met en string
                 sortie_model.append(trad)
-            yield sortie_model
-        # todo faire une sortie plus classe avec légende,
+            yield self.affichage_legende(sortie_model)
 
 
 
+    def test_q3(self, question):
+        """
+        faut trier les ec en fonction de leur voies..
+        list_ec = [vit1, ec1, ec2,..., vit2, ec3, ec4...]
+        """
+        print("#########Q3final")
+        # todo ici trier les ec..
+        list_vit_trie = list(sorted(set([atom.arguments[1] for atom in self.models[1]])))  # donne list de vit presentes
+        print(list_vit_trie)
+        list_ec = []
+
+        for vit in list_vit_trie:
+            list_ec.append(vit)
+            for atom in self.models[1]:  # itère les atoms pr faire list_ec  =>> faudrait pouvoir l'ordonner
+                if atom.predicate == question and atom.arguments[1] == vit:
+                    list_ec.append(atom.arguments[2])  # ajout l'ec
+
+
+        list_model = []
+
+        for model in self.models:  # itère les diff solutions
+            list_souches = {}
+            for ec in list_ec:
+                for atom in model:
+                    if atom.predicate == question and atom.arguments[2] == ec:
+                        list_souches[ec] = list_souches.get(ec, []) + [atom.arguments[0]]
+            # print(list_souches)
+            list_model.append(list_souches)
+
+        # la sortie:
+        yield list_ec  # le header, avec affichage des ec
+        for model in list_model:
+            sortie_model = []
+            # for ec in (ec for ec in list_ec if ec not in list_vit_trie):  # mouraf magnifik, todo faut le bench
+            for ec in list_ec:
+                # list traduite des bact présentes pr chaque ec
+                trad = [''.join(self.dico_trad[sou.strip('"')]) for sou in model.get(ec, [])]  # traduit et met en string
+                print(trad)  # todo le problème vient d'asp...
+                sortie_model.append(trad)
+            yield self.affichage_legende(sortie_model)
 
 
 
     def affichage_legende(self, mod):
-        list_union_souche = {}
-        for ec in mod:
-            for souche, idd in enumerate(ec):
-                if souche not in list_union_souche:
-                    list_union_souche[souche] = idd
-        print(list_union_souche)
+        """
+        Permet ubne lecture plus claire des tableaux en sortie avec un système de légende. Relié au yield des fonctions
+        de tableau
+        :param mod:
+        :return:
+        """
+
         list_return = []
-        list_return.append(list_union_souche)
-        for ec in mod:
-            ls_numsouche = []
+        # donne la liste unique des bacteries
+        list_bact = list(sorted(set([item for sublist in mod for item in sublist])))  # transforme en flatlist et set
 
-            if list_union_souche.get(i, 'biz') in ec:
-                ls_numsouche.append(i)
-            list_return.append(ls_numsouche)
+        for ec in mod:  # itère par ec les list_bact qui participent
+            lst_index = []
+            for bact in list_bact:
+                if bact in ec:
+                    index = list_bact.index(bact)
+                    lst_index.append(index)
+            list_return.append(lst_index)
 
-        return list_return
+        return list_return + [bact for bact in list_bact]
 
 
 ####################################
@@ -442,7 +473,6 @@ inst_resul.tableau_q1()
 # inst_resul.tableau_q2_bis()
 q2 = inst_resul.tableau_q2_final('minStrainVitamin')  # 'minStrainVitamin' ou minStrain pr q3..
 # [print(ligne) for ligne in q2]
-
 # faudra le mettre dans la fonction
 with open('ASP/Output/tab_Q2.csv', 'w', newline='') as sortie_q2:
     writter = csv.writer(sortie_q2, delimiter=';')
@@ -450,16 +480,25 @@ with open('ASP/Output/tab_Q2.csv', 'w', newline='') as sortie_q2:
         # print(ligne)
         writter.writerow(ligne)
 
+# Q3
+with open('ASP/Output/tab_Q3.csv', 'w', newline='') as sortie_q3:
+    writter = csv.writer(sortie_q3, delimiter=';')
+    q3 = inst_resul.test_q3('minStrain')
+    # [print(ligne) for ligne in q3]  # epuise pas le gen oublie pas..
+    [writter.writerow(ligne) for ligne in q3]
+    # for ligne in q3:
+    #     writter.writerow(ligne)
+
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)
 # todo au niveau des souches de la heatmap, elle n'affiche pas les souches vides
 
-"""
-en gros, ce qu'il faut:
-
-{'b9':{LEKW00000000.1: [[list_ec_full], [list_ec_part]] ,... } }
-
-ou
-
-{'b9':[ [LEKW00000000.1 , [list_ec_full], [list_ec_part]] ,...] }
-"""
+# ""
+# en gros, ce qu'il faut:
+#
+# {'b9':{LEKW00000000.1: [[list_ec_full], [list_ec_part]] ,... } }
+#
+# ou
+#
+# {'b9':[ [LEKW00000000.1 , [list_ec_full], [list_ec_part]] ,...] }
+# ""

@@ -18,17 +18,28 @@ coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S,V,Ec) . %'enzymeV co
 uncovered(V,Ec) :- not coveredEnzyme(V,Ec) ; enzymeV(V,Ec) . %'une enz de pathway pas présente ds les bactéries
 
 
+enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrain(S,V,Ec1) ; minStrain(S,V,Ec2). %'ec successif pour la mm souche
+
+
 minStrain(S,V) :- minStrain(S,V,Ec).
 
 twoStrains(V) :- minStrain(S1,V) ; minStrain(S2,V) ; taxonomy(S1,T,U) ; not taxonomy(S2,T,U).
 
 vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 
-#minimize {1@3,S:minStrain(S)}.
-#minimize {1@2,S,V:minStrain(S,V,Ec)}.
+#minimize {1@4,S:minStrain(S)}.
+#minimize {1@3,V,T:vitaminTaxon(V,T)}.
+#maximize {1@2,S,Ec1,Ec2:enzymeSuccStrain(V,Ec1,Ec2,S) }.
 #maximize {1@1,S,V,Ec:minStrain(S,V,Ec)}. %'maximiser la superposition des voies'
-#minimize {1@0,V,T:vitaminTaxon(V,T)}.
+
 %#maximize {1@1,V,Ec:coveredEnzyme(V,Ec)}.
+
+
+% je sais plus ce que cela faisait..
+%#minimize {1@4,S:minStrain(S)}.
+%#minimize {1@3,S,V:minStrain(S,V,Ec)}.
+%#maximize {1@2,S,V,Ec:minStrain(S,V,Ec)}. %'maximiser la superposition des voies'
+%#minimize {1@1,V,T:vitaminTaxon(V,T)}.
 
  %* 3 Question *%
 %#show coveredEnzyme/2.

@@ -47,7 +47,7 @@ enzymeSuccStrain(V,Ec1,Ec2,S) :- enzymeSucc(V,Ec1,Ec2) ; minStrainVitamin(S,vita
 %il me faut l'ec pour la sortie du tableau...!!! => minStrainVitamin/3. modifié le show
 
 %pk la reaction et pas le produit?
-diffusion(R):- coveredEnzymeVitamin(S1,vitamin,Ec); %'EC que possède S1
+diffusion(Product):- coveredEnzymeVitamin(S1,vitamin,Ec); %'EC que possède S1
                 not coveredEnzymeVitamin(S2,vitamin,Ec); %'et que S2 ne possède pas
                 minStrainVitamin(S2,vitamin); %'def S2? et S1?
                 pathwayV(vitamin,P) ; %'recup le pathway de la vit
@@ -57,8 +57,8 @@ diffusion(R):- coveredEnzymeVitamin(S1,vitamin,Ec); %'EC que possède S1
                 not hidden(Product).
 
 
-#minimize {1@4,S:minStrainVitamin(S,vitamin)}.
-#minimize {1@3,T:vitaminTaxon_one(vitamin,T)}.
+#minimize {1@3,S:minStrainVitamin(S,vitamin)}.
+#minimize {1@4,T:vitaminTaxon_one(vitamin,T)}.
 #maximize {1@2,S,Ec1,Ec2:enzymeSuccStrain(vitamin,Ec1,Ec2,S) }.
 #maximize {1@1,S,Ec:coveredEnzymeVitamin(S,vitamin,Ec)}. %'maximiser la superposition des voies'
 
