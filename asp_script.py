@@ -10,6 +10,8 @@ import itertools
 # TODO on peut envoyer les trucs asp en strings, regarder le tuto
 # TODO matter si ya bien autant de ref que d'ec..
 
+# TODO networkx pour le graph
+
 """
 #Memmo base#
 common_name(reaction_id or enzyme_id or pathway_id or compound_id , common_name).
@@ -406,7 +408,7 @@ class Resultats:
 
 
 
-    """
+
     def affichage_legende(self, mod):
         list_union_souche = {}
         for ec in mod:
@@ -424,7 +426,7 @@ class Resultats:
             list_return.append(ls_numsouche)
 
         return list_return
-    """
+
 
 ####################################
 # MAIN
