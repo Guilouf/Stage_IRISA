@@ -399,14 +399,13 @@ class Resultats:
         list_ec = [vit1, ec1, ec2,..., vit2, ec3, ec4...]
         """
         print("#########Q3final")
-        # todo ici trier les ec..
         list_vit_trie = list(sorted(set([atom.arguments[1] for atom in self.models[1]])))  # donne list de vit presentes
         print(list_vit_trie)
-        list_ec = []
+        list_ec = []  # faut faire un set à un momment..
 
         for vit in list_vit_trie:
             list_ec.append(vit)
-            for atom in self.models[1]:  # itère les atoms pr faire list_ec  =>> faudrait pouvoir l'ordonner
+            for atom in self.models[1]:  # itère les atoms pr faire list_ec  =>> faudrait pouvoir l'ordonner => sam et max ordonner
                 if atom.predicate == question and atom.arguments[1] == vit:
                     list_ec.append(atom.arguments[2])  # ajout l'ec
 

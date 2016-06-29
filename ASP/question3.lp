@@ -46,7 +46,15 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 %#show uncovered/2.
 %#show minStrain/1.
 
-#show minStrain/3.
+%#show minStrain/3.
+
+#show minStrain(S,VV,Ec) : minStrain(S,VV,Ec), VV=b12.
+
+
+#show enzymeV/2.
+#show full_match/4.
+#show rest_match/4.
+
 
 %#show minStrain/2.
 %#show vitaminTaxon/2.
