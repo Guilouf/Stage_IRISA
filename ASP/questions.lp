@@ -73,7 +73,7 @@ diffusion(Product):- coveredEnzymeVitamin(S1,vitamin,Ec); %'EC que possède S1
 
 
  %* 1 Question OK *%
-%#show completeStrainV/2.
+#show completeStrainV/2.
 
  %* 2 Question *%
 %#show minStrainVitamin/2.

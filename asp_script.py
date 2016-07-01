@@ -55,8 +55,9 @@ hmm = 'ASP/hmm.lp'
 # todo faire les initia des dico avec des = et des methodes statiques
 
 # Solver
-# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
-result = solver.run([hidden, base, prog, metagdb, question3], collapseTerms=True, collapseAtoms=False)
+# todo pour question 2, mettre argument vitamine
+result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb, question3], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
 # Solver de test:
@@ -194,7 +195,7 @@ class Resultats:
         Utilise un fichier csv pour se charger
         :return:
         """
-
+        # todo expliquer comment faire si fichier indisponible
         dico_trad = {}
         with open("ASP/trad_souches/correspondance_souches.csv", 'r') as fich_dico:
             reader = csv.reader(fich_dico, delimiter=';')
@@ -237,6 +238,7 @@ class Resultats:
         :param p_head_ligne:  # les noms des souches
         :return:
         """
+        # todo mettre les header des ec en vertical
         # tester add subplot pour avoir les trois plots en mm temps
         print("nb_souches: ", len(p_list_souches))
 
@@ -480,13 +482,13 @@ with open('ASP/Output/tab_Q2.csv', 'w', newline='') as sortie_q2:
         writter.writerow(ligne)
 
 # Q3
-with open('ASP/Output/tab_Q3.csv', 'w', newline='') as sortie_q3:
-    writter = csv.writer(sortie_q3, delimiter=';')
-    q3 = inst_resul.test_q3('minStrain')
-    # [print(ligne) for ligne in q3]  # epuise pas le gen oublie pas..
-    [writter.writerow(ligne) for ligne in q3]
-    # for ligne in q3:
-    #     writter.writerow(ligne)
+# with open('ASP/Output/tab_Q3.csv', 'w', newline='') as sortie_q3:
+#     writter = csv.writer(sortie_q3, delimiter=';')
+#     q3 = inst_resul.test_q3('minStrain')
+#     # [print(ligne) for ligne in q3]  # epuise pas le gen oublie pas..
+#     [writter.writerow(ligne) for ligne in q3]
+#     # for ligne in q3:
+#     #     writter.writerow(ligne)
 
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)

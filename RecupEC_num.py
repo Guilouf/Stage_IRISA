@@ -2,8 +2,6 @@
 from Bio import Entrez, SeqIO
 from Bio.SeqRecord import SeqRecord
 from io import StringIO
-import copy
-from itertools import tee
 import bddbis  # execute le truc à l'import
 from uniprot import Uniprot
 
