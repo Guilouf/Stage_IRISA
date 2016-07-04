@@ -40,23 +40,30 @@ soptions = '--opt-mode=optN'  # solutions max solveur todo -cc vitamin=b12 pour 
 solver = Gringo4Clasp(gringo_options=goptions, clasp_options=soptions)
 
 # Liste des fichiers asp
-hidden = 'ASP/hidden.lp'
+hidden = 'ASP/hidden.lp'  # liste les cofacteurs ignorés
 base = 'ASP/metacyc_18.5.lp'
-query = 'ASP/explore.lp'
-test = 'ASP/test_data.lp'
+test = 'ASP/test_data.lp'  # données de test
 metagdb = 'ASP/ec_uni.lp'
 prog = 'ASP/programmeASP.lp'
 questions = 'ASP/questions.lp'
 question3 = 'ASP/question3.lp'
-hmm = 'ASP/hmm.lp'
+heatmap_lp = 'ASP/heatmap.lp'
 
 # itertools product, pour les listes intent imbriquées
 # todo ya des '"' autour des num_acc..
 # todo faire les initia des dico avec des = et des methodes statiques
 
+
+def __init__():  # marche mais pas bne idee init..
+    result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+    return result
+
+
+result = __init__()
+
 # Solver
 # todo pour question 2, mettre argument vitamine
-result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
+# result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb, question3], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
 
@@ -242,7 +249,10 @@ class Resultats:
         # tester add subplot pour avoir les trois plots en mm temps
         print("nb_souches: ", len(p_list_souches))
 
-        p_head_ligne = [self.dico_trad.get(souche.strip('"')) for souche in p_head_ligne]  # traduction nom souches
+        try:
+            p_head_ligne = [self.dico_trad.get(souche.strip('"')) for souche in p_head_ligne]  # traduction nom souches
+        except:
+            print("Problème au niveau du dico de traduction des souches!")
 
         # non ya pas le mm nombre de souches.. 64 pour b9, NZ_LKLZ01000013.1 manque
         matrice = np.array(p_list_souches)  # transforme une liste de liste en matrice

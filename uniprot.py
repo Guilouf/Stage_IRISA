@@ -29,12 +29,12 @@ class Uniprot:
         try:
             response = urlopen(request, timeout=50)
         except:
-            print("Deuxième essai bdd de merde!")
+            print("Deuxième essai!")
             time.sleep(20)
             try:
                 response = urlopen(request, timeout=50)
             except:
-                print("3eme essai bdd de merde!")
+                print("3eme essai!")
                 time.sleep(30)
                 response = urlopen(request, timeout=50)
 
@@ -55,9 +55,6 @@ class Uniprot:
         :return:
         """
 
-        # for i in self.page:
-        #     print(i)
-
         # header = next(self.page)  # sert à rien ca ??(dégager les header pe
         gener_page = (ligne for ligne in self.page)  # fait un générateur de la page de résultats
 
@@ -69,44 +66,4 @@ class Uniprot:
                     yield ligne.split('\t')[1].strip()
                     break  # hum, ca break quoi exactement?
 
-        """
-        GROS DEBUG
-        enfin une piste: 489221419, 2 occurences trouvées.. quels batards. mm caractéristiques ds le gbk
-        ce qu'est bizare c'est que pour les doublons simulés ca passe..
-        =>en fait c'est sur le suivant que ca fait foirer.. donc c'est bien la faute des doublons
-        """
 
-
-# TODO dès qu'un truc ne match pas, le générateur s'épuise.(pas si sur) itertools pr 2eme générateur
-
-
-# ['917680677', '917680578']
-# print(next(Uniprot(['917680677']).gener_id()))
-
-# common_id = "489221419"
-# list_test = [common_id, '917680578', '917680677',  common_id, '489221547']
-# list_test = ['917680578', '917680578', '917680677', '490375162', '917680578', '490375107']
-# list_test = [common_id, '490375107', '489221547', common_id, '490374849']
-#
-# generateur = Uniprot(list_test).gener_id()
-#
-# from itertools import zip_longest
-# for idp, elem in zip_longest(list_test, generateur):
-#     print("print du for: ", idp, elem)
-# pass
-
-
-
-# for i in range(0, len(list_test)):
-#     # next(generateur)
-#     print(next(generateur))
-
-"""
-raaaaaaaaaaahhhhhhaaaaaaaaaaa
-"""
-
-# with open("Test/debugRecup.txt", 'r') as list_gigo:
-#     list_strip = [gi.strip() for gi in list_gigo]
-#     generateur = Uniprot(list_strip).gener_id()
-#     for i in range(0, len(list_strip)):
-#         print(next(generateur))

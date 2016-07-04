@@ -200,7 +200,7 @@ class Remplissage:
 "Test de remplissage"
 ####################################################################
 
-listAccessTruc = ["stringEC3", "stringEC4"]
+# listAccessTruc = ["stringEC3", "stringEC4"]
 
 # inst_remplissage = Remplissage()
 # inst_remplissage.ajout_access("grande bzacterie1")
@@ -291,7 +291,7 @@ class Requetes:
 
                 list_access_refseq = num.hasAccesByRefSeq  # liste des acc NCBI du num
                 list_access_primaire = num.hasAccesByPrimaire
-                # todo que lie xref au type d'annot??
+                # todo xref ne relie pas au type d'annot
                 # defiler les xref ne fait que créer des doublons ac un uni différent, ca n'apporte pas d'info,
                 # et c'est mm faux car ca lie des uniprot qui ne sont pas présents ds les acc
                 # mais ca na pasde conséquence dans mon utilisation actuelle
@@ -322,7 +322,7 @@ class Requetes:
 
             list_ec_primaire = acc.hasPrimaire
             try:
-                for numP, ecc in enumerate(list_ec_primaire): #faire un try execpt, ou un if pour les nones
+                for numP, ecc in enumerate(list_ec_primaire):
                     pass
                 print("nb d'ec primaire de l'access: ", numP)
                 total_ec_primaire += numP
@@ -340,20 +340,19 @@ class Requetes:
 
     # print(association_table.c.Accessions_tab_id)
 
-requetes = Requetes()  # instance de la classe requetes
-requetes.print_nb_souches()
-# requetes.statistiques_par_access()
-# requetes.print_table_access()
-# requetes.print_table_ecnum()
-requetes.print_table_xref()
-# for i in requetes.print_rdf():
-#     print(i)
 
+if __name__ == "__main__":
+    requetes = Requetes()  # instance de la classe requetes
+    with open('ASP/ec_uni.lp', 'w') as fich_asp:
+        for i in requetes.write_asp():
+            print(i)
+            fich_asp.write(i+"\n")
 
-"""
-with open('ASP/ec_uni.lp', 'w') as fich_asp:
-    for i in requetes.write_asp():
-        print(i)
-        fich_asp.write(i+"\n")
-"""
+    # requetes.print_nb_souches()
+    # requetes.statistiques_par_access()
+    # requetes.print_table_access()
+    # requetes.print_table_ecnum()
+    # requetes.print_table_xref()
+    # for i in requetes.print_rdf():
+    #     print(i)
 
