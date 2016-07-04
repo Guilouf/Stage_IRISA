@@ -100,49 +100,25 @@ size_ec(ec(X,Y,Z,T),4) :- enzymeV(V,ec(X,Y,Z,T)).
 size_ec(ec(X,Y,Z),3) :- enzymeV(V,ec(X,Y,Z)).
 
 %le système de matchs
-% todo faire les exclusions ailleurs?
+
 full_match(V,S,T,Ec) :- matched(V,S,T,Ec,Ec).   % , S="FN806773".
 rest_match(V,S,T,EcS) :- match_rest(V,S,T,EcS,EcC).   % , S="FN806773".
 total_match(V,S,T,EcS) :- full_match(V,S,T,EcS).
 total_match(V,S,T,EcS) :- rest_match(V,S,T,EcS).    %'pr tester sans spé de substrat
-% todo renomer ecs en ec v..
+% todo confusion ecs/ecv?
 
-%Les numéros Ec exclus (heu ya peut être un autre méthode..
-%impEc(ec(3,7,1,12);ec(3,6,1,o);ec(1,5,1,39)).
-
+%Les numéros Ec exclus (mettre autre méthode)
 impEc(ec(1,5,1,39)).
 impEc(ec(3,6,1,o)).
 impEc(ec(3,7,1,12)).
 
-% Données metacyc supplémentaires
-%enzymeV(b12, ec(2,1,1,131)).%'relativement présent'
-%enzymeV(b12, ec(1,16,1,3)). %'pas présent                  !!!!!A commenter ca fait bugger sinon..
 
 
-
-
-
- %* Mon essai des 3 questions*%
-% souches qui ont des enzymes dans ttes les vits
-%strainAllPartV(S) :- total_match(V,S,T,Ec) : vitamin(V) ; strain(S).
-
-%souches qui peuvent coopérer pour faire une vitamine (genre K)
-%strainCoop(S) :- not completeStrainV(S,V) ; vitamin(V) ; strain(S) ; total_match(V,S,T,Ec) : enzymeV(_,Ec) .  %'S et V unsafe..'
 
  %* PARTIE SHOW*%
-#show.
+
 
 %#show alterP/3.
-
-
- %*Mes questions  *%
-%faire des tests en retirant la spé du substrat
-%#show strainAllPartV/1.  %'marche
-%#show strainCoop/1.  %'aucun résultat..'
-
- %*Les 3 télés  *%
-%#show completeStrainV/2.
-
 
 
  %* Tableau croisé: pr une vitamine *%
@@ -151,10 +127,6 @@ impEc(ec(3,7,1,12)).
 %#show rest_match/4.
 
 
-%#show enzymeSucc/3.
-
-%#show total_match/4.
-%#show strain/1.
 
  %* Stats de la BDD *%
 % le nombre total de souches dans la bdd (68)
