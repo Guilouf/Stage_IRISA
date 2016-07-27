@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import csv
 import itertools
+import sys
 
 # TODO ya des numeros Gi qui se balladent en tant que uniprot..=> voir le todo pr abruti ds recup ec..
 
@@ -35,34 +36,77 @@ num_access("NC_020229.1","A0A0L7Y7H5").
 # pouvoir inserer des limites de diffusion
 # faire l'affichage des résultats de la question 2
 
-goptions = ''  # soluce max gringo
-soptions = '--opt-mode=optN'  # solutions max solveur todo -cc vitamin=b12 pour ecraser la constante
-solver = Gringo4Clasp(gringo_options=goptions, clasp_options=soptions)
-
-# Liste des fichiers asp
-hidden = 'ASP/hidden.lp'  # liste les cofacteurs ignorés
-base = 'ASP/metacyc_18.5.lp'
-test = 'ASP/test_data.lp'  # données de test
-metagdb = 'ASP/ec_uni.lp'
-prog = 'ASP/programmeASP.lp'
-questions = 'ASP/questions.lp'
-question3 = 'ASP/question3.lp'
-heatmap_lp = 'ASP/heatmap.lp'
-
 # itertools product, pour les listes intent imbriquées
 # todo ya des '"' autour des num_acc..
 # todo faire les initia des dico avec des = et des methodes statiques
 
 
-def __init__():  # marche mais pas bne idee init..
-    result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
-    return result
+class Binding_asp:
+
+    def __init__(self):
+        self.goptions = ''  # soluce max gringo
+        self.soptions = '--opt-mode=optN'
 
 
-result = __init__()
+        # Liste des fichiers asp
+        self.hidden = 'ASP/hidden.lp'  # liste les cofacteurs ignorés
+        self.base = 'ASP/metacyc_18.5.lp'
+        self.test = 'ASP/test_data.lp'  # données de test
+        self.metagdb = 'ASP/ec_uni.lp'
+        self.prog = 'ASP/programmeASP.lp'
+        self.questions = 'ASP/questions.lp'
+        self.question3 = 'ASP/question3.lp'
+        self.heatmap_lp = 'ASP/heatmap.lp'
 
-# Solver
-# todo pour question 2, mettre argument vitamine
+
+
+    def lanceur(self):
+        """
+        Lance différentes configuration du solveur en fonctions des arguments. Les arguments peuvent être dans le
+        désordre, ou ne pas être présents
+
+        Q1_2: Argument à rentrer pour question 1 et 2
+            La vitamines choisie sera demandée
+        Q3: pour la question3
+
+        heatable: pour afficher les tableaux en forme d'heatmap
+
+        show_asp: pour afficher dans la sortie standard la sortie du solveur ASP
+
+        :return:
+        """
+
+        asp_file_list = [self.hidden, self.base, self.prog, self.metagdb]
+
+        #  évidement faut pas qu'un malin mette les deux questions en arguments..
+        if "Q1_2" in sys.argv:
+            asp_file_list.append(self.questions)
+            vit_input = input("Entrez la vitamine pour la question 2 (b9,b12,k2_7..): ")
+            ecra = " --const vitamin="+vit_input  # remplacement de la constant ds le script ASP
+            self.goptions += ecra
+        #     si vit mal tapée, pas de solutions pr la Q2, mais la Q1 marche qd mm
+
+        if "Q3" in sys.argv:
+            asp_file_list.append(self.question3)
+
+        if "heatable" in sys.argv:
+            asp_file_list.append(self.heatmap_lp)
+
+        # lancement du solveur
+        solver = Gringo4Clasp(gringo_options=self.goptions, clasp_options=self.soptions)
+        result = solver.run(asp_file_list, collapseTerms=True, collapseAtoms=False)
+
+        if "show_asp" in sys.argv:
+            for termm in result[0]:
+                print(termm)
+            print("Nombre de faits ASP en sortie: ", len(result[0]))
+
+        return result
+
+
+
+# Solver (reliques de tests)
+
 # result = solver.run([hidden, base, prog, metagdb, questions], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb, question3], collapseTerms=True, collapseAtoms=False)
 # result = solver.run([hidden, base, prog, metagdb], collapseTerms=True, collapseAtoms=False)
@@ -74,14 +118,6 @@ result = __init__()
 
 #  pour les cas ou pas de modèle result 0 n'existe pas => erreur
 # impression de sortie ASP
-for termm in result[0]:
-    print(termm)
-#     print(termm.arguments)
-#     print(termm.predicate)
-
-# Impression du nombre d'élément en sortie
-print("Nombre: ", len(result[0]))
-
 
 class Resultats:
 
@@ -407,13 +443,16 @@ class Resultats:
 
     def test_q3(self, question):
         """
+        Cette fonction normalement marche, c'est le code ASP derrière qui foire..
         faut trier les ec en fonction de leur voies..
         list_ec = [vit1, ec1, ec2,..., vit2, ec3, ec4...]
         """
         print("#########Q3final")
-        list_vit_trie = list(sorted(set([atom.arguments[1] for atom in self.models[1]])))  # donne list de vit presentes
+        list_vit_trie = list(sorted(set([atom.arguments[1] for atom in self.models[1] if atom.predicate == question])))
+        # donne list de vit presentes, vérifie que ce soit le bon prédicat
         print(list_vit_trie)
-        list_ec = []  # faut faire un set à un momment..
+
+        list_ec = []  # on ne peut faire de set sur l'ensemble, ec communs entre les vits
 
         for vit in list_vit_trie:
             list_ec.append(vit)
@@ -433,15 +472,17 @@ class Resultats:
             # print(list_souches)
             list_model.append(list_souches)
 
+
         # la sortie:
         yield list_ec  # le header, avec affichage des ec
+        # print(list_ec)
         for model in list_model:
             sortie_model = []
             # for ec in (ec for ec in list_ec if ec not in list_vit_trie):  # mouraf magnifik, todo faut le bench
             for ec in list_ec:
                 # list traduite des bact présentes pr chaque ec
                 trad = [''.join(self.dico_trad[sou.strip('"')]) for sou in model.get(ec, [])]  # traduit et met en string
-                print(trad)  # todo le problème vient d'asp...
+                # print(trad)  # todo le problème vient d'asp...
                 sortie_model.append(trad)
             yield self.affichage_legende(sortie_model)
 
@@ -475,6 +516,9 @@ class Resultats:
 ####################################
 
 # instanciation
+
+result = Binding_asp().lanceur()
+
 inst_resul = Resultats(result)
 
 # inst_resul.tab_comptage()
@@ -492,13 +536,13 @@ with open('ASP/Output/tab_Q2.csv', 'w', newline='') as sortie_q2:
         writter.writerow(ligne)
 
 # Q3
-# with open('ASP/Output/tab_Q3.csv', 'w', newline='') as sortie_q3:
-#     writter = csv.writer(sortie_q3, delimiter=';')
-#     q3 = inst_resul.test_q3('minStrain')
-#     # [print(ligne) for ligne in q3]  # epuise pas le gen oublie pas..
-#     [writter.writerow(ligne) for ligne in q3]
-#     # for ligne in q3:
-#     #     writter.writerow(ligne)
+with open('ASP/Output/tab_Q3.csv', 'w', newline='') as sortie_q3:
+    writter = csv.writer(sortie_q3, delimiter=';')
+    q3 = inst_resul.test_q3('minStrain')
+    # [print(ligne) for ligne in q3]  # epuise pas le gen oublie pas..
+    [writter.writerow(ligne) for ligne in q3]
+    # for ligne in q3:
+    #     writter.writerow(ligne)
 
 
 # todo surveille au niveau de la k2 1ere vit on dirait que yavait de l'aléatoire.(en fait non)

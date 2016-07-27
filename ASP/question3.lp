@@ -27,6 +27,9 @@ twoStrains(V) :- minStrain(S1,V) ; minStrain(S2,V) ; taxonomy(S1,T,U) ; not taxo
 
 vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 
+
+
+
 #minimize {1@4,S:minStrain(S)}.
 #minimize {1@3,V,T:vitaminTaxon(V,T)}.
 #maximize {1@2,S,Ec1,Ec2:enzymeSuccStrain(V,Ec1,Ec2,S) }.
@@ -46,14 +49,19 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 %#show uncovered/2.
 %#show minStrain/1.
 
-%#show minStrain/3.
 
-#show minStrain(S,VV,Ec) : minStrain(S,VV,Ec), VV=b12.
+#show minStrain/3.
 
 
-#show enzymeV/2.
-#show full_match/4.
-#show rest_match/4.
+
+% ca fait tout bugger ce show là, explose la memmoire attention
+%#show minStrainWesh(S,VV,Ec) : minStrain(S,VV,Ec), VV=b12.
+
+
+
+%#show enzymeV/2.
+%#show full_match/4.
+%#show rest_match/4.
 
 
 %#show minStrain/2.
