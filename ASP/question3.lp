@@ -6,7 +6,7 @@
 
 
  1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
- 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec), total_match(V,S,_,Ec)} .  %' choix de souches
+ 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)} .  %' choix de souches
 
 % j'ai rajouté total_match au dessus!
 
@@ -53,6 +53,9 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 
 #show minStrain/3.
 % le probleme, c'est que les ec ne sont pas associés aux bonnes bazctéries
+% je sais pk ca marchait avant, je passait par les donnéesb ASP de la heatmap croisées avec celles de la Q3
+% le différences ds le nb de solutions doit venir dans le changment ds les optis
+% verif avec le commit du 31 mai
 
 
 % ca fait tout bugger ce show là, explose la memmoire attention
