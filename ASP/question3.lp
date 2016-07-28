@@ -50,13 +50,16 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 %#show uncovered/2.
 %#show minStrain/1.
 
-
-#show minStrain/3.
+#show.
+%#show minStrain/3.
 % le probleme, c'est que les ec ne sont pas associés aux bonnes bazctéries
 % je sais pk ca marchait avant, je passait par les donnéesb ASP de la heatmap croisées avec celles de la Q3
 % le différences ds le nb de solutions doit venir dans le changment ds les optis
 % verif avec le commit du 31 mai
 
+
+#show minStrain(S,V,Ec): minStrain(S,_,_), total_match(V,S,_,Ec).
+%#show minStrain(S): minStrain(S,_,_).
 
 % ca fait tout bugger ce show là, explose la memmoire attention
 %#show minStrainWesh(S,VV,Ec) : minStrain(S,VV,Ec), VV=b12.

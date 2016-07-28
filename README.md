@@ -69,6 +69,7 @@ lead of an absence of solutions for the question 2.
 ACTUALLY BUG
 
 > !! Typing the arguments Q1_2 and Q3 will not raise errors but leads to false results !!
+ => Juste one question per run
 
 
 ##Other options
@@ -77,3 +78,4 @@ ACTUALLY BUG
 
 #TODO
 - Title for the heatmap tables
+- Caption for the numbers in tables
