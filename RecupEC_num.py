@@ -4,6 +4,7 @@ from Bio.SeqRecord import SeqRecord
 from io import StringIO
 import bddbis  # execute le truc à l'import
 from uniprot import Uniprot
+import sys
 
 """
 Installation des modules(en -user si pas root):
@@ -231,15 +232,23 @@ class Recup_EC :
     ##################################################################
 
 if __name__ == "__main__":
-    recu = Recup_EC()  # instance de la classe entière
+    recu = Recup_EC()  # instanciation
     """
     NZ_AZSI00000000 (master)
     NZ_CP009472.1
     """
     print("Pense à supprimer la bdd si tu veux ecraser les données..")
 
-    def traitement(access):  # appelé une fois par bactérie
-        gbk = recu.telecharge(access)  # le fichier gbk de la bacterie que l'on telecharge
+    def traitement(access, flag_gbk=None):  # appelé une fois par bactérie
+
+        if flag_gbk is None:  # pas de flag précisé: téléchargement des gbk de la liste
+            gbk = recu.telecharge(access)  # le fichier gbk de la bacterie que l'on telecharge
+        else:  # traitement d'un seul gbk local
+            gbk = next(SeqIO.parse(access, 'genbank'))
+            access = access.split('_')[-1]
+            print(access)
+            # todo il risque d'y avoir des conflits ac access utilisé ailleurs comme identifiant..
+
         test_parse = gbk  # ce sont des fichiers virtuels, dc nrmlt plus de generateurs...
         gbk_gener = gbk
         # tt ce bordel etait à cause du générateur, nrmlt c fini
@@ -267,10 +276,22 @@ if __name__ == "__main__":
 
         # gbk.close()  # pas oublier de le fermer.. bah de toutes facon c'est la merde, ca fuit de partout
 
+    if len(sys.argv) > 1:
+        print("Traitement de .gbk local. Nommer le fichier selon le schema: _nombacterie.gb")
+        traitement(sys.argv[1], True)  # C:\Users\Guigui\PycharmProjects\Stage\Stage_IRISA\sequence.gb
 
-    with open('ListeAccess', mode='r') as listaccess:
-        for numacc in listaccess:  # itère la liste des accessions à regarder
-            traitement(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
+
+    else:  # fonctionnement classique, sans argv
+        with open('ListeAccess', mode='r') as listaccess:
+            for numacc in listaccess:  # itère la liste des accessions à regarder
+                traitement(numacc.strip())  # gaffe aux espaces à la fin du doc.. le strip pour enlever les \n...
+
+
+    """
+    partie alternative à partir de .gbk
+    ya ka modifier la signature de aaccess, c tout con faut juste remplacer gbk = recu.telecharge(access)
+    par un gbk d'une liste..
+    """
 
 
 # instantiation des classes de bbdbis pr test

@@ -452,14 +452,15 @@ class Resultats:
         # donne list de vit presentes, vérifie que ce soit le bon prédicat
         print(list_vit_trie)
 
-        list_ec = []  # on ne peut faire de set sur l'ensemble, ec communs entre les vits
+        list_ec = []
 
-        for vit in list_vit_trie:
-            list_ec.append(vit)
+        for vit in list_vit_trie:  # itère les différentes vitamines
+            list_ec.append(vit)  # ajoute le nom de la vit dans le header
+            tri_ec = []
             for atom in self.models[1]:  # itère les atoms pr faire list_ec  =>> faudrait pouvoir l'ordonner => sam et max ordonner
                 if atom.predicate == question and atom.arguments[1] == vit:
-                    list_ec.append(atom.arguments[2])  # ajout l'ec
-
+                    tri_ec.append(atom.arguments[2])  # ajout l'ec dans la liste a traiter
+            list_ec += sorted(list(set(tri_ec)))  # ajout des ec ds le header, trié set
 
         list_model = []
 
@@ -475,6 +476,8 @@ class Resultats:
 
         # la sortie:
         yield list_ec  # le header, avec affichage des ec
+        # todo ca marche bien pour la b12, mais pas pour les autres vits..=> encore le code ASP..
+        # todo car pas de coop pour les autres vits
         # print(list_ec)
         for model in list_model:
             sortie_model = []

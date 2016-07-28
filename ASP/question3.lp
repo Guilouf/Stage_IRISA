@@ -6,8 +6,9 @@
 
 
  1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
- 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)} .  %' choix de souches
+ 1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec), total_match(V,S,_,Ec)} .  %' choix de souches
 
+% j'ai rajouté total_match au dessus!
 
 coveredEnzyme(V,Ec) :- total_match(V,S,_,Ec) ;  minStrain(S,V,Ec) . %'enzymeV couverte si présente ds une souche de l ensmbl
 
@@ -51,7 +52,7 @@ vitaminTaxon(V,(T,U)) :- minStrain(S,V) ; taxonomy(S,T,U).
 
 
 #show minStrain/3.
-
+% le probleme, c'est que les ec ne sont pas associés aux bonnes bazctéries
 
 
 % ca fait tout bugger ce show là, explose la memmoire attention
