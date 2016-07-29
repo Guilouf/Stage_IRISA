@@ -3,7 +3,7 @@
  Quel ensemble de souche peuvent se completer pour faire une vitamine
  ####################################################### *%
 
-%test ssh
+
 
  1{minStrain(S): strain(S)} maxstrain.  %' choix de souches
  1{minStrain(S,V,Ec): minStrain(S), vitamin(V), enzymeV(V,Ec)} .  %' choix de souches
