@@ -46,11 +46,11 @@ ASP facts.
 > If there is network problems, an alternative method is available: When running the script, add 
 as a commandline argument the path to a genbank file, with this format: /path/_bacterianame.gb
 
-- Once the RECU??????? have been successfully executed, launching BDDD??? will translate
+- Once the recup_ec??????? have been successfully executed, launching Bddbis??? will translate
 the data into ASP facts
 
 #Data analysis with ASP
-A single script, ??????? handle all the tasks for the processing with ASP.
+A single script, asp_script, handle all the tasks for the processing with ASP.
 This script has several different commandline arguments, that does not have to be written in
 a particular order or does not have to be all present
 
@@ -66,7 +66,7 @@ for one vitamin, a prompt will appear asking which vitamin to select. An error i
 lead of an absence of solutions for the question 2.
 
 - Argument Q3: The script will run the question3
-ACTUALLY BUG
+
 
 > !! Typing the arguments Q1_2 and Q3 will not raise errors but leads to false results !!
  => Juste one question per run
