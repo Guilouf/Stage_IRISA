@@ -50,7 +50,7 @@ class Binding_asp:
 
         # Liste des fichiers asp
         self.hidden = 'ASP/hidden.lp'  # liste les cofacteurs ignorés
-        self.base = 'ASP/metacyc_18.5.lp'
+        self.base = 'ASP/metacyc_20.0.lp'
         self.test = 'ASP/test_data.lp'  # données de test
         self.metagdb = 'ASP/ec_uni.lp'
         self.prog = 'ASP/programmeASP.lp'

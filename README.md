@@ -47,7 +47,7 @@ ASP facts.
 > If there is network problems, an alternative method is available: When running the script, add 
 as a commandline argument the path to a genbank file, with this format: `/path/_bacterianame.gb`
 
-- Once the recup_ec??????? have been successfully executed, launching Bddbis??? will translate
+- Once the `Recup_EC_num` have been successfully executed, launching `bddbis` will translate
 the data into ASP facts
 
 #Data analysis with ASP
@@ -78,10 +78,12 @@ lead of an absence of solutions for the question 2.
 - `show_asp` argument: Enable in the standard output the output of clasp
 
 #TODO
-- Title for the heatmap tables
-- Caption for the numbers in tables
-- Add EC_uni and other heavy stuff in google drive or other. 
-- Setup to auto install modules
+- []Title for the heatmap tables
+- [] Caption for the numbers in tables
+- [x] Add EC_uni and other heavy stuff in google drive or other
+- [] Update to metacyc 20
+- [] Setup to auto install modules
+- [] Refactor module and class names
 
 #Cheat
 - `gringo file | clasp` to test ASP separately
