@@ -2,7 +2,8 @@
 Scripts et BDD sur la reconstruction de metagénomes bacteriens pour la production de vitamines
 à l'aide de la programmation logiques ASP
 
-
+# Sample data
+Pre-downloaded databases, results, figures.. can be found at the [link] (https://drive.google.com/drive/folders/0B4c604_XLW5tTzBkTkYyQTFDazg?usp=sharing).
 
 #Prerequisites
 - Python 3.5
