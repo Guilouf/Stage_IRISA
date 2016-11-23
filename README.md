@@ -74,7 +74,8 @@ lead of an absence of solutions for the question 2.
 
 
 ##Other options
-- `heatable` argument: Enable the view of an heatmap style table, work with all questions
+- `heatable` argument: Enable the view of an heatmap style table, work with all questions.
+It also outputs in `ASP/Ouput` csv tables to summarize the heamap view, named like `tab_csv_vitXX.csv`
 - `show_asp` argument: Enable in the standard output the output of clasp
 
 #TODO

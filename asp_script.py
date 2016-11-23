@@ -252,13 +252,21 @@ class Resultats:
         bon au final passer par numpy emmerde plus qu'autre chose..mais ca marche
         :param vit:
         :param p_listsouche:
-        :param p_headcol:
-        :param p_headligne:
+        :param p_headcol:  # les noms des ec
+        :param p_headligne:  # les noms des souches
         :return:
         """
 
         matrice = np.array(p_listsouche, dtype='U128')  # passe en unicode (att, limite 128 carac...)
         headcol = ';'.join(p_headcol)  # header de num ec en string
+
+        try:
+            p_headligne = [';'.join((''.join(self.dico_trad.get(souche.strip('"'))), souche))for souche in p_headligne]  # traduction nom souches
+            # ouais c'est dégeulasse et alors?
+            # en gros ca passe de ca "AGX001" à "Acnes bt3 ; AGX001"
+        except:
+            print("Problème au niveau du dico de traduction des souches!")
+
         rows = np.array(p_headligne, dtype='U128')[:, np.newaxis]  # les coms de souche en array s20
 
         np.savetxt(
