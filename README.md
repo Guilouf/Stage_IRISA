@@ -9,7 +9,9 @@ Pre-downloaded databases, results, figures.. can be found at this [link] (https:
 - Python 3.5
 
 > All presented modules can downloaded and installed using pip
-    (`pip install module_name --user`)
+    (`pip install -r path/to/Stage_IRISA/requirement.txt --user`) for installing all modules
+    or (`pip install module_name --user`) for installing modules one by one
+    
 
 - Pyasp: A binding between ASP and python. Can be tricky with windows, the path in the module
  leading to gringo and clasp may have to be hardcoded if problems appears.
