@@ -1,3 +1,4 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 # Stage_IRISA
 Scripts et BDD sur la reconstruction de metagénomes bacteriens pour la production de vitamines
 à l'aide de la programmation logiques ASP
